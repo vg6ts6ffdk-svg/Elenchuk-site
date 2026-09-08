@@ -3,43 +3,94 @@
 
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // Scroll-linked "Apple-style" storytelling blocks.
-  // The page remains usable without JS; JS only adds progressive visual emphasis.
+  /* Apple-inspired scroll story: the copy changes as the user passes through
+     four scroll zones. The trigger zones are the section's own scroll progress,
+     so this works reliably on mobile Safari as well as desktop browsers. */
   document.querySelectorAll('[data-scroll-story]').forEach((story) => {
     const stages = Array.from(story.querySelectorAll('[data-story-stage]'));
     const title = story.querySelector('[data-story-title]');
     const kicker = story.querySelector('[data-story-kicker]');
-    if (!stages.length || !title) return;
+    const copy = story.querySelector('.scroll-story-copy');
+    const orb = story.querySelector('.scroll-story-orb');
+    const sticky = story.querySelector('.scroll-story-sticky');
+    if (!stages.length || !title || !copy) return;
+
+    const data = stages.map((stage) => ({
+      title: stage.dataset.title || stage.textContent.trim(),
+      kicker: stage.dataset.kicker || '',
+      text: stage.dataset.text || copy.textContent
+    }));
 
     let active = -1;
-    const setActive = (index) => {
+    let timer = null;
+
+    const setActive = (index, animate = true) => {
       index = Math.max(0, Math.min(stages.length - 1, index));
       if (index === active) return;
       active = index;
       stages.forEach((stage, i) => stage.classList.toggle('is-active', i === active));
-      const current = stages[active];
-      title.textContent = current.dataset.title || current.textContent.trim();
-      if (kicker && current.dataset.kicker) kicker.textContent = current.dataset.kicker;
+      const item = data[active];
+      if (animate && !reduced) {
+        sticky.classList.add('is-changing');
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+          title.textContent = item.title;
+          if (kicker) kicker.textContent = item.kicker;
+          copy.textContent = item.text;
+          sticky.classList.remove('is-changing');
+        }, 150);
+      } else {
+        title.textContent = item.title;
+        if (kicker) kicker.textContent = item.kicker;
+        copy.textContent = item.text;
+        sticky.classList.remove('is-changing');
+      }
+    };
+
+    let ticking = false;
+    const render = () => {
+      ticking = false;
+      const rect = story.getBoundingClientRect();
+      const max = Math.max(1, story.offsetHeight - window.innerHeight);
+      const progress = Math.min(1, Math.max(0, -rect.top / max));
+      const raw = progress * stages.length;
+      const index = Math.min(stages.length - 1, Math.floor(raw));
+      const local = raw - index;
+      setActive(index, true);
+
+      if (orb && !reduced) {
+        const x = Math.sin(progress * Math.PI * 1.3) * 90;
+        const y = progress * 260;
+        const scale = 1 + progress * .18;
+        orb.style.transform = `translate3d(calc(-50% + ${x}px), ${y}px, 0) scale(${scale})`;
+      }
+
+      stages.forEach((stage, i) => {
+        const distance = i - index;
+        if (!reduced) stage.style.setProperty('--story-progress', String(Math.max(0, 1 - Math.abs(distance - local))));
+      });
+    };
+
+    const request = () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(render);
+      }
     };
 
     if (reduced) {
-      setActive(0);
+      setActive(0, false);
       return;
     }
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        const index = stages.indexOf(entry.target);
-        if (index >= 0) setActive(index);
-      });
-    }, {root:null, rootMargin:'-42% 0px -42% 0px', threshold:0});
-
-    stages.forEach((stage) => observer.observe(stage));
-    setActive(0);
+    window.addEventListener('scroll', request, {passive:true});
+    window.addEventListener('resize', request);
+    setActive(0, false);
+    request();
   });
 
-  // Gentle reveal for cards and sections as they enter the viewport.
+  /* Reveals are additive only. If IntersectionObserver is unavailable,
+     content remains visible rather than disappearing. */
   if (!reduced && 'IntersectionObserver' in window) {
     const reveal = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
@@ -48,14 +99,17 @@
           reveal.unobserve(entry.target);
         }
       });
-    }, {threshold:0.12, rootMargin:'0px 0px -6% 0px'});
+    }, {threshold:0.08, rootMargin:'0px 0px -4% 0px'});
+
     document.querySelectorAll('.card, .process, .profile-card, .feature, .statement, .contact-main, .contact-side').forEach((el) => {
       el.classList.add('scroll-reveal');
       reveal.observe(el);
     });
+  } else {
+    document.querySelectorAll('.card, .process, .profile-card, .feature, .statement, .contact-main, .contact-side').forEach((el) => el.classList.add('is-visible'));
   }
 
-  // Premium hero: scroll progress drives the portrait scale and rotating copy.
+  /* Premium homepage scroll section. */
   document.querySelectorAll('[data-premium-scroll]').forEach((story) => {
     const steps = Array.from(story.querySelectorAll('.premium-step'));
     const copy = story.querySelector('.premium-copy');
@@ -71,19 +125,17 @@
     const orbB = story.querySelector('.premium-orb-b');
     if (!steps.length || !title || !text) return;
 
-    if (reduced) {
-      const first = steps[0];
-      title.textContent = first.dataset.title;
-      kicker.textContent = first.dataset.kicker;
-      text.textContent = first.dataset.text;
-      if (link && first.dataset.link) { link.href = first.dataset.link; link.firstChild.textContent = (first.dataset.linkLabel || 'Подробнее') + ' '; }
-      if (count) count.textContent = '01—04';
-      return;
-    }
+    const renderStep = (s, index) => {
+      title.textContent = s.dataset.title;
+      kicker.textContent = s.dataset.kicker;
+      text.textContent = s.dataset.text;
+      if (link && s.dataset.link) { link.href = s.dataset.link; link.firstChild.textContent = (s.dataset.linkLabel || 'Подробнее') + ' '; }
+      if (count) count.textContent = String(index + 1).padStart(2, '0') + '—04';
+    };
 
-    let active = 0;
-    let ticking = false;
+    if (reduced) { renderStep(steps[0], 0); return; }
 
+    let active = 0, ticking = false, timer = null;
     const render = () => {
       ticking = false;
       const rect = story.getBoundingClientRect();
@@ -92,43 +144,26 @@
       const raw = progress * steps.length;
       const index = Math.min(steps.length - 1, Math.floor(raw));
       const local = raw - index;
-
       if (index !== active) {
         active = index;
         const s = steps[index];
         copy.classList.add('is-changing');
-        window.setTimeout(() => {
-          title.textContent = s.dataset.title;
-          kicker.textContent = s.dataset.kicker;
-          text.textContent = s.dataset.text;
-          if (link && s.dataset.link) { link.href = s.dataset.link; link.firstChild.textContent = (s.dataset.linkLabel || 'Подробнее') + ' '; }
-          if (count) count.textContent = String(index + 1).padStart(2, '0') + '—04';
-          copy.classList.remove('is-changing');
-        }, 110);
-        steps.forEach((x, i) => x.classList.toggle('is-active', i === index));
+        clearTimeout(timer);
+        timer = setTimeout(() => { renderStep(s,index); copy.classList.remove('is-changing'); }, 130);
+        steps.forEach((x,i)=>x.classList.toggle('is-active',i===index));
       }
-
-      const p = progress;
-      const scale = 1 + Math.min(.085, p * .085);
-      const x = Math.sin(p * Math.PI) * 18;
-      const y = Math.cos(p * Math.PI * 1.2) * -10;
+      const scale = 1 + progress * .085;
+      const x = Math.sin(progress * Math.PI) * 18;
+      const y = Math.cos(progress * Math.PI * 1.2) * -10;
       portraitWrap.style.transform = `translate3d(${x}px,${y}px,0) scale(${scale})`;
       portrait.style.transform = `scale(${1 + local * .018})`;
-      ring.style.transform = `rotate(${p * 38}deg) scale(${1 + p * .05})`;
-      orbA.style.transform = `translate3d(${-p * 80}px,${p * 160}px,0)`;
-      orbB.style.transform = `translate3d(${p * 100}px,${-p * 120}px,0)`;
+      ring.style.transform = `rotate(${progress * 38}deg) scale(${1 + progress * .05})`;
+      orbA.style.transform = `translate3d(${-progress * 80}px,${progress * 160}px,0)`;
+      orbB.style.transform = `translate3d(${progress * 100}px,${-progress * 120}px,0)`;
     };
-
-    const request = () => {
-      if (!ticking) {
-        ticking = true;
-        requestAnimationFrame(render);
-      }
-    };
-
-    window.addEventListener('scroll', request, {passive:true});
-    window.addEventListener('resize', request);
+    const request = () => { if (!ticking) { ticking=true; requestAnimationFrame(render); } };
+    window.addEventListener('scroll',request,{passive:true});
+    window.addEventListener('resize',request);
     render();
   });
-
 })();
