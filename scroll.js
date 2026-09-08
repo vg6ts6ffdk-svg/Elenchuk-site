@@ -13,32 +13,34 @@
     const copy = story.querySelector('.scroll-story-copy');
     const orb = story.querySelector('.scroll-story-orb');
     const sticky = story.querySelector('.scroll-story-sticky');
-    if (!stages.length || !title || !copy) return;
+    if (!stages.length || !title || !copy || !sticky) return;
 
     const data = stages.map((stage) => ({
       title: stage.dataset.title || stage.textContent.trim(),
       kicker: stage.dataset.kicker || '',
-      text: stage.dataset.text || copy.textContent
+      text: stage.dataset.text || ''
     }));
 
-    let active = -1;
-    let timer = null;
+    let active = 0;
+    let ticking = false;
+    let changeTimer = null;
 
-    const setActive = (index, animate = true) => {
-      index = Math.max(0, Math.min(stages.length - 1, index));
-      if (index === active) return;
+    const paint = (index, animate) => {
+      index = Math.max(0, Math.min(data.length - 1, index));
+      if (index === active && title.textContent === data[index].title) return;
       active = index;
-      stages.forEach((stage, i) => stage.classList.toggle('is-active', i === active));
-      const item = data[active];
+      const item = data[index];
+      stages.forEach((stage, i) => stage.classList.toggle('is-active', i === index));
+
+      clearTimeout(changeTimer);
       if (animate && !reduced) {
         sticky.classList.add('is-changing');
-        clearTimeout(timer);
-        timer = setTimeout(() => {
+        changeTimer = setTimeout(() => {
           title.textContent = item.title;
           if (kicker) kicker.textContent = item.kicker;
           copy.textContent = item.text;
           sticky.classList.remove('is-changing');
-        }, 150);
+        }, 120);
       } else {
         title.textContent = item.title;
         if (kicker) kicker.textContent = item.kicker;
@@ -47,27 +49,30 @@
       }
     };
 
-    let ticking = false;
     const render = () => {
       ticking = false;
       const rect = story.getBoundingClientRect();
-      const max = Math.max(1, story.offsetHeight - window.innerHeight);
-      const progress = Math.min(1, Math.max(0, -rect.top / max));
-      const raw = progress * stages.length;
-      const index = Math.min(stages.length - 1, Math.floor(raw));
+      const storyTop = window.scrollY + rect.top;
+      const storyHeight = story.offsetHeight;
+      const stickyHeight = sticky.getBoundingClientRect().height;
+      const travel = Math.max(1, storyHeight - stickyHeight);
+      const progress = Math.max(0, Math.min(1, (window.scrollY - storyTop) / travel));
+      const raw = progress * data.length;
+      const index = Math.min(data.length - 1, Math.floor(raw));
       const local = raw - index;
-      setActive(index, true);
+
+      paint(index, true);
 
       if (orb && !reduced) {
-        const x = Math.sin(progress * Math.PI * 1.3) * 90;
-        const y = progress * 260;
-        const scale = 1 + progress * .18;
+        const x = Math.sin(progress * Math.PI * 1.25) * 110;
+        const y = progress * Math.max(180, window.innerHeight * .42);
+        const scale = 1 + progress * .22;
         orb.style.transform = `translate3d(calc(-50% + ${x}px), ${y}px, 0) scale(${scale})`;
       }
 
       stages.forEach((stage, i) => {
-        const distance = i - index;
-        if (!reduced) stage.style.setProperty('--story-progress', String(Math.max(0, 1 - Math.abs(distance - local))));
+        const distance = Math.abs(i - index - local);
+        stage.style.setProperty('--story-progress', String(Math.max(0, 1 - distance)));
       });
     };
 
@@ -78,14 +83,28 @@
       }
     };
 
-    if (reduced) {
-      setActive(0, false);
-      return;
-    }
+    stages.forEach((stage, i) => {
+      stage.setAttribute('role', 'button');
+      stage.setAttribute('tabindex', '0');
+      stage.addEventListener('click', () => {
+        const rect = story.getBoundingClientRect();
+        const storyTop = window.scrollY + rect.top;
+        const stickyHeight = sticky.getBoundingClientRect().height;
+        const travel = Math.max(1, story.offsetHeight - stickyHeight);
+        const target = storyTop + travel * (i / data.length) + 4;
+        window.scrollTo({top: target, behavior: reduced ? 'auto' : 'smooth'});
+      });
+      stage.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          stage.click();
+        }
+      });
+    });
 
+    paint(0, false);
     window.addEventListener('scroll', request, {passive:true});
     window.addEventListener('resize', request);
-    setActive(0, false);
     request();
   });
 

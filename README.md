@@ -14,3 +14,10 @@
 - `.github/workflows/static.yml` — публикация через GitHub Pages
 
 GitHub Pages: публикация из ветки `main` через GitHub Actions.
+
+## v9 scroll fix
+- Fixed mobile sticky scroll storytelling: `main` now uses `overflow: clip` instead of `overflow: hidden`, so sticky scenes are not clipped by the main container.
+- Extended scroll story to 420vh with deterministic four-stage progress.
+- Stage 01–04 now occupy separate scroll intervals and remain visible while scrolling.
+- Added keyboard/click navigation for stage cards.
+- Cache-busted `style.css` to v9 on all pages.
