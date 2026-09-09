@@ -34,7 +34,7 @@ jobs:
           for file in *.html; do
             if [ "$file" != "page-template.html" ]; then cp "$file" dist/; fi
           done
-          cp style.css script.js scroll.js logo.svg robots.txt sitemap.xml CNAME dist/
+          cp style.css theme.css script.js scroll.js logo.svg robots.txt sitemap.xml CNAME dist/
           cp robots.jpg dist/assets/robot-lab.png
           cp electronics.jpg dist/assets/electronics-lab.png
           cp home-appliances.jpg dist/assets/appliance-lab.png
@@ -43,6 +43,8 @@ jobs:
 
           API_BASE_JSON=$(node -p 'JSON.stringify(process.env.ROSEEN_API_BASE || "")')
           for file in dist/*.html; do
+            sed -i "s#<link rel=\"stylesheet\" href=\"style.css\">#<link rel=\"stylesheet\" href=\"style.css\"><link rel=\"stylesheet\" href=\"theme.css\">#g" "$file"
+            sed -i "s#<link rel=\"stylesheet\" href=\"./style.css\">#<link rel=\"stylesheet\" href=\"./style.css\"><link rel=\"stylesheet\" href=\"theme.css\">#g" "$file"
             sed -i "s#<script src=\"script.js\"></script>#<script>window.ROSEEN_API_BASE=${API_BASE_JSON};</script><script src=\"script.js\"></script>#g" "$file"
             sed -i "s#<script src=\"./script.js\"></script>#<script>window.ROSEEN_API_BASE=${API_BASE_JSON};</script><script src=\"./script.js\"></script>#g" "$file"
           done
