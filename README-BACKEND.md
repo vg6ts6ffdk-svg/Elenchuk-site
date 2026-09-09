@@ -1,40 +1,85 @@
 # ROSEEN Full Stack
 
-## Архитектура
-- Multi-page static frontend: HTML/CSS/JS.
-- Express 5 API.
-- SQLite + better-sqlite3 для локального/небольшого production-сервиса.
-- JWT для сотрудников.
-- bcrypt для паролей.
-- Multer для загрузки файлов.
-- Helmet/CORS.
-- Админ-панель: `admin.html`.
+## Production architecture
 
-## Локальный запуск
-1. Установить Node.js 20+.
-2. Скопировать `.env.example` в `.env` и задать `JWT_SECRET` и `ADMIN_PASSWORD`.
-3. Выполнить `npm install`.
-4. Выполнить `npm start`.
-5. Открыть `http://localhost:3000`.
+- Frontend: GitHub Pages → `https://roseen.ru`
+- API: Render Web Service → `https://api.roseen.ru`
+- Backend: Express 5 + Node.js 20+
+- Data: SQLite on a Render persistent disk
+- Files: protected upload directory on the same persistent disk
+- Admin: `https://roseen.ru/admin.html`
+
+GitHub Pages is static hosting and does not execute Node.js/Express. The repository workflow therefore publishes only the public frontend. Render runs the API separately. citeturn0search2turn2search1
+
+## Production deployment on Render
+
+The repository contains `render.yaml` with the required Web Service configuration. Render Blueprints can provision a web service, custom domain, environment variables and persistent disk from this file. citeturn2search0turn2search6
+
+1. In Render, choose **New → Blueprint**.
+2. Connect `vg6ts6ffdk-svg/Elenchuk-site`.
+3. Select branch `site-audit-fixes-v2` for the first deployment, then switch to `main` after the PR is merged.
+4. Deploy the Blueprint from `render.yaml`.
+5. Set the secret values when Render asks for them:
+   - `JWT_SECRET` — long random secret;
+   - `ADMIN_PASSWORD` — strong unique administrator password.
+6. The service is configured with `/api/health` as its health check.
+7. Add/verify `api.roseen.ru` as the backend custom domain. Render automatically provisions and renews TLS certificates for custom domains. citeturn3search1
+
+The backend uses `/var/data` for SQLite and uploads because Render's default filesystem is ephemeral. The Blueprint attaches a persistent disk at that path. citeturn2search1
+
+## Domain configuration
+
+### Frontend
+
+In GitHub repository **Settings → Pages**, set the custom domain to:
+
+`roseen.ru`
+
+GitHub Pages supports apex domains and recommends configuring the `www` variant as well. DNS changes can take time to propagate. citeturn0search1turn0search6
+
+For the apex domain, use the GitHub Pages A/AAAA records recommended by GitHub. For `www`, use a CNAME pointing to `vg6ts6ffdk-svg.github.io`. Do not invent alternative DNS targets. citeturn0search1
+
+### Backend
+
+Add `api.roseen.ru` as the custom domain of the Render API service. At the DNS provider, create the CNAME record Render shows for that service and then verify the domain in Render. Render's current documentation requires adding the custom domain in Render first and then configuring DNS. citeturn3search1turn3search3
+
+## Environment variables
+
+### Render API
+
+- `NODE_ENV=production`
+- `ROSEEN_DATA_DIR=/var/data`
+- `FRONTEND_ORIGIN=https://roseen.ru,https://www.roseen.ru,https://vg6ts6ffdk-svg.github.io`
+- `ADMIN_EMAIL=admin@roseen.ru`
+- `JWT_SECRET=<secret>
+- `ADMIN_PASSWORD=<strong-password>`
+
+### GitHub Pages
+
+The Pages workflow defaults the frontend API URL to `https://api.roseen.ru`. A GitHub Actions repository variable named `ROSEEN_API_BASE` can override it if the API hostname changes.
+
+## Local launch
+
+1. Install Node.js 20+.
+2. Copy `.env.example` to `.env` and set `JWT_SECRET` and `ADMIN_PASSWORD`.
+3. Run `npm install`.
+4. Run `npm start`.
+5. Open `http://localhost:3000`.
 
 ## API
-- `POST /api/auth/login`
-- `POST /api/requests` — публичная заявка, без авторизации
-- `GET /api/requests` — админ
-- `GET /api/requests/:id` — админ
-- `PATCH /api/requests/:id` — админ
-- `GET /api/files/:id` — админ
 
-## Важное про GitHub Pages
-GitHub Pages публикует статические HTML/CSS/JS-файлы и не запускает Node.js/Express. Поэтому API и база данных не работают внутри GitHub Pages. Workflow `.github/workflows/static.yml` собирает отдельный публичный `dist` и не публикует серверные файлы.
+- `GET /api/health` — public health check
+- `POST /api/auth/login` — administrator login
+- `POST /api/requests` — public request with optional files
+- `GET /api/requests` — administrator
+- `GET /api/requests/:id` — administrator
+- `PATCH /api/requests/:id` — administrator
+- `GET /api/files/:id` — administrator
 
-Для production рекомендуется:
-- frontend — GitHub Pages или отдельный статический хостинг;
-- backend — отдельный Node.js-хостинг/VPS;
-- `FRONTEND_ORIGIN` — домен frontend для CORS;
-- `ROSEEN_API_BASE` — URL backend API для frontend;
-- PostgreSQL вместо SQLite при росте нагрузки;
-- отдельное защищённое хранилище файлов;
-- HTTPS и секреты только через переменные окружения/secret manager.
+## Security notes
 
-Если frontend и backend размещены на одном домене, `ROSEEN_API_BASE` можно оставить пустым и использовать относительные `/api/*`.
+- Production startup fails if default JWT/admin secrets are still used.
+- CORS is restricted to configured frontend origins.
+- Uploads are limited to 8 files, 50 MB each, with an allowlist of image/video/PDF MIME types.
+- Uploaded files and SQLite are not exposed through public static serving.
+- Admin API endpoints require a JWT.
