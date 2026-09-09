@@ -10,9 +10,15 @@ import fs from "node:fs";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const isProduction = process.env.NODE_ENV === "production";
 const JWT_SECRET = process.env.JWT_SECRET || "change-this-secret-in-production";
 const ROOT = process.cwd();
 const UPLOADS = path.join(ROOT, "uploads");
+
+if (isProduction && JWT_SECRET === "change-this-secret-in-production") {
+  throw new Error("JWT_SECRET must be configured in production");
+}
+
 fs.mkdirSync(UPLOADS, { recursive: true });
 
 app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
@@ -53,6 +59,10 @@ CREATE TABLE IF NOT EXISTS files (
 
 const adminEmail = process.env.ADMIN_EMAIL || "admin@roseen.local";
 const adminPassword = process.env.ADMIN_PASSWORD || "change-me-now";
+if (isProduction && adminPassword === "change-me-now") {
+  throw new Error("ADMIN_PASSWORD must be configured in production");
+}
+
 const existing = db.prepare("SELECT id FROM admins WHERE email=?").get(adminEmail);
 if (!existing) {
   const hash = bcrypt.hashSync(adminPassword, 12);
@@ -137,8 +147,11 @@ app.get("/api/files/:id", auth, (req,res)=>{
 });
 
 app.use(express.static(ROOT));
-app.get("*", (req,res)=>{
+
+// Express 5 requires a named wildcard; this also matches the root path.
+app.get("/{*splat}", (req,res)=>{
   if(req.path.startsWith("/api/")) return res.status(404).end();
   res.sendFile(path.join(ROOT,"index.html"));
 });
+
 app.listen(PORT,()=>console.log(`ROSEEN server: http://localhost:${PORT}`));
