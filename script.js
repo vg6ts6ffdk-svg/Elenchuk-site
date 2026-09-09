@@ -14,70 +14,71 @@
     if (assetMap[name]) img.src = assetMap[name];
   });
 
-  // Robust mobile navigation for the main page. The overlay is mounted directly
-  // on body so it cannot be hidden by the header's backdrop-filter stacking context.
-  const isHomePage = location.pathname === '/' || /\/index\.html$/.test(location.pathname);
-  if (isHomePage) {
-    const menuWrap = document.querySelector('.menu-wrap');
-    const menuButton = menuWrap?.querySelector('.menu');
+  // One consistent mobile navigation on every ROSEEN page.
+  // The legacy <details> menu is disabled so it cannot remain open after navigation.
+  const menuWrap = document.querySelector('.menu-wrap');
+  const menuButton = menuWrap?.querySelector('.menu');
 
-    if (menuWrap && menuButton) {
-      const items = [
-        ['index.html', 'Главная'],
-        ['services.html', 'Услуги'],
-        ['robotics.html', 'Робототехника'],
-        ['electronics.html', 'Электроника'],
-        ['appliances.html', 'Бытовая техника'],
-        ['engineering.html', 'Инженерия'],
-        ['about.html', 'О компании'],
-        ['contacts.html', 'Контакты'],
-        ['index.html#request', 'Оставить заявку ↗']
-      ];
+  if (menuWrap && menuButton) {
+    menuWrap.open = false;
 
-      const overlay = document.createElement('nav');
-      overlay.className = 'roseen-mobile-menu';
-      overlay.setAttribute('aria-label', 'Основная навигация');
-      overlay.setAttribute('aria-hidden', 'true');
-      overlay.innerHTML = items.map(([href, label], index) =>
-        `<a href="${href}" style="--i:${index}">${label}</a>`
-      ).join('');
+    const items = [
+      ['index.html', 'Главная'],
+      ['services.html', 'Услуги'],
+      ['robotics.html', 'Робототехника'],
+      ['electronics.html', 'Электроника'],
+      ['appliances.html', 'Бытовая техника'],
+      ['engineering.html', 'Инженерия'],
+      ['about.html', 'О компании'],
+      ['contacts.html', 'Контакты'],
+      ['contacts.html', 'Оставить заявку ↗']
+    ];
 
-      const style = document.createElement('style');
-      style.textContent = `
-        .roseen-mobile-menu{display:none}
-        @media(max-width:980px){
-          .roseen-mobile-menu{position:fixed;z-index:100000;top:64px;left:0;right:0;bottom:0;display:flex;flex-direction:column;gap:0;padding:28px 24px 40px;background:rgba(5,7,8,.985);border-top:1px solid rgba(255,255,255,.10);overflow-y:auto;overscroll-behavior:contain;opacity:0;visibility:hidden;transform:translateY(-12px);transition:opacity .32s var(--ease),transform .42s var(--ease),visibility 0s linear .42s}
-          .roseen-mobile-menu.is-open{opacity:1;visibility:visible;transform:none;transition-delay:0s}
-          .roseen-mobile-menu a{display:block;padding:13px 0;color:#f4f7f4;font-size:27px;line-height:1.12;font-weight:800;letter-spacing:-.025em;border-bottom:1px solid rgba(255,255,255,.08);opacity:0;transform:translateY(-14px);transition:opacity .42s var(--ease),transform .42s var(--ease),color .2s}
-          .roseen-mobile-menu.is-open a{opacity:1;transform:none;transition-delay:calc(var(--i) * 45ms + 80ms)}
-          .roseen-mobile-menu a:hover{color:var(--green2)}
-          .roseen-mobile-menu a:last-child{margin-top:18px;padding:16px 18px;border:1px solid rgba(87,166,57,.45);border-radius:14px;background:rgba(87,166,57,.10);color:var(--green2)}
-          body.menu-open{overflow:hidden}
-        }
-        @media(min-width:981px){.roseen-mobile-menu{display:none!important}}
-      `;
-      document.head.appendChild(style);
-      document.body.appendChild(overlay);
+    const overlay = document.createElement('nav');
+    overlay.className = 'roseen-mobile-menu';
+    overlay.setAttribute('aria-label', 'Основная навигация');
+    overlay.setAttribute('aria-hidden', 'true');
+    overlay.innerHTML = items.map(([href, label], index) =>
+      `<a href="${href}" style="--i:${index}">${label}</a>`
+    ).join('');
 
-      const setMenu = open => {
-        menuWrap.open = open;
-        overlay.classList.toggle('is-open', open);
-        overlay.setAttribute('aria-hidden', String(!open));
-        menuButton.setAttribute('aria-expanded', String(open));
-        document.body.classList.toggle('menu-open', open);
-      };
+    const style = document.createElement('style');
+    style.textContent = `
+      .menu-wrap .mobile-nav{display:none!important}
+      @media(max-width:980px){
+        .roseen-mobile-menu{position:fixed;z-index:100000;top:64px;left:0;right:0;bottom:0;display:flex;flex-direction:column;gap:0;padding:28px 24px 40px;background:rgba(5,7,8,.985);border-top:1px solid rgba(255,255,255,.10);overflow-y:auto;overscroll-behavior:contain;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(-12px);transition:opacity .32s var(--ease),transform .42s var(--ease),visibility 0s linear .42s}
+        .roseen-mobile-menu.is-open{opacity:1;visibility:visible;pointer-events:auto;transform:none;transition-delay:0s}
+        .roseen-mobile-menu a{display:block;padding:13px 0;color:#f4f7f4;font-size:27px;line-height:1.12;font-weight:800;letter-spacing:-.025em;border-bottom:1px solid rgba(255,255,255,.08);opacity:0;transform:translateY(-14px);transition:opacity .42s var(--ease),transform .42s var(--ease),color .2s}
+        .roseen-mobile-menu.is-open a{opacity:1;transform:none;transition-delay:calc(var(--i) * 45ms + 80ms)}
+        .roseen-mobile-menu a:hover{color:var(--green2)}
+        .roseen-mobile-menu a:last-child{margin-top:18px;padding:16px 18px;border:1px solid rgba(240,168,58,.45);border-radius:14px;background:rgba(240,168,58,.10);color:var(--green2)}
+        body.menu-open{overflow:hidden}
+      }
+      @media(min-width:981px){.roseen-mobile-menu{display:none!important}}
+    `;
+    document.head.appendChild(style);
+    document.body.appendChild(overlay);
 
-      menuButton.addEventListener('click', event => {
-        event.preventDefault();
-        setMenu(!overlay.classList.contains('is-open'));
-      });
+    const setMenu = open => {
+      menuWrap.open = false;
+      overlay.classList.toggle('is-open', open);
+      overlay.setAttribute('aria-hidden', String(!open));
+      menuButton.setAttribute('aria-expanded', String(open));
+      document.body.classList.toggle('menu-open', open);
+    };
 
-      overlay.addEventListener('click', event => {
-        const link = event.target.closest('a');
-        if (!link) return;
-        setMenu(false);
-      });
-    }
+    menuButton.addEventListener('click', event => {
+      event.preventDefault();
+      setMenu(!overlay.classList.contains('is-open'));
+    });
+
+    overlay.addEventListener('click', event => {
+      const link = event.target.closest('a');
+      if (!link) return;
+      setMenu(false);
+    });
+
+    addEventListener('pageshow', () => setMenu(false));
   }
 
   const revealItems = $('.reveal');
