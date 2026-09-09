@@ -3,4 +3,4 @@ Allow: /
 Disallow: /admin.html
 Disallow: /page-template.html
 Disallow: /robots.html
-Sitemap: https://vg6ts6ffdk-svg.github.io/Elenchuk-site/sitemap.xml
+Sitemap: https://roseen.ru/sitemap.xml
