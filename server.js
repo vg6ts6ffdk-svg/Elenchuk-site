@@ -16,7 +16,9 @@ const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "admin@roseen.local";
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "change-me-now";
 const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || "";
 const ROOT = process.cwd();
-const UPLOADS = path.join(ROOT, "uploads");
+const DATA_DIR = process.env.ROSEEN_DATA_DIR || path.join(ROOT, "data");
+const UPLOADS = path.join(DATA_DIR, "uploads");
+const DB_PATH = path.join(DATA_DIR, "roseen.db");
 
 if (isProduction && JWT_SECRET === "change-this-secret-in-production") {
   throw new Error("JWT_SECRET must be configured in production");
@@ -41,7 +43,7 @@ app.use(cors({
 app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true }));
 
-const db = new Database(path.join(ROOT, "roseen.db"));
+const db = new Database(DB_PATH);
 db.pragma("journal_mode = WAL");
 db.exec(`
 CREATE TABLE IF NOT EXISTS admins (
@@ -183,12 +185,11 @@ app.get("/api/files/:id", auth, (req, res) => {
   res.download(absolutePath, f.original_name);
 });
 
-// The repository root contains server-side files and the private upload store.
-// Keep those paths out of the public static middleware.
 app.use((req, res, next) => {
   const blocked = [
-    "/server.js", "/package.json", "/package-lock.json", "/roseen.db",
-    "/roseen.db-shm", "/roseen.db-wal", "/.env"
+    "/server.js", "/package.json", "/package-lock.json", "/.env",
+    "/README.md", "/README-BACKEND.md", "/render.yaml", "/roseen.db",
+    "/roseen.db-shm", "/roseen.db-wal"
   ];
   if (blocked.includes(req.path) || req.path.startsWith("/.git") || req.path.startsWith("/uploads/")) {
     return res.status(404).end();
@@ -198,7 +199,6 @@ app.use((req, res, next) => {
 
 app.use(express.static(ROOT));
 
-// Express 5 requires a named wildcard; this also matches the root path.
 app.get("/{*splat}", (req, res) => {
   if (req.path.startsWith("/api/")) return res.status(404).end();
   res.sendFile(path.join(ROOT, "index.html"));
@@ -218,4 +218,4 @@ app.use((err, _req, res, _next) => {
   res.status(500).json({ error: "Внутренняя ошибка сервера" });
 });
 
-app.listen(PORT, "0.0.0.0", () => console.log(`ROSEEN server: http://localhost:${PORT}`));
+app.listen(PORT, "0.0.0.0", () => console.log(`ROSEEN server listening on ${PORT}`));
