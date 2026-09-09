@@ -16,7 +16,23 @@ const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "admin@roseen.local";
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "change-me-now";
 const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || "";
 const ROOT = process.cwd();
-const DATA_DIR = process.env.ROSEEN_DATA_DIR || path.join(ROOT, "data");
+
+function resolveDataDir() {
+  const configured = process.env.ROSEEN_DATA_DIR || path.join(ROOT, "data");
+  try {
+    fs.mkdirSync(configured, { recursive: true });
+    return configured;
+  } catch (error) {
+    // Render Free has no persistent disk, so /var/data is not writable.
+    // Fall back to /tmp so the service can run for testing. This storage is ephemeral.
+    const fallback = path.join("/tmp", "roseen-data");
+    fs.mkdirSync(fallback, { recursive: true });
+    console.warn(`ROSEEN_DATA_DIR is not writable (${configured}); using ephemeral ${fallback}`);
+    return fallback;
+  }
+}
+
+const DATA_DIR = resolveDataDir();
 const UPLOADS = path.join(DATA_DIR, "uploads");
 const DB_PATH = path.join(DATA_DIR, "roseen.db");
 
