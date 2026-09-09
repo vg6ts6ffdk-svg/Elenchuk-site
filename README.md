@@ -25,6 +25,16 @@
 
 GitHub Pages не запускает Node.js. Поэтому frontend и backend развёртываются отдельно. Конфигурация backend-хостинга находится в `render.yaml`, а подробные инструкции — в `README-BACKEND.md`.
 
+## Launch checklist
+
+1. Deploy the Render Blueprint.
+2. Set `JWT_SECRET` and `ADMIN_PASSWORD` in Render.
+3. Verify `https://api.roseen.ru/api/health` returns `ok: true`.
+4. Configure `roseen.ru` in GitHub Pages.
+5. Configure DNS for `roseen.ru`, `www.roseen.ru`, and `api.roseen.ru` according to the GitHub Pages and Render dashboards.
+6. Run the end-to-end request test: form → API → database → attachment → admin panel → status update → protected file download.
+7. Merge the audited branch into `main` only after the end-to-end test succeeds.
+
 ## Development
 
 ```bash
