@@ -19,10 +19,8 @@
     revealItems.forEach(el => el.classList.add('visible'));
   }
 
-  // Safety fallback: content must remain visible in static/full-page renderers.
   setTimeout(() => revealItems.forEach(el => el.classList.add('visible')), 1400);
 
-  // Subtle cinematic image movement — disabled on touch/reduced-motion.
   if (!matchMedia('(prefers-reduced-motion: reduce)').matches && matchMedia('(pointer:fine)').matches) {
     const imgs = $('.parallax-image');
     let ticking = false;
@@ -44,8 +42,8 @@
     move();
   }
 
-  // Submit the public repair/request form to the existing backend API.
-  const form = document.querySelector('#request-form');
+  // All public request forms use either id=request-form or the legacy id=repairForm.
+  const form = document.querySelector('#request-form, #repairForm');
   if (form) {
     const submit = form.querySelector('button[type="submit"]');
     const status = form.querySelector('.form-status');
