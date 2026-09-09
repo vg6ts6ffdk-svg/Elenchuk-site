@@ -1,162 +1,69 @@
 <!doctype html>
 <html lang="ru">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0b0f14">
-<link rel="stylesheet" href="./style.css?v=14">
-<link rel="icon" href="./logo.svg" type="image/svg+xml">
-<title>ROSEEN — ремонт техники, робототехника и инженерный сервис</title>
-<meta name="description" content="Диагностика и ремонт бытовой, профессиональной и роботизированной техники. Электроника, платы, оборудование и сложные неисправности.">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ROSEEN — ремонт техники, робототехники и электроники</title>
+<meta name="description" content="ROSEEN — диагностика, ремонт и сервис робототехники, электроники, бытовой и профессиональной техники.">
+<link rel="icon" href="assets/logo.svg"><link rel="stylesheet" href="style.css">
 </head>
-<body>
-<header class="topbar">
-  <div class="container nav">
-    <a class="nav-brand" href="./index.html" aria-label="ROSEEN"><img src="./logo.svg" alt="ROSEEN"></a>
-    <nav class="nav-links" id="navLinks">
-      <a href="./services.html">Ремонт</a>
-      <a href="./robots.html">Роботы</a>
-      <a href="./about.html">О сервисе</a>
-      <a href="./contacts.html">Заявка</a>
-    </nav>
-    <button class="menu-btn" id="menuBtn" type="button" aria-label="Открыть меню" aria-expanded="false"><span></span></button>
-  </div>
+<body data-page="home">
+<div class="cursor-glow"></div><div class="noise"></div><div class="page-wipe"></div>
+<header class="site-header">
+  <a class="brand" href="index.html"><img src="assets/logo.svg" alt="ROSEEN"></a>
+  <nav><a href="#services">Услуги</a><a href="#directions">Направления</a><a href="#approach">Подход</a><a href="#faq">FAQ</a></nav>
+  <a class="header-cta magnetic" href="#request">Заявка на ремонт <b>↗</b></a>
+  <button class="menu" aria-label="Открыть меню"><span></span><span></span></button>
 </header>
-
+<div class="mobile-menu"><a href="#services">Услуги</a><a href="#directions">Направления</a><a href="#approach">Подход</a><a href="#faq">FAQ</a><a class="btn btn-primary" href="#request">Оставить заявку ↗</a></div>
 <main id="top">
-  <section class="hero premium-hero">
-    <div class="hero-bg-orb hero-bg-orb-a"></div>
-    <div class="hero-bg-orb hero-bg-orb-b"></div>
-    <div class="container hero-grid">
-      <div class="hero-copy hero-reveal">
-        <div class="eyebrow">ROSEEN · ROBOTICS · SERVICE · ENGINEERING</div>
-        <h1>Ремонтируем технику.<br><span>Возвращаем работоспособность.</span></h1>
-        <p class="lead">Диагностика, ремонт и технический сервис для бытовой, профессиональной и роботизированной техники.</p>
-        <div class="cta">
-          <a class="btn btn-primary" href="./contacts.html">Оставить заявку →</a>
-          <a class="btn btn-ghost" href="#services">Что ремонтируем</a>
-        </div>
-        <div class="hero-proof">
-          <div><strong>01</strong>Диагностика</div>
-          <div><strong>02</strong>Ремонт</div>
-          <div><strong>03</strong>Проверка</div>
-        </div>
-      </div>
-      <div class="portrait hero-reveal hero-reveal-delay">
-        <div class="portrait-img"><img src="./robots.jpg" alt="Роботизированная техника в сервисе"></div>
-        <div class="portrait-caption"><strong>Не просто замена деталей.</strong><span>Ищем неисправность до причины и проверяем результат после ремонта.</span></div>
-      </div>
+<section class="hero section cinematic">
+  <div class="scanline"></div><div class="orb orb-hero parallax"></div>
+  <div class="container hero-grid">
+    <div class="hero-copy reveal hero-reveal"><div class="eyebrow"><i></i> ROBOTICS • SERVICE • ENGINEERING</div>
+      <h1 class="split-title">Ремонтируем<br><em>технику.</em><br>Возвращаем<br>работоспособность.</h1>
+      <p class="lead">От роботизированного оборудования и электроники до бытовой и профессиональной техники. Сначала находим причину — затем устраняем её и проверяем результат.</p>
+      <div class="actions"><a class="btn btn-primary magnetic" href="#request">Оставить заявку <b>↗</b></a><a class="btn btn-ghost" href="#directions">Выбрать направление</a></div>
+      <div class="trust"><span>Диагностика</span><span>Ремонт</span><span>Сервис</span><span>Инженерия</span></div>
     </div>
-  </section>
+    <div class="hero-art reveal reveal-delay"><div class="art-frame cinematic-frame"><img src="assets/robot.svg" alt="Роботизированное оборудование"></div><div class="floating-card"><strong>01</strong><span>Диагностика<br>до ремонта</span></div></div>
+  </div>
+  <div class="hero-bottom container"><span>SCROLL TO EXPLORE</span><i></i></div>
+</section>
 
-  <section class="premium-scroll premium-directions" data-premium-scroll aria-label="Направления ROSEEN">
-    <div class="premium-scroll-bg"><div class="premium-orb premium-orb-a"></div><div class="premium-orb premium-orb-b"></div></div>
-    <div class="container premium-scroll-inner">
-      <div class="premium-sticky">
-        <div class="premium-portrait-wrap">
-          <div class="premium-ring"></div>
-          <img class="premium-portrait" src="./robots.jpg" alt="Роботизированная техника ROSEEN">
-          <div class="premium-label"><span>ROSEEN</span><b data-premium-count>01—04</b></div>
-        </div>
-        <div class="premium-copy">
-          <div class="eyebrow" data-premium-kicker>01 / НАПРАВЛЕНИЕ</div>
-          <h2 data-premium-title>Бытовая техника.</h2>
-          <p data-premium-text>Диагностируем и ремонтируем технику для дома, когда важно не угадывать с заменой деталей, а найти реальную причину неисправности.</p>
-          <a class="premium-link" data-premium-link href="./services.html">Подробнее <span>↗</span></a>
-        </div>
-      </div>
-      <div class="premium-steps" aria-hidden="true">
-        <div class="premium-step is-active" data-title="Бытовая техника." data-kicker="01 / НАПРАВЛЕНИЕ" data-text="Диагностируем и ремонтируем технику для дома, когда важно не угадывать с заменой деталей, а найти реальную причину неисправности." data-link="./services.html" data-link-label="Бытовая техника"></div>
-        <div class="premium-step" data-title="Роботы." data-kicker="02 / РОБОТОТЕХНИКА" data-text="PUDU и другая роботизированная техника: электроника, механика, датчики, питание и восстановление после эксплуатации." data-link="./robots.html" data-link-label="Роботы"></div>
-        <div class="premium-step" data-title="Электроника и платы." data-kicker="03 / ЭЛЕКТРОНИКА" data-text="Платы, блоки управления и силовая электроника после влаги, повреждений, перегрузок и нестабильной работы." data-link="./services.html" data-link-label="Электроника"></div>
-        <div class="premium-step" data-title="Профессиональное оборудование." data-kicker="04 / БИЗНЕС" data-text="Оборудование для ресторанов, торговли, сервиса и предприятий, где простой техники напрямую влияет на работу бизнеса." data-link="./services.html" data-link-label="Оборудование"></div>
-      </div>
-    </div>
-  </section>
+<section id="services" class="section dark-section">
+<div class="container"><div class="section-head reveal"><div class="eyebrow"><i></i> УСЛУГИ</div><h2>Не меняем детали<br><em>вслепую.</em></h2><p>Разбираемся в симптоме, проверяем узлы и только после диагностики предлагаем решение.</p></div>
+<div class="service-grid">
+<article class="service-card reveal"><span class="num">01</span><h3>Диагностика</h3><p>Поиск причины неисправности, проверка питания, приводов, датчиков, электроники и механики.</p><a href="diagnostika.html">Подробнее ↗</a></article>
+<article class="service-card featured reveal reveal-delay"><span class="num">02</span><h3>Ремонт</h3><p>Восстановление узлов, замена неисправных компонентов и устранение первопричины отказа.</p><a href="remont.html">Подробнее ↗</a></article>
+<article class="service-card reveal"><span class="num">03</span><h3>Обслуживание</h3><p>Профилактика, очистка, настройка, проверка рабочих параметров и подготовка техники к эксплуатации.</p><a href="servis.html">Подробнее ↗</a></article>
+<article class="service-card reveal reveal-delay"><span class="num">04</span><h3>Инженерная помощь</h3><p>Сложные случаи, повторяющиеся ошибки, нестандартные неисправности и технический аудит.</p><a href="engineering.html">Подробнее ↗</a></article>
+</div></div></section>
 
-  <section id="services" class="section">
-    <div class="container">
-      <div class="section-head scroll-reveal"><div><div class="eyebrow">01 / направления</div><h2>Что ремонтируем.</h2></div><p>Работаем с техникой для дома, бизнеса и профессиональной эксплуатации. Если вашего типа оборудования нет в списке — можно прислать модель и описание неисправности.</p></div>
-      <div class="services-grid">
-        <article class="card service-card scroll-reveal"><span class="service-number">01</span><img src="home-appliances.jpg" alt="Бытовая техника"><div class="service-content"><h3>Бытовая техника</h3><p>Стиральные и посудомоечные машины, холодильники, плиты, духовки, СВЧ, кондиционеры и другая техника.</p><a class="service-link" href="./contacts.html">Обсудить неисправность →</a></div></article>
-        <article class="card service-card scroll-reveal"><span class="service-number">02</span><img src="robots.jpg" alt="Сервисные роботы"><div class="service-content"><h3>Роботы</h3><p>PUDU и другие сервисные роботы: диагностика, электроника, механика, датчики, питание и восстановление после эксплуатации.</p><a class="service-link" href="./robots.html">О роботах →</a></div></article>
-        <article class="card service-card scroll-reveal"><span class="service-number">03</span><img src="electronics.jpg" alt="Электроника и платы"><div class="service-content"><h3>Электроника и платы</h3><p>Блоки управления, силовая электроника, платы после влаги, повреждений и нестабильной работы.</p><a class="service-link" href="./contacts.html">Обсудить неисправность →</a></div></article>
-        <article class="card service-card scroll-reveal"><span class="service-number">04</span><img src="commercial.jpg" alt="Профессиональное оборудование"><div class="service-content"><h3>Профессиональное оборудование</h3><p>Оборудование для ресторанов, торговли, сервиса и предприятий — когда простой оборудования стоит денег.</p><a class="service-link" href="./contacts.html">Обсудить неисправность →</a></div></article>
-        <article class="card service-card scroll-reveal"><span class="service-number">05</span><img src="other-equipment.jpg" alt="Другое оборудование"><div class="service-content"><h3>Нестандартная техника</h3><p>Климатическое, электротехническое и другое оборудование. Разбираемся по симптомам, модели и конструкции.</p><a class="service-link" href="./contacts.html">Показать оборудование →</a></div></article>
-      </div>
-    </div>
-  </section>
+<section id="directions" class="section directions">
+<div class="orb orb-mid parallax"></div><div class="container"><div class="section-head reveal"><div class="eyebrow"><i></i> НАПРАВЛЕНИЯ</div><h2>Выберите<br><em>технику.</em></h2><p>Для каждого направления — отдельная страница с типовыми неисправностями, процессом ремонта и заявкой.</p></div>
+<div class="direction-grid">
+<a class="direction-card reveal" href="robotics.html"><span>01 / ROBOTICS</span><img src="assets/robot.svg" alt=""><div><h3>Робототехника</h3><p>Сервисные роботы, приводы, датчики, платы и системы управления.</p><b>Открыть направление ↗</b></div></a>
+<a class="direction-card reveal reveal-delay" href="electronics.html"><span>02 / ELECTRONICS</span><img src="assets/electronics.svg" alt=""><div><h3>Электроника</h3><p>Платы, блоки питания, модули управления и межблочные неисправности.</p><b>Открыть направление ↗</b></div></a>
+<a class="direction-card reveal" href="appliances.html"><span>03 / APPLIANCES</span><img src="assets/appliance.svg" alt=""><div><h3>Бытовая техника</h3><p>Сложные неисправности бытовых приборов и систем управления.</p><b>Открыть направление ↗</b></div></a>
+</div></div></section>
 
-  <section class="dark-section section">
-    <div class="container">
-      <div class="section-head scroll-reveal"><div><div class="eyebrow">02 / диагностика</div><h2>Не меняем детали вслепую.</h2></div><p>Хороший ремонт начинается с правильного диагноза. Поэтому сначала выясняем, что именно вышло из строя и почему.</p></div>
-      <div class="cards-2">
-        <article class="card statement scroll-reveal"><p>Причина.<br><strong>Решение.</strong><br>Результат.</p><div class="visual-grid"><div class="metric"><strong>01</strong><span>Симптомы</span></div><div class="metric"><strong>02</strong><span>Измерения</span></div><div class="metric"><strong>03</strong><span>Причина</span></div><div class="metric"><strong>04</strong><span>Контроль</span></div></div></article>
-        <div class="cards-3 compact-stack">
-          <article class="card scroll-reveal"><div class="card-num">01 / ЧЕСТНО</div><h3>Если ремонт невыгоден — скажем об этом.</h3><p class="text">Решение должно быть рациональным, а не просто продавать замену деталей.</p></article>
-          <article class="card scroll-reveal"><div class="card-num">02 / ПОДРОБНО</div><h3>Можно прислать фото, видео и код ошибки.</h3><p class="text">Это помогает быстрее понять характер неисправности.</p></article>
-          <article class="card scroll-reveal"><div class="card-num">03 / КОНТРОЛЬ</div><h3>После ремонта проверяем работоспособность.</h3><p class="text">Не заканчиваем работу на моменте установки детали.</p></article>
-        </div>
-      </div>
-    </div>
-  </section>
+<section id="approach" class="section approach"><div class="container"><div class="section-head reveal"><div class="eyebrow"><i></i> ПОДХОД</div><h2>Сначала<br><em>факты.</em></h2><p>Наша задача — не просто вернуть технику в работу, а понять, почему она вышла из строя.</p></div>
+<div class="steps"><div class="step reveal"><span>01</span><h3>Симптом</h3><p>Что происходит и при каких условиях?</p></div><div class="step reveal"><span>02</span><h3>Причина</h3><p>Какой узел или процесс вызывает проблему?</p></div><div class="step reveal"><span>03</span><h3>Ремонт</h3><p>Что нужно восстановить или заменить?</p></div><div class="step reveal"><span>04</span><h3>Тест</h3><p>Работает ли техника стабильно после ремонта?</p></div></div></div></section>
 
-  <section id="process" class="section">
-    <div class="container">
-      <div class="section-head scroll-reveal"><div><div class="eyebrow">03 / процесс</div><h2>От заявки до результата.</h2></div><p>Понятный процесс без лишних обещаний: сначала информация и диагностика, затем согласование, ремонт и проверка.</p></div>
-      <div class="process-grid">
-        <article class="process scroll-reveal"><span>01</span><h3>Заявка</h3><p class="text">Опишите проблему. Укажите бренд, модель и код ошибки, если он есть.</p></article>
-        <article class="process scroll-reveal"><span>02</span><h3>Диагностика</h3><p class="text">Проверяем оборудование и определяем реальную причину неисправности.</p></article>
-        <article class="process scroll-reveal"><span>03</span><h3>Согласование</h3><p class="text">Обсуждаем решение, необходимые работы, запчасти и стоимость.</p></article>
-        <article class="process scroll-reveal"><span>04</span><h3>Ремонт + тест</h3><p class="text">Выполняем работу, проверяем основные функции и фиксируем результат.</p></article>
-      </div>
-    </div>
-  </section>
+<section class="section numbers"><div class="container"><div class="numbers-grid"><div class="big-number reveal"><strong data-count="4">0</strong><span>этапа<br>до результата</span></div><div class="big-number reveal"><strong data-count="3">0</strong><span>ключевых<br>направления</span></div><div class="big-number reveal"><strong>01</strong><span>инженерный<br>подход</span></div></div></div></section>
 
-  <section id="expertise" class="section dark-section">
-    <div class="container">
-      <div class="feature scroll-reveal">
-        <div class="feature-photo"><img src="robots.jpg" alt="Роботизированная техника"><div class="feature-caption"><strong>Инженерный подход</strong><p>Сервис, ремонт и диагностика сложной техники.</p></div></div>
-        <div class="feature-copy"><div class="eyebrow">04 / экспертиза</div><h2>Когда нужен не просто мастер.</h2><p>В сложной технике неисправность часто находится не там, где проявляется симптом. Поэтому задача — понять систему целиком, а не только заменить очевидную деталь.</p><div class="feature-points"><div class="feature-point"><span>01</span><div><h3>Системная диагностика</h3><p>Смотрим на цепочку «симптом → узел → причина → последствия».</p></div></div><div class="feature-point"><span>02</span><div><h3>Электроника и управление</h3><p>Работаем с платами, блоками управления, питанием и связанными узлами.</p></div></div><div class="feature-point"><span>03</span><div><h3>Роботизированное оборудование</h3><p>Учитываем механику, электронику, датчики, питание и программную логику устройства.</p></div></div><div class="feature-point"><span>04</span><div><h3>Восстановление после эксплуатации</h3><p>Отдельно разбираем последствия влаги, загрязнения, перегрузок и неправильной эксплуатации.</p></div></div></div></div>
-      </div>
-    </div>
-  </section>
+<section id="request" class="section request"><div class="orb orb-request parallax"></div><div class="container request-grid"><div class="reveal"><div class="eyebrow"><i></i> ЗАЯВКА</div><h2>Техника<br><em>перестала</em><br>работать?</h2><p>Заполните форму. Фото, видео и код ошибки можно добавить прямо сюда — инженер получит их вместе с заявкой.</p></div>
+<form class="request-form reveal reveal-delay" id="repairForm" novalidate>
+<div class="form-progress"><span class="progress-fill"></span><b>01</b><span>из 03</span></div>
+<div class="form-step active" data-step="1"><label>Что ремонтируем? <select name="category" required><option value="">Выберите направление</option><option>Робототехника</option><option>Электроника</option><option>Бытовая техника</option><option>Профессиональная техника</option><option>Другое</option></select></label><label>Модель / устройство<input name="model" placeholder="Например: PUDU CC1, Bosch, плата управления"></label><button class="btn btn-primary next-step" type="button">Далее <b>→</b></button></div>
+<div class="form-step" data-step="2"><label>Что произошло? <textarea name="symptom" required placeholder="Опишите симптом, ошибку или обстоятельства отказа"></textarea></label><label>Файлы <input id="files" type="file" name="files" accept="image/*,video/*,.pdf" multiple><small class="file-note">Можно добавить фото, видео или PDF. Размер проверяется в браузере.</small></label><div class="form-actions"><button class="btn btn-ghost prev-step" type="button">← Назад</button><button class="btn btn-primary next-step" type="button">Далее <b>→</b></button></div></div>
+<div class="form-step" data-step="3"><label>Как с вами связаться? <input name="contact" required placeholder="Telegram, email или другой удобный способ"></label><label>Дополнительно <input name="comment" placeholder="Сроки, срочность, особенности техники"></label><div class="form-actions"><button class="btn btn-ghost prev-step" type="button">← Назад</button><button class="btn btn-primary" type="submit">Сформировать заявку <b>↗</b></button></div><small>После отправки появится готовое сообщение — его можно передать в удобный канал сервиса.</small></div>
+<div class="form-success" hidden><strong>Заявка подготовлена.</strong><p>Проверьте данные и передайте сформированный текст сервису.</p><textarea readonly id="requestPreview"></textarea><button class="btn btn-primary" type="button" id="copyRequest">Скопировать заявку</button></div>
+</form></div></section>
 
-  <section class="section">
-    <div class="container">
-      <div class="section-head scroll-reveal"><div><div class="eyebrow">05 / бренды</div><h2>С разной техникой.</h2></div><p>Конкретная возможность ремонта зависит от модели и характера неисправности. При обращении лучше сразу указать бренд и модель.</p></div>
-      <div class="brand-row scroll-reveal"><span>Bosch</span><span>Siemens</span><span>Samsung</span><span>LG</span><span>Haier</span><span>Miele</span><span>PUDU</span><span>Philips</span><span>Electrolux</span><span>Другие</span></div>
-    </div>
-  </section>
-
-  <section id="faq" class="section dark-section">
-    <div class="container">
-      <div class="section-head scroll-reveal"><div><div class="eyebrow">06 / FAQ</div><h2>Частые вопросы.</h2></div><p>Если вопроса нет — просто опишите неисправность в заявке.</p></div>
-      <div class="faq scroll-reveal">
-        <details><summary>Можно ли узнать стоимость ремонта заранее?</summary><p>Иногда можно дать предварительную оценку по модели и симптомам. Точная стоимость зависит от результата диагностики, объёма работ и необходимых компонентов.</p></details>
-        <details><summary>Можно ли прислать фото или видео вместо описания?</summary><p>Да. Фото шильдика, платы, повреждения, дисплея с ошибкой или короткое видео работы техники часто помогают начать диагностику.</p></details>
-        <details><summary>Что делать, если техника намокла?</summary><p>Не продолжайте эксплуатацию и по возможности отключите оборудование от питания. При обращении укажите, что произошло и когда — это важно для диагностики.</p></details>
-        <details><summary>Берётесь ли вы за нестандартное оборудование?</summary><p>Можно прислать модель, фотографии и описание неисправности. После первичной оценки можно понять, есть ли техническая возможность ремонта.</p></details>
-      </div>
-    </div>
-  </section>
-
-  <section id="request" class="section">
-    <div class="container">
-      <div class="cta scroll-reveal"><div><div class="eyebrow">07 / заявка</div><h2>Техника перестала работать?</h2><p>Опишите проблему — разберёмся, какие данные нужны для первичной оценки и можно ли помочь с ремонтом.</p></div><a class="btn btn-primary" href="./contacts.html">Перейти к заявке →</a></div>
-    </div>
-  </section>
+<section id="faq" class="section dark-section"><div class="container narrow"><div class="section-head reveal"><div class="eyebrow"><i></i> FAQ</div><h2>Частые<br><em>вопросы.</em></h2></div><details class="faq reveal"><summary>Можно ли сначала узнать причину неисправности?</summary><p>Да. Диагностика отделена от ремонта: сначала определяем неисправность и согласовываем дальнейшие действия.</p></details><details class="faq reveal"><summary>Можно прислать фото или видео?</summary><p>Да. Фото, видео и коды ошибок помогают быстрее сформировать первичную гипотезу.</p></details><details class="faq reveal"><summary>Берёте сложную технику?</summary><p>Да, приоритет — робототехника, электроника, профессиональное и бытовое оборудование со сложной системой управления.</p></details></div></section>
+<section class="section final-cta"><div class="container reveal"><div class="final-panel"><div><div class="eyebrow"><i></i> ROSEEN</div><h2>Сложная техника.<br><em>Понятный сервис.</em></h2></div><a class="btn btn-primary magnetic" href="#request">Обсудить ремонт <b>↗</b></a></div></div></section>
 </main>
-
-<footer><div class="container footer-inner"><div><strong>ROSEEN</strong> · Robotics • Service • Engineering</div><div>Инженерный сервис · Ремонт техники</div></div></footer>
-
-<script src="./script.js"></script>
-<script src="./scroll.js"></script>
-<script>
-(function(){
-  const items=document.querySelectorAll('.hero-reveal');
-  requestAnimationFrame(()=>items.forEach((el,i)=>setTimeout(()=>el.classList.add('is-visible'),i*140)));
-})();
-</script>
-</body>
-</html>
+<footer><div class="container footer-inner"><img src="assets/logo.svg" alt="ROSEEN"><div>ROSEEN · Robotics · Service · Engineering<br><span>Диагностика · Ремонт · Сервис</span></div></div></footer>
+<script src="script.js"></script>
+</body></html>
