@@ -1,5 +1,6 @@
 (() => {
   const $ = (s, r = document) => [...r.querySelectorAll(s)];
+  const API_BASE = (window.ROSEEN_API_BASE || '').replace(/\/$/, '');
 
   document.querySelectorAll('.mobile-nav a').forEach(a => a.addEventListener('click', () => {
     const d = a.closest('details');
@@ -68,7 +69,7 @@
         fd.set('problem', problem);
         fd.set('contact', contact);
 
-        const response = await fetch('/api/requests', {
+        const response = await fetch(`${API_BASE}/api/requests`, {
           method: 'POST',
           body: fd
         });
