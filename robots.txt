@@ -1,3 +1,7 @@
 User-agent: *
 Allow: /
-Sitemap: https://vg6ts6ffdk-svg.github.io/Elenchuk-site/sitemap.xml
+Disallow: /admin.html
+Disallow: /page-template.html
+Disallow: /robots.html
+Disallow: /api/
+Sitemap: https://roseen.ru/sitemap.xml

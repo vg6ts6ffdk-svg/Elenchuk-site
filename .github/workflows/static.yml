@@ -1,28 +1,20 @@
-# Simple workflow for deploying static content to GitHub Pages
 name: Deploy static content to Pages
 
 on:
-  # Runs on pushes targeting the default branch
   push:
     branches: ["main"]
-
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
   group: "pages"
   cancel-in-progress: false
 
 jobs:
-  # Single deploy job since we're just deploying
   deploy:
     environment:
       name: github-pages
@@ -31,13 +23,38 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Build public site
+        env:
+          ROSEEN_API_BASE: ${{ vars.ROSEEN_API_BASE }}
+        run: |
+          export ROSEEN_API_BASE="${ROSEEN_API_BASE:-https://api.roseen.ru}"
+          rm -rf dist
+          mkdir -p dist/assets
+          for file in *.html; do
+            if [ "$file" != "page-template.html" ]; then cp "$file" dist/; fi
+          done
+          cp style.css script.js scroll.js logo.svg robots.txt sitemap.xml CNAME dist/
+          cp robots.jpg dist/assets/robot-lab.png
+          cp electronics.jpg dist/assets/electronics-lab.png
+          cp home-appliances.jpg dist/assets/appliance-lab.png
+          cp robot-cta.jpg dist/assets/robot-cta.jpg
+          cp logo.svg dist/assets/logo.svg
+
+          API_BASE_JSON=$(node -p 'JSON.stringify(process.env.ROSEEN_API_BASE || "")')
+          for file in dist/*.html; do
+            sed -i "s#<script src=\"script.js\"></script>#<script>window.ROSEEN_API_BASE=${API_BASE_JSON};</script><script src=\"script.js\"></script>#g" "$file"
+            sed -i "s#<script src=\"./script.js\"></script>#<script>window.ROSEEN_API_BASE=${API_BASE_JSON};</script><script src=\"./script.js\"></script>#g" "$file"
+          done
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload entire repository
-          path: '.'
+          path: './dist'
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5

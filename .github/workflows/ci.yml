@@ -1,0 +1,35 @@
+name: Validate site
+
+on:
+  push:
+    branches: ["main", "site-audit-fixes-v2"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Check JavaScript syntax
+        run: |
+          node --check server.js
+          node --check script.js
+
+      - name: Check required site files
+        run: |
+          test -f index.html
+          test -f style.css
+          test -f script.js
+          test -f server.js
+          test -f admin.html
