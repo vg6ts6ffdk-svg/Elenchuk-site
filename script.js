@@ -1,8 +1,6 @@
 (() => {
   const $ = (s, r=document) => [...r.querySelectorAll(s)];
-  const menu = document.querySelector('.menu');
-  menu?.addEventListener('click', () => document.body.classList.toggle('menu-open'));
-  $$('.mobile-nav a').forEach(a => a.addEventListener('click', () => document.body.classList.remove('menu-open')));
+  document.querySelectorAll('.mobile-nav a').forEach(a => a.addEventListener('click', () => { const d = a.closest('details'); if (d) d.removeAttribute('open'); }));
 
   const revealItems = $$('.reveal');
   const io = new IntersectionObserver(entries => entries.forEach(e => {
