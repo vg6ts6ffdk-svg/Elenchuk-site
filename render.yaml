@@ -21,7 +21,7 @@ services:
       - key: ROSEEN_DATA_DIR
         value: /var/data
       - key: FRONTEND_ORIGIN
-        value: https://roseen.ru,https://www.roseen.ru
+        value: https://roseen.ru,https://www.roseen.ru,https://vg6ts6ffdk-svg.github.io
       - key: ADMIN_EMAIL
         value: admin@roseen.ru
       - key: JWT_SECRET
