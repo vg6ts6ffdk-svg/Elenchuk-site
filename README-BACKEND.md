@@ -9,11 +9,11 @@
 - Files: protected upload directory on the same persistent disk
 - Admin: `https://roseen.ru/admin.html`
 
-GitHub Pages is static hosting and does not execute Node.js/Express. The repository workflow therefore publishes only the public frontend. Render runs the API separately. citeturn0search2turn2search1
+GitHub Pages is static hosting and does not execute Node.js/Express. The repository workflow therefore publishes only the public frontend. Render runs the API separately.
 
 ## Production deployment on Render
 
-The repository contains `render.yaml` with the required Web Service configuration. Render Blueprints can provision a web service, custom domain, environment variables and persistent disk from this file. citeturn2search0turn2search6
+The repository contains `render.yaml` with the required Web Service configuration. Render Blueprints can provision a web service, custom domain, environment variables and persistent disk from this file.
 
 1. In Render, choose **New → Blueprint**.
 2. Connect `vg6ts6ffdk-svg/Elenchuk-site`.
@@ -23,9 +23,9 @@ The repository contains `render.yaml` with the required Web Service configuratio
    - `JWT_SECRET` — long random secret;
    - `ADMIN_PASSWORD` — strong unique administrator password.
 6. The service is configured with `/api/health` as its health check.
-7. Add/verify `api.roseen.ru` as the backend custom domain. Render automatically provisions and renews TLS certificates for custom domains. citeturn3search1
+7. Add/verify `api.roseen.ru` as the backend custom domain.
 
-The backend uses `/var/data` for SQLite and uploads because Render's default filesystem is ephemeral. The Blueprint attaches a persistent disk at that path. citeturn2search1
+The backend uses `/var/data` for SQLite and uploads because Render's default filesystem is ephemeral. The Blueprint attaches a persistent disk at that path.
 
 ## Domain configuration
 
@@ -35,13 +35,11 @@ In GitHub repository **Settings → Pages**, set the custom domain to:
 
 `roseen.ru`
 
-GitHub Pages supports apex domains and recommends configuring the `www` variant as well. DNS changes can take time to propagate. citeturn0search1turn0search6
-
-For the apex domain, use the GitHub Pages A/AAAA records recommended by GitHub. For `www`, use a CNAME pointing to `vg6ts6ffdk-svg.github.io`. Do not invent alternative DNS targets. citeturn0search1
+For the apex domain, use the GitHub Pages A/AAAA records recommended by GitHub. For `www`, use a CNAME pointing to `vg6ts6ffdk-svg.github.io`. Do not invent alternative DNS targets.
 
 ### Backend
 
-Add `api.roseen.ru` as the custom domain of the Render API service. At the DNS provider, create the CNAME record Render shows for that service and then verify the domain in Render. Render's current documentation requires adding the custom domain in Render first and then configuring DNS. citeturn3search1turn3search3
+Add `api.roseen.ru` as the custom domain of the Render API service. At the DNS provider, create the CNAME record Render shows for that service and then verify the domain in Render.
 
 ## Environment variables
 
@@ -51,7 +49,7 @@ Add `api.roseen.ru` as the custom domain of the Render API service. At the DNS p
 - `ROSEEN_DATA_DIR=/var/data`
 - `FRONTEND_ORIGIN=https://roseen.ru,https://www.roseen.ru,https://vg6ts6ffdk-svg.github.io`
 - `ADMIN_EMAIL=admin@roseen.ru`
-- `JWT_SECRET=<secret>
+- `JWT_SECRET=<secret>`
 - `ADMIN_PASSWORD=<strong-password>`
 
 ### GitHub Pages
