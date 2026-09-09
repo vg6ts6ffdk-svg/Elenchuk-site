@@ -28,7 +28,7 @@ jobs:
         env:
           ROSEEN_API_BASE: ${{ vars.ROSEEN_API_BASE }}
         run: |
-          export ROSEEN_API_BASE="${ROSEEN_API_BASE:-https://api.roseen.ru}"
+          export ROSEEN_API_BASE="${ROSEEN_API_BASE:-https://roseen-api.onrender.com}"
           rm -rf dist
           mkdir -p dist/assets
           for file in *.html; do
