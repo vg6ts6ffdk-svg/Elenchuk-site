@@ -3,4 +3,5 @@ Allow: /
 Disallow: /admin.html
 Disallow: /page-template.html
 Disallow: /robots.html
+Disallow: /api/
 Sitemap: https://roseen.ru/sitemap.xml
