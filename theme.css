@@ -1,6 +1,6 @@
-:root{--green:#F0A83A;--green2:#FFC766;--bg:#080A0C;--bg2:#111519;--panel:#1B2227;--panel2:#2A3339;--text:#F5F5F2;--muted:#A7ADB0;--line:rgba(255,255,255,.10)}
+:root{--green:#F0A83A;--green2:#FFC766;--bg:#080A0C;--bg2:#111519;--panel:#1B2227;--panel2:#2A3339;--text:#F5F5F2;--muted:#A7ADB0;--line:rgba(255,255,255,.10);--apple-blue:#0071E3;--apple-blue-hover:#0077ED;--apple-white:#F5F5F7;--apple-text:#1D1D1F;--apple-gray:#86868B;--apple-silver:#D2D2D7}
 
-/* ROSEEN industrial premium identity: graphite + industrial amber */
+/* ROSEEN industrial premium identity: graphite + industrial amber + Apple-inspired blue/neutral accents */
 .site-header{background:rgba(8,10,12,.82)}
 .menu{background:#1B2227}
 .btn-primary{color:#11100D;box-shadow:0 12px 34px rgba(240,168,58,.22)}
@@ -19,6 +19,17 @@
 .final-panel{border-color:rgba(240,168,58,.38);background:radial-gradient(circle at 90% 50%,rgba(240,168,58,.12),transparent 35%),#121614}
 .process-banner{background:linear-gradient(120deg,rgba(240,168,58,.08),rgba(255,255,255,.02))}
 .scan{background:linear-gradient(transparent 0,rgba(240,168,58,.07) 50%,transparent 51%)}
+
+/* Apple-inspired secondary palette: blue for links, navigation accents and secondary actions; neutral gray for surfaces and hierarchy. */
+a:not(.btn):not(.nav a){color:var(--apple-blue)}
+a:not(.btn):not(.nav a):hover{color:var(--apple-blue-hover)}
+.btn-secondary,.btn-outline{border-color:rgba(0,113,227,.48);color:#F5F5F7}
+.btn-secondary:hover,.btn-outline:hover{border-color:var(--apple-blue);background:rgba(0,113,227,.12);box-shadow:0 10px 30px rgba(0,113,227,.16)}
+.site-footer{background:#080A0C}
+.footer-muted,.meta,.muted{color:var(--apple-gray)}
+.apple-surface{background:var(--apple-white);color:var(--apple-text)}
+.apple-surface .muted{color:var(--apple-gray)}
+.apple-accent{color:var(--apple-blue)}
 
 /* Override legacy green literals so the published site uses one accent consistently. */
 .eyebrow{color:var(--green2)}
