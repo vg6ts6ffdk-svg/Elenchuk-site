@@ -28,7 +28,10 @@ jobs:
         run: |
           rm -rf dist
           mkdir -p dist/assets
-          cp -- *.html style.css script.js scroll.js logo.svg robots.txt sitemap.xml dist/
+          for file in *.html; do
+            if [ "$file" != "page-template.html" ]; then cp "$file" dist/; fi
+          done
+          cp style.css script.js scroll.js logo.svg robots.txt sitemap.xml dist/
           cp robots.jpg dist/assets/robot-lab.png
           cp electronics.jpg dist/assets/electronics-lab.png
           cp home-appliances.jpg dist/assets/appliance-lab.png
