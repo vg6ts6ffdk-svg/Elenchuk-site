@@ -2,8 +2,6 @@
   const $ = (s, r = document) => [...r.querySelectorAll(s)];
   const API_BASE = (window.ROSEEN_API_BASE || '').replace(/\/$/, '');
 
-  // Some legacy pages still reference the old /assets/ paths. Keep them working
-  // while the repository is migrated to its current root-level asset set.
   const assetMap = {
     'logo.svg': 'logo.svg',
     'robot-lab.png': 'robots.jpg',
@@ -16,15 +14,14 @@
     if (assetMap[name]) img.src = assetMap[name];
   });
 
-  // Main-page mobile menu: restore the complete navigation and its animation.
-  // This is intentionally scoped to index.html so other pages are untouched.
+  // Robust mobile navigation for the main page. The overlay is mounted directly
+  // on body so it cannot be hidden by the header's backdrop-filter stacking context.
   const isHomePage = location.pathname === '/' || /\/index\.html$/.test(location.pathname);
   if (isHomePage) {
     const menuWrap = document.querySelector('.menu-wrap');
     const menuButton = menuWrap?.querySelector('.menu');
-    const mobileNav = menuWrap?.querySelector('.mobile-nav');
 
-    if (menuWrap && menuButton && mobileNav) {
+    if (menuWrap && menuButton) {
       const items = [
         ['index.html', 'Главная'],
         ['services.html', 'Услуги'],
@@ -37,48 +34,51 @@
         ['index.html#request', 'Оставить заявку ↗']
       ];
 
-      mobileNav.innerHTML = items.map(([href, label]) => `<a href="${href}">${label}</a>`).join('');
-      menuButton.setAttribute('aria-expanded', 'false');
-      mobileNav.setAttribute('aria-label', 'Основная навигация');
+      const overlay = document.createElement('nav');
+      overlay.className = 'roseen-mobile-menu';
+      overlay.setAttribute('aria-label', 'Основная навигация');
+      overlay.setAttribute('aria-hidden', 'true');
+      overlay.innerHTML = items.map(([href, label], index) =>
+        `<a href="${href}" style="--i:${index}">${label}</a>`
+      ).join('');
 
-      const animateMenu = open => {
-        const links = $('.mobile-nav a', menuWrap);
-        document.body.classList.toggle('menu-open', open);
-        menuButton.setAttribute('aria-expanded', String(open));
-        if (!open) {
-          links.forEach(link => {
-            link.style.opacity = '';
-            link.style.transform = '';
-            link.style.transitionDelay = '';
-          });
-          return;
+      const style = document.createElement('style');
+      style.textContent = `
+        .roseen-mobile-menu{display:none}
+        @media(max-width:980px){
+          .roseen-mobile-menu{position:fixed;z-index:100000;top:64px;left:0;right:0;bottom:0;display:flex;flex-direction:column;gap:0;padding:28px 24px 40px;background:rgba(5,7,8,.985);border-top:1px solid rgba(255,255,255,.10);overflow-y:auto;overscroll-behavior:contain;opacity:0;visibility:hidden;transform:translateY(-12px);transition:opacity .32s var(--ease),transform .42s var(--ease),visibility 0s linear .42s}
+          .roseen-mobile-menu.is-open{opacity:1;visibility:visible;transform:none;transition-delay:0s}
+          .roseen-mobile-menu a{display:block;padding:13px 0;color:#f4f7f4;font-size:27px;line-height:1.12;font-weight:800;letter-spacing:-.025em;border-bottom:1px solid rgba(255,255,255,.08);opacity:0;transform:translateY(-14px);transition:opacity .42s var(--ease),transform .42s var(--ease),color .2s}
+          .roseen-mobile-menu.is-open a{opacity:1;transform:none;transition-delay:calc(var(--i) * 45ms + 80ms)}
+          .roseen-mobile-menu a:hover{color:var(--green2)}
+          .roseen-mobile-menu a:last-child{margin-top:18px;padding:16px 18px;border:1px solid rgba(87,166,57,.45);border-radius:14px;background:rgba(87,166,57,.10);color:var(--green2)}
+          body.menu-open{overflow:hidden}
         }
-        links.forEach((link, index) => {
-          link.style.opacity = '0';
-          link.style.transform = 'translateY(-14px)';
-          link.style.transition = 'opacity .42s var(--ease), transform .42s var(--ease)';
-          link.style.transitionDelay = `${index * 45}ms`;
-          requestAnimationFrame(() => {
-            link.style.opacity = '1';
-            link.style.transform = 'translateY(0)';
-          });
-        });
+        @media(min-width:981px){.roseen-mobile-menu{display:none!important}}
+      `;
+      document.head.appendChild(style);
+      document.body.appendChild(overlay);
+
+      const setMenu = open => {
+        menuWrap.open = open;
+        overlay.classList.toggle('is-open', open);
+        overlay.setAttribute('aria-hidden', String(!open));
+        menuButton.setAttribute('aria-expanded', String(open));
+        document.body.classList.toggle('menu-open', open);
       };
 
-      menuWrap.addEventListener('toggle', () => animateMenu(menuWrap.open));
-      mobileNav.addEventListener('click', event => {
-        if (event.target.closest('a')) {
-          menuWrap.removeAttribute('open');
-          animateMenu(false);
-        }
+      menuButton.addEventListener('click', event => {
+        event.preventDefault();
+        setMenu(!overlay.classList.contains('is-open'));
+      });
+
+      overlay.addEventListener('click', event => {
+        const link = event.target.closest('a');
+        if (!link) return;
+        setMenu(false);
       });
     }
   }
-
-  document.querySelectorAll('.mobile-nav a').forEach(a => a.addEventListener('click', () => {
-    const d = a.closest('details');
-    if (d) d.removeAttribute('open');
-  }));
 
   const revealItems = $('.reveal');
   if ('IntersectionObserver' in window) {
@@ -116,7 +116,6 @@
     move();
   }
 
-  // All public request forms use either id=request-form or the legacy id=repairForm.
   const form = document.querySelector('#request-form, #repairForm');
   if (form) {
     const submit = form.querySelector('button[type="submit"]');
@@ -142,16 +141,9 @@
         fd.set('problem', problem);
         fd.set('contact', contact);
 
-        const response = await fetch(`${API_BASE}/api/requests`, {
-          method: 'POST',
-          body: fd
-        });
+        const response = await fetch(`${API_BASE}/api/requests`, { method: 'POST', body: fd });
         const data = await response.json().catch(() => ({}));
-
-        if (!response.ok) {
-          throw new Error(data.error || 'Не удалось отправить заявку');
-        }
-
+        if (!response.ok) throw new Error(data.error || 'Не удалось отправить заявку');
         if (status) status.textContent = `Заявка №${data.id} принята. Мы получили данные и файлы.`;
         form.reset();
       } catch (err) {
