@@ -229,3 +229,50 @@ main>section{width:100%;max-width:none}
 .btn-primary,.primary,.navcta,.sticky-mobile a:first-child{background:var(--accent);border-color:var(--accent)}
 .btn-primary:hover,.primary:hover{background:var(--accent-dark)}
 .card:hover{border-color:rgba(87,166,57,.45)}
+
+/* v14 — brighter ROSEEN surface + restored motion */
+:root{
+  --bg:#0b0f14;
+  --panel:#141a21;
+  --panel2:#1a2129;
+  --text:#f8fafc;
+  --muted:#b1bac5;
+  --line:rgba(255,255,255,.13);
+  --accent:#57A639;
+  --accent-dark:#3F8F28;
+  --accent-light:#86d967;
+}
+body{background:var(--bg)}
+.topbar{background:rgba(11,15,20,.82);border-bottom-color:rgba(255,255,255,.13)}
+.nav-links a{color:#cbd3dc}.nav-links a:hover,.nav-links a.active{color:#fff}
+.hero{background:radial-gradient(circle at 75% 18%,rgba(87,166,57,.24),transparent 30%),radial-gradient(circle at 10% 45%,rgba(63,143,40,.11),transparent 28%)}
+.hero:after{background:rgba(87,166,57,.15)}
+.card,.process,.profile-card,.contact-main,.contact-side{background:linear-gradient(145deg,#151c24,#10161d);border-color:rgba(255,255,255,.13)}
+.dark-section{background:#0a0f14;border-color:rgba(255,255,255,.09)}
+.statement{background:radial-gradient(circle at 80% 20%,rgba(87,166,57,.21),transparent 32%),linear-gradient(145deg,#151d25,#10161d)}
+.metric{background:rgba(255,255,255,.045)}
+.section-head p,.text{color:#b1bac5}
+.hero-bg-orb{position:absolute;border-radius:50%;pointer-events:none;filter:blur(2px);will-change:transform}
+.hero-bg-orb-a{width:420px;height:420px;right:-170px;top:12%;background:radial-gradient(circle,rgba(87,166,57,.26),rgba(87,166,57,0) 68%);animation:floatA 9s ease-in-out infinite}
+.hero-bg-orb-b{width:300px;height:300px;left:-160px;bottom:8%;background:radial-gradient(circle,rgba(134,217,103,.15),rgba(87,166,57,0) 70%);animation:floatB 11s ease-in-out infinite}
+.hero-reveal{opacity:0;transform:translateY(28px);filter:blur(5px);transition:opacity .8s ease,transform .9s cubic-bezier(.2,.7,.2,1),filter .8s ease}.hero-reveal.is-visible{opacity:1;transform:none;filter:none}.hero-reveal-delay{transition-delay:.08s}
+.portrait{animation:portraitFloat 7s ease-in-out infinite}
+.service-card,.process,.feature,.statement,.brand-row,.faq,.cta{will-change:transform}
+.service-card:hover,.process:hover{transform:translateY(-5px);transition:transform .45s cubic-bezier(.2,.7,.2,1),border-color .3s ease}
+.process{transition:transform .45s cubic-bezier(.2,.7,.2,1),border-color .3s ease}
+.compact-stack{display:grid;gap:12px}
+@keyframes floatA{0%,100%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(-35px,24px,0) scale(1.08)}}
+@keyframes floatB{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(28px,-30px,0) scale(1.08)}}
+@keyframes portraitFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-8px) rotate(.25deg)}}
+@media(max-width:680px){
+  .hero-bg-orb-a{width:300px;height:300px;right:-150px;top:4%}.hero-bg-orb-b{width:230px;height:230px;left:-120px;bottom:4%}
+  .portrait{animation-duration:9s}.hero{padding-top:82px}
+  .service-card:hover,.process:hover{transform:none}
+}
+@media(prefers-reduced-motion:reduce){
+  .hero-bg-orb-a,.hero-bg-orb-b,.portrait{animation:none}
+  .hero-reveal,.scroll-reveal{transition:none;opacity:1;transform:none;filter:none}
+}
+
+/* v14 global brightness pass */
+.topbar,.nav-links{color:#eef2f6}.profile-card,.contact-main,.contact-side{background:#151b22}.feature-copy{background:#151b22}.faq details{background:#151b22;border-color:rgba(255,255,255,.13)}footer{color:#7f8a96}
