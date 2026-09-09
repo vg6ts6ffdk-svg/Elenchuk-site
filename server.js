@@ -214,4 +214,4 @@ app.use((err, _req, res, _next) => {
   res.status(500).json({ error: "Внутренняя ошибка сервера" });
 });
 
-app.listen(PORT, () => console.log(`ROSEEN server: http://localhost:${PORT}`));
+app.listen(PORT, "0.0.0.0", () => console.log(`ROSEEN server: http://localhost:${PORT}`));
