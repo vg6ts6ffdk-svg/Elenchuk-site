@@ -25,6 +25,8 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build public site
+        env:
+          ROSEEN_API_BASE: ${{ vars.ROSEEN_API_BASE }}
         run: |
           rm -rf dist
           mkdir -p dist/assets
@@ -37,6 +39,12 @@ jobs:
           cp home-appliances.jpg dist/assets/appliance-lab.png
           cp robot-cta.jpg dist/assets/robot-cta.jpg
           cp logo.svg dist/assets/logo.svg
+
+          API_BASE_JSON=$(node -p 'JSON.stringify(process.env.ROSEEN_API_BASE || "")')
+          for file in dist/*.html; do
+            sed -i "s#<script src=\"script.js\"></script>#<script>window.ROSEEN_API_BASE=${API_BASE_JSON};</script><script src=\"script.js\"></script>#g" "$file"
+            sed -i "s#<script src=\"./script.js\"></script>#<script>window.ROSEEN_API_BASE=${API_BASE_JSON};</script><script src=\"./script.js\"></script>#g" "$file"
+          done
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
