@@ -1,12 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 180" role="img" aria-labelledby="title desc">
 <title id="title">ROSEEN</title><desc id="desc">ROSEEN Robotics Service Engineering</desc>
 <rect width="640" height="180" rx="42" fill="#07090c"/>
-<g fill="none" stroke="#57A639" stroke-width="12" stroke-linecap="round" stroke-linejoin="round">
+<g fill="none" stroke="#F0A83A" stroke-width="12" stroke-linecap="round" stroke-linejoin="round">
 <path d="M58 128V52h48c25 0 39 12 39 32s-14 32-39 32H58m49-32 43 44"/>
 <path d="M185 128V52h50c24 0 38 13 38 32s-14 32-38 32h-50"/>
 <path d="M185 91h80"/>
-<circle cx="319" cy="90" r="7" fill="#57A639" stroke="none"/>
+<circle cx="319" cy="90" r="7" fill="#F0A83A" stroke="none"/>
 </g>
-<text x="355" y="103" fill="#F5F7FA" font-family="Arial, Helvetica, sans-serif" font-size="64" font-weight="800" letter-spacing="3">ROSEEN</text>
+<text x="355" y="103" fill="#F0A83A" font-family="Arial, Helvetica, sans-serif" font-size="64" font-weight="800" letter-spacing="3">RO</text><text x="448" y="103" fill="#F5F7FA" font-family="Arial, Helvetica, sans-serif" font-size="64" font-weight="800" letter-spacing="3">SEEN</text>
 <text x="358" y="136" fill="#9AA3AF" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700" letter-spacing="3">ROBOTICS • SERVICE • ENGINEERING</text>
 </svg>
