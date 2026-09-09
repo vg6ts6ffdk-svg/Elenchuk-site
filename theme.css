@@ -1,0 +1,20 @@
+:root{--green:#C7A56A;--green2:#E0C58F;--bg:#090B0D;--bg2:#111519;--panel:#171D21;--panel2:#1D252A;--text:#F2F0EA;--muted:#9BA3A7;--line:rgba(255,255,255,.10)}
+
+/* ROSEEN premium engineering palette */
+.site-header{background:rgba(9,11,13,.78)}
+.menu{background:#171D21}
+.btn-primary{color:#11100D;box-shadow:0 12px 34px rgba(199,165,106,.20)}
+.btn-primary:hover{background:#E0C58F;border-color:#E0C58F}
+.btn-ghost:hover{border-color:rgba(199,165,106,.55)}
+.hero{background:radial-gradient(circle at 72% 48%,rgba(199,165,106,.14),transparent 32%),linear-gradient(180deg,#0C1013,#090B0D)}
+.hero-glow{background:rgba(199,165,106,.22)}
+.hero-card{background:rgba(17,21,25,.86)}
+.hero-bottom:after{background:linear-gradient(90deg,#C7A56A,transparent)}
+.service-card:hover{border-color:rgba(199,165,106,.45);background:linear-gradient(180deg,rgba(199,165,106,.08),rgba(255,255,255,.015))}
+.direction-card:hover{border-color:rgba(199,165,106,.50)}
+.feature-copy{background:linear-gradient(135deg,rgba(199,165,106,.08),rgba(255,255,255,.02))}
+.request{background:radial-gradient(circle at 8% 70%,rgba(199,165,106,.18),transparent 28%),linear-gradient(135deg,#141311,#0A0D10)}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:rgba(199,165,106,.70)}
+.form-status{background:rgba(199,165,106,.09);border-color:rgba(199,165,106,.25);color:#E8D8B9}
+.final-panel{border-color:rgba(199,165,106,.35);background:radial-gradient(circle at 90% 50%,rgba(199,165,106,.12),transparent 35%),#121614}
+.scan{background:linear-gradient(transparent 0,rgba(199,165,106,.07) 50%,transparent 51%)}
