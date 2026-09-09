@@ -30,7 +30,8 @@ fs.mkdirSync(UPLOADS, { recursive: true });
 app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
 app.use(cors({
   origin(origin, callback) {
-    if (!origin || !FRONTEND_ORIGIN) return callback(null, true);
+    if (!origin) return callback(null, true);
+    if (!FRONTEND_ORIGIN) return callback(new Error("FRONTEND_ORIGIN must be configured for cross-origin requests"), false);
     const allowed = FRONTEND_ORIGIN.split(",").map(value => value.trim()).filter(Boolean);
     return callback(null, allowed.includes(origin));
   },
@@ -205,6 +206,9 @@ app.use((err, _req, res, _next) => {
   }
   if (err?.message === "Разрешены только изображения, видео и PDF") {
     return res.status(400).json({ error: err.message });
+  }
+  if (err?.message === "FRONTEND_ORIGIN must be configured for cross-origin requests") {
+    return res.status(500).json({ error: "CORS не настроен для frontend" });
   }
   console.error(err);
   res.status(500).json({ error: "Внутренняя ошибка сервера" });
