@@ -1,24 +1,26 @@
-:root{--green:#F0A83A;--green2:#FFC766;--bg:#080A0C;--bg2:#111519;--panel:#1B2227;--panel2:#242D33;--text:#F5F5F2;--muted:#A7ADB0;--line:rgba(255,255,255,.10)}
+:root{--green:#F0A83A;--green2:#FFC766;--bg:#080A0C;--bg2:#111519;--panel:#1B2227;--panel2:#2A3339;--text:#F5F5F2;--muted:#A7ADB0;--line:rgba(255,255,255,.10)}
 
-/* ROSEEN industrial premium palette: graphite + industrial amber */
+/* ROSEEN industrial premium identity: graphite + industrial amber */
 .site-header{background:rgba(8,10,12,.82)}
-.menu{background:#111519}
+.menu{background:#1B2227}
 .btn-primary{color:#11100D;box-shadow:0 12px 34px rgba(240,168,58,.22)}
 .btn-primary:hover{background:#FFC766;border-color:#FFC766}
 .btn-ghost:hover{border-color:rgba(240,168,58,.60)}
-.hero{background:radial-gradient(circle at 72% 48%,rgba(240,168,58,.13),transparent 32%),linear-gradient(180deg,#0C1013,#080A0C)}
-.hero-glow{background:rgba(240,168,58,.20)}
+.hero{background:radial-gradient(circle at 72% 48%,rgba(240,168,58,.14),transparent 32%),linear-gradient(180deg,#0C1013,#080A0C)}
+.hero-glow{background:rgba(240,168,58,.24)}
 .hero-card{background:rgba(17,21,25,.88)}
 .hero-bottom:after{background:linear-gradient(90deg,#F0A83A,transparent)}
 .service-card:hover{border-color:rgba(240,168,58,.48);background:linear-gradient(180deg,rgba(240,168,58,.08),rgba(255,255,255,.015))}
 .direction-card:hover{border-color:rgba(240,168,58,.52)}
-.feature-copy{background:linear-gradient(135deg,rgba(240,168,58,.07),rgba(255,255,255,.02))}
-.request{background:radial-gradient(circle at 8% 70%,rgba(240,168,58,.15),transparent 28%),linear-gradient(135deg,#121416,#080A0C)}
-.field input:focus,.field select:focus,.field textarea:focus{border-color:rgba(240,168,58,.75);box-shadow:0 0 0 3px rgba(240,168,58,.08)}
-.form-status{background:rgba(240,168,58,.09);border-color:rgba(240,168,58,.28);color:#F6D69F}
-.final-panel{border-color:rgba(240,168,58,.38);background:radial-gradient(circle at 90% 50%,rgba(240,168,58,.10),transparent 35%),#101416}
-.scan{background:linear-gradient(transparent 0,rgba(240,168,58,.065) 50%,transparent 51%)}
+.feature-copy{background:linear-gradient(135deg,rgba(240,168,58,.08),rgba(255,255,255,.02))}
+.request{background:radial-gradient(circle at 8% 70%,rgba(240,168,58,.18),transparent 28%),linear-gradient(135deg,#151311,#0A0D10)}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:rgba(240,168,58,.72)}
+.form-status{background:rgba(240,168,58,.09);border-color:rgba(240,168,58,.26);color:#F3D9A8}
+.final-panel{border-color:rgba(240,168,58,.38);background:radial-gradient(circle at 90% 50%,rgba(240,168,58,.12),transparent 35%),#121614}
+.process-banner{background:linear-gradient(120deg,rgba(240,168,58,.08),rgba(255,255,255,.02))}
+.scan{background:linear-gradient(transparent 0,rgba(240,168,58,.07) 50%,transparent 51%)}
 
-/* Keep amber as a signal color, not a dominant surface color. */
-::selection{background:rgba(240,168,58,.28);color:#F5F5F2}
-a:focus-visible,.btn:focus-visible,.menu-toggle:focus-visible{outline:2px solid #F0A83A;outline-offset:3px}
+/* Override legacy green literals so the published site uses one accent consistently. */
+.eyebrow{color:var(--green2)}
+.eyebrow i,.trust span:before{background:var(--green);box-shadow:0 0 18px rgba(240,168,58,.65)}
+em,.nav a:hover,.hero-card b,.service-card a,.direction-card b,.direction-card-content span,.feature-item strong,.step strong,.step:after,.number strong,.num,.final-panel .eyebrow,.process-banner b{color:var(--green2)}
