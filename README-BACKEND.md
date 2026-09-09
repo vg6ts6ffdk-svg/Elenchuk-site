@@ -19,10 +19,8 @@ The repository contains `render.yaml` with the required Web Service configuratio
 2. Connect `vg6ts6ffdk-svg/Elenchuk-site`.
 3. Select branch `site-audit-fixes-v2` for the first deployment, then switch to `main` after the PR is merged.
 4. Deploy the Blueprint from `render.yaml`.
-5. Set the secret values when Render asks for them:
-   - `JWT_SECRET` — long random secret;
-   - `ADMIN_PASSWORD` — strong unique administrator password.
-6. The service is configured with `/api/health` as its health check.
+5. Set `JWT_SECRET` and `ADMIN_PASSWORD` when Render asks for them.
+6. Verify `/api/health`.
 7. Add/verify `api.roseen.ru` as the backend custom domain.
 
 The backend uses `/var/data` for SQLite and uploads because Render's default filesystem is ephemeral. The Blueprint attaches a persistent disk at that path.
@@ -31,11 +29,9 @@ The backend uses `/var/data` for SQLite and uploads because Render's default fil
 
 ### Frontend
 
-In GitHub repository **Settings → Pages**, set the custom domain to:
+In GitHub repository **Settings → Pages**, set the custom domain to `roseen.ru`.
 
-`roseen.ru`
-
-For the apex domain, use the GitHub Pages A/AAAA records recommended by GitHub. For `www`, use a CNAME pointing to `vg6ts6ffdk-svg.github.io`.
+For the apex domain, use the GitHub Pages A/AAAA records shown in GitHub Pages settings. For `www`, use a CNAME pointing to `vg6ts6ffdk-svg.github.io`.
 
 ### Backend
 
@@ -56,28 +52,19 @@ Add `api.roseen.ru` as the custom domain of the Render API service. At the DNS p
 
 The Pages workflow defaults the frontend API URL to `https://api.roseen.ru`. A GitHub Actions repository variable named `ROSEEN_API_BASE` can override it if the API hostname changes.
 
-## Local launch
+## Final end-to-end test
 
-1. Install Node.js 20+.
-2. Copy `.env.example` to `.env` and set `JWT_SECRET` and `ADMIN_PASSWORD`.
-3. Run `npm install`.
-4. Run `npm start`.
-5. Open `http://localhost:3000`.
+After both hosts are live, verify in this order:
 
-## API
+1. `GET https://api.roseen.ru/api/health` returns HTTP 200 and `ok: true`.
+2. Open `https://roseen.ru` and check desktop/mobile navigation.
+3. Submit a request without an attachment.
+4. Submit a request with image/PDF attachment.
+5. Open `https://roseen.ru/admin.html` and authenticate.
+6. Confirm both requests appear.
+7. Open a request and change its status/comment.
+8. Download the protected attachment from the admin panel.
+9. Confirm an unauthenticated request to `/api/requests` returns HTTP 401.
+10. Confirm `/server.js`, `/roseen.db`, `/uploads/*` and other server-side files are not publicly accessible.
 
-- `GET /api/health` — public health check
-- `POST /api/auth/login` — administrator login
-- `POST /api/requests` — public request with optional files
-- `GET /api/requests` — administrator
-- `GET /api/requests/:id` — administrator
-- `PATCH /api/requests/:id` — administrator
-- `GET /api/files/:id` — administrator
-
-## Security notes
-
-- Production startup fails if default JWT/admin secrets are still used.
-- CORS is restricted to configured frontend origins.
-- Uploads are limited to 8 files, 50 MB each, with an allowlist of image/video/PDF MIME types.
-- Uploaded files and SQLite are not exposed through public static serving.
-- Admin API endpoints require a JWT.
+Do not merge the production branch until this complete flow succeeds.
