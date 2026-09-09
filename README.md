@@ -21,3 +21,7 @@ GitHub Pages: публикация из ветки `main` через GitHub Acti
 - Stage 01–04 now occupy separate scroll intervals and remain visible while scrolling.
 - Added keyboard/click navigation for stage cards.
 - Cache-busted `style.css` to v9 on all pages.
+
+
+### v10 scroll fix
+Исправлена мобильная прокрутка sticky-секций: удалён overflow с родителей sticky-блоков, из-за которого iOS Safari прекращал фиксировать контент при прокрутке. Также обновлён cache-busting CSS до v10.
