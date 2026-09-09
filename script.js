@@ -16,6 +16,65 @@
     if (assetMap[name]) img.src = assetMap[name];
   });
 
+  // Main-page mobile menu: restore the complete navigation and its animation.
+  // This is intentionally scoped to index.html so other pages are untouched.
+  const isHomePage = location.pathname === '/' || /\/index\.html$/.test(location.pathname);
+  if (isHomePage) {
+    const menuWrap = document.querySelector('.menu-wrap');
+    const menuButton = menuWrap?.querySelector('.menu');
+    const mobileNav = menuWrap?.querySelector('.mobile-nav');
+
+    if (menuWrap && menuButton && mobileNav) {
+      const items = [
+        ['index.html', 'Главная'],
+        ['services.html', 'Услуги'],
+        ['robotics.html', 'Робототехника'],
+        ['electronics.html', 'Электроника'],
+        ['appliances.html', 'Бытовая техника'],
+        ['engineering.html', 'Инженерия'],
+        ['about.html', 'О компании'],
+        ['contacts.html', 'Контакты'],
+        ['index.html#request', 'Оставить заявку ↗']
+      ];
+
+      mobileNav.innerHTML = items.map(([href, label]) => `<a href="${href}">${label}</a>`).join('');
+      menuButton.setAttribute('aria-expanded', 'false');
+      mobileNav.setAttribute('aria-label', 'Основная навигация');
+
+      const animateMenu = open => {
+        const links = $('.mobile-nav a', menuWrap);
+        document.body.classList.toggle('menu-open', open);
+        menuButton.setAttribute('aria-expanded', String(open));
+        if (!open) {
+          links.forEach(link => {
+            link.style.opacity = '';
+            link.style.transform = '';
+            link.style.transitionDelay = '';
+          });
+          return;
+        }
+        links.forEach((link, index) => {
+          link.style.opacity = '0';
+          link.style.transform = 'translateY(-14px)';
+          link.style.transition = 'opacity .42s var(--ease), transform .42s var(--ease)';
+          link.style.transitionDelay = `${index * 45}ms`;
+          requestAnimationFrame(() => {
+            link.style.opacity = '1';
+            link.style.transform = 'translateY(0)';
+          });
+        });
+      };
+
+      menuWrap.addEventListener('toggle', () => animateMenu(menuWrap.open));
+      mobileNav.addEventListener('click', event => {
+        if (event.target.closest('a')) {
+          menuWrap.removeAttribute('open');
+          animateMenu(false);
+        }
+      });
+    }
+  }
+
   document.querySelectorAll('.mobile-nav a').forEach(a => a.addEventListener('click', () => {
     const d = a.closest('details');
     if (d) d.removeAttribute('open');
