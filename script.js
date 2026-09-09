@@ -4,10 +4,13 @@
   menu?.addEventListener('click', () => document.body.classList.toggle('menu-open'));
   $$('.mobile-nav a').forEach(a => a.addEventListener('click', () => document.body.classList.remove('menu-open')));
 
+  const revealItems = $$('.reveal');
   const io = new IntersectionObserver(entries => entries.forEach(e => {
     if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target)}
-  }), {threshold:.12, rootMargin:'0px 0px -50px'});
-  $$('.reveal').forEach(el => io.observe(el));
+  }), {threshold:.08, rootMargin:'0px 0px -30px'});
+  revealItems.forEach(el => io.observe(el));
+  // Safety fallback: content must remain visible in static/full-page renderers.
+  setTimeout(() => revealItems.forEach(el => el.classList.add('visible')), 1400);
 
   // Subtle cinematic image movement — disabled on touch/reduced-motion.
   if(!matchMedia('(prefers-reduced-motion: reduce)').matches && matchMedia('(pointer:fine)').matches){
