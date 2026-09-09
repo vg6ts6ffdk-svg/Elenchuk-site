@@ -35,7 +35,7 @@ In GitHub repository **Settings → Pages**, set the custom domain to:
 
 `roseen.ru`
 
-For the apex domain, use the GitHub Pages A/AAAA records recommended by GitHub. For `www`, use a CNAME pointing to `vg6ts6ffdk-svg.github.io`. Do not invent alternative DNS targets.
+For the apex domain, use the GitHub Pages A/AAAA records recommended by GitHub. For `www`, use a CNAME pointing to `vg6ts6ffdk-svg.github.io`.
 
 ### Backend
 
