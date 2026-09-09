@@ -158,7 +158,12 @@
     const render = () => {
       ticking = false;
       const rect = story.getBoundingClientRect();
-      const max = Math.max(1, story.offsetHeight - window.innerHeight);
+      // Calculate progress from the section itself. The sticky element must
+      // remain pinned while the section travels through all four stages.
+      // Use the actual viewport height (including mobile Safari's dynamic
+      // viewport) rather than assuming the sticky height equals innerHeight.
+      const stickyHeight = story.querySelector('.premium-sticky')?.getBoundingClientRect().height || window.innerHeight;
+      const max = Math.max(1, story.offsetHeight - stickyHeight);
       const progress = Math.min(1, Math.max(0, -rect.top / max));
       const raw = progress * steps.length;
       const index = Math.min(steps.length - 1, Math.floor(raw));
