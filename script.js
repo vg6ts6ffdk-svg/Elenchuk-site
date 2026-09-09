@@ -2,6 +2,20 @@
   const $ = (s, r = document) => [...r.querySelectorAll(s)];
   const API_BASE = (window.ROSEEN_API_BASE || '').replace(/\/$/, '');
 
+  // Some legacy pages still reference the old /assets/ paths. Keep them working
+  // while the repository is migrated to its current root-level asset set.
+  const assetMap = {
+    'logo.svg': 'logo.svg',
+    'robot-lab.png': 'robots.jpg',
+    'electronics-lab.png': 'electronics.jpg',
+    'appliance-lab.png': 'home-appliances.jpg',
+    'robot-cta.jpg': 'robot-cta.jpg'
+  };
+  document.querySelectorAll('img[src^="assets/"]').forEach(img => {
+    const name = img.getAttribute('src').split('/').pop();
+    if (assetMap[name]) img.src = assetMap[name];
+  });
+
   document.querySelectorAll('.mobile-nav a').forEach(a => a.addEventListener('click', () => {
     const d = a.closest('details');
     if (d) d.removeAttribute('open');
