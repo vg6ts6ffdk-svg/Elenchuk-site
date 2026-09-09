@@ -115,6 +115,10 @@ function auth(req, res, next) {
   }
 }
 
+app.get("/api/health", (_req, res) => {
+  res.json({ ok: true, service: "roseen-api" });
+});
+
 app.post("/api/auth/login", (req, res) => {
   const { email, password } = req.body || {};
   const admin = db.prepare("SELECT * FROM admins WHERE email=?").get(email);
