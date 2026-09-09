@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: roseen-api
+    runtime: node
+    region: frankfurt
+    plan: 0.5c-512mb
+    buildCommand: npm install
+    startCommand: npm start
+    autoDeployTrigger: checksPass
+    healthCheckPath: /api/health
+    domains:
+      - api.roseen.ru
+    renderSubdomainPolicy: disabled
+    disk:
+      name: roseen-data
+      mountPath: /var/data
+      sizeGB: 10
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: ROSEEN_DATA_DIR
+        value: /var/data
+      - key: FRONTEND_ORIGIN
+        value: https://roseen.ru,https://www.roseen.ru
+      - key: ADMIN_EMAIL
+        value: admin@roseen.ru
+      - key: JWT_SECRET
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
