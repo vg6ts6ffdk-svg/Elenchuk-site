@@ -1,29 +1,27 @@
 :root{--green:#F0A83A;--green2:#FFC766;--bg:#080A0C;--bg2:#111519;--panel:#1B2227;--panel2:#2A3339;--text:#F5F5F2;--muted:#A7ADB0;--line:rgba(255,255,255,.10);--apple-blue:#0071E3;--apple-blue-hover:#0077ED;--apple-white:#F5F5F7;--apple-text:#1D1D1F;--apple-gray:#86868B;--apple-silver:#D2D2D7}
 
-/* ROSEEN industrial premium identity: graphite + industrial amber + Apple-inspired blue/neutral accents */
 .site-header{background:rgba(8,10,12,.82);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);transition:background .45s ease,box-shadow .45s ease}
 .menu{background:#1B2227}
-.btn-primary{color:#11100D;box-shadow:0 12px 34px rgba(240,168,58,.22);transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s ease,background .3s ease}
-.btn-primary:hover{background:#FFC766;border-color:#FFC766;transform:translateY(-2px);box-shadow:0 16px 40px rgba(240,168,58,.30)}
-.btn-ghost:hover{border-color:rgba(240,168,58,.60);transform:translateY(-1px)}
-.hero{background:radial-gradient(circle at 72% 48%,rgba(240,168,58,.14),transparent 32%),linear-gradient(180deg,#0C1013,#080A0C);overflow:hidden}
-.hero-glow{background:rgba(240,168,58,.24);animation:roseenGlow 7s ease-in-out infinite alternate}
+.btn-primary{color:#fff;box-shadow:0 12px 34px rgba(0,113,227,.22);transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s ease,background .3s ease}
+.btn-primary:hover{background:#0077ED;border-color:#0077ED;transform:translateY(-2px);box-shadow:0 16px 40px rgba(0,113,227,.30)}
+.btn-ghost:hover{border-color:rgba(0,113,227,.60);transform:translateY(-1px)}
+.hero{background:radial-gradient(circle at 72% 48%,rgba(0,113,227,.14),transparent 32%),linear-gradient(180deg,#0C1013,#080A0C);overflow:hidden}
+.hero-glow{background:rgba(0,113,227,.24);animation:roseenGlow 7s ease-in-out infinite alternate}
 .hero-card{background:rgba(17,21,25,.88);transition:transform .6s cubic-bezier(.2,.8,.2,1),border-color .35s ease,box-shadow .35s ease}
 .hero-card:hover{transform:translateY(-4px);box-shadow:0 24px 70px rgba(0,0,0,.28)}
-.hero-bottom:after{background:linear-gradient(90deg,#F0A83A,transparent);animation:roseenLine 5s ease-in-out infinite}
+.hero-bottom:after{background:linear-gradient(90deg,#0071E3,transparent);animation:roseenLine 5s ease-in-out infinite}
 .service-card,.direction-card{transition:transform .5s cubic-bezier(.2,.8,.2,1),border-color .35s ease,background .35s ease,box-shadow .35s ease}
-.service-card:hover{border-color:rgba(240,168,58,.48);background:linear-gradient(180deg,rgba(240,168,58,.08),rgba(255,255,255,.015));transform:translateY(-6px);box-shadow:0 20px 50px rgba(0,0,0,.22)}
-.direction-card:hover{border-color:rgba(240,168,58,.52);transform:translateY(-5px);box-shadow:0 18px 45px rgba(0,0,0,.20)}
-.feature-copy{background:linear-gradient(135deg,rgba(240,168,58,.08),rgba(255,255,255,.02))}
-.request{background:radial-gradient(circle at 8% 70%,rgba(240,168,58,.18),transparent 28%),linear-gradient(135deg,#151311,#0A0D10)}
+.service-card:hover{border-color:rgba(0,113,227,.48);background:linear-gradient(180deg,rgba(0,113,227,.08),rgba(255,255,255,.015));transform:translateY(-6px);box-shadow:0 20px 50px rgba(0,0,0,.22)}
+.direction-card:hover{border-color:rgba(0,113,227,.52);transform:translateY(-5px);box-shadow:0 18px 45px rgba(0,0,0,.20)}
+.feature-copy{background:linear-gradient(135deg,rgba(0,113,227,.08),rgba(255,255,255,.02))}
+.request{background:radial-gradient(circle at 8% 70%,rgba(0,113,227,.18),transparent 28%),linear-gradient(135deg,#11151a,#0A0D10)}
 .field input,.field select,.field textarea{transition:border-color .3s ease,box-shadow .3s ease,background .3s ease}
-.field input:focus,.field select:focus,.field textarea:focus{border-color:rgba(240,168,58,.72);box-shadow:0 0 0 4px rgba(240,168,58,.08)}
-.form-status{background:rgba(240,168,58,.09);border-color:rgba(240,168,58,.26);color:#F3D9A8}
-.final-panel{border-color:rgba(240,168,58,.38);background:radial-gradient(circle at 90% 50%,rgba(240,168,58,.12),transparent 35%),#121614}
-.process-banner{background:linear-gradient(120deg,rgba(240,168,58,.08),rgba(255,255,255,.02))}
-.scan{background:linear-gradient(transparent 0,rgba(240,168,58,.07) 50%,transparent 51%);animation:roseenScan 4s linear infinite}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:rgba(0,113,227,.72);box-shadow:0 0 0 4px rgba(0,113,227,.08)}
+.form-status{background:rgba(0,113,227,.09);border-color:rgba(0,113,227,.26);color:#BFDFFF}
+.final-panel{border-color:rgba(0,113,227,.38);background:radial-gradient(circle at 90% 50%,rgba(0,113,227,.12),transparent 35%),#12161a}
+.process-banner{background:linear-gradient(120deg,rgba(0,113,227,.08),rgba(255,255,255,.02))}
+.scan{background:linear-gradient(transparent 0,rgba(0,113,227,.07) 50%,transparent 51%);animation:roseenScan 4s linear infinite}
 
-/* Apple-inspired secondary palette */
 a:not(.btn):not(.nav a){color:var(--apple-blue);transition:color .25s ease}
 a:not(.btn):not(.nav a):hover{color:var(--apple-blue-hover)}
 .btn-secondary,.btn-outline{border-color:rgba(0,113,227,.48);color:#F5F5F7;transition:transform .3s ease,border-color .3s ease,background .3s ease,box-shadow .3s ease}
@@ -34,7 +32,6 @@ a:not(.btn):not(.nav a):hover{color:var(--apple-blue-hover)}
 .apple-surface .muted{color:var(--apple-gray)}
 .apple-accent{color:var(--apple-blue)}
 
-/* Reveal / Apple-style subtle entrance motion */
 .reveal,.service-card,.direction-card,.feature-copy,.request,.final-panel,.process-banner{will-change:transform,opacity}
 @keyframes roseenGlow{from{transform:translate3d(-2%,0,0) scale(1)}to{transform:translate3d(3%,-2%,0) scale(1.08)}}
 @keyframes roseenLine{0%,100%{opacity:.45;transform:scaleX(.72);transform-origin:left}50%{opacity:1;transform:scaleX(1);transform-origin:left}}
@@ -43,7 +40,17 @@ a:not(.btn):not(.nav a):hover{color:var(--apple-blue-hover)}
 @media (prefers-reduced-motion:no-preference){.reveal{animation:roseenFadeUp .8s cubic-bezier(.2,.8,.2,1) both}.reveal:nth-child(2){animation-delay:.06s}.reveal:nth-child(3){animation-delay:.12s}.reveal:nth-child(4){animation-delay:.18s}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}.hero-glow,.hero-bottom:after,.scan{animation:none!important}.service-card:hover,.direction-card:hover,.hero-card:hover,.btn-primary:hover,.btn-secondary:hover,.btn-outline:hover{transform:none}}
 
-/* Override legacy green literals so the published site uses one accent consistently. */
-.eyebrow{color:var(--green2)}
-.eyebrow i,.trust span:before{background:var(--green);box-shadow:0 0 18px rgba(240,168,58,.65)}
-em,.nav a:hover,.hero-card b,.service-card a,.direction-card b,.direction-card-content span,.feature-item strong,.step strong,.step:after,.number strong,.num,.final-panel .eyebrow,.process-banner b{color:var(--green2)}
+.eyebrow{color:#0077ED!important}
+.eyebrow i,.trust span:before{background:#0071E3!important;box-shadow:0 0 18px rgba(0,113,227,.65)!important}
+em,.nav a:hover,.hero-card b,.service-card a,.direction-card b,.direction-card-content span,.feature-item strong,.step strong,.step:after,.number strong,.num,.final-panel .eyebrow,.process-banner b{color:#0077ED!important}
+.btn-primary{background:#0071E3!important;border-color:#0071E3!important;color:#fff!important}
+.btn-primary:hover{background:#0077ED!important;border-color:#0077ED!important}
+.menu-wrap[open] .menu{border-color:rgba(0,113,227,.65);box-shadow:0 0 0 1px rgba(0,113,227,.12),0 12px 40px rgba(0,0,0,.28)}
+.roseen-mobile-menu a:hover{color:#0077ED!important}
+.roseen-mobile-menu a:last-child{border-color:rgba(0,113,227,.48)!important;background:rgba(0,113,227,.10)!important;color:#0077ED!important}
+.hero,.inner-hero{isolation:isolate}
+.hero-copy,.inner-grid>.reveal:first-child{animation:roseenFadeUp .9s cubic-bezier(.2,.8,.2,1) both}
+.hero-art,.inner-grid>.reveal.delay{animation:roseenFadeUp 1.05s cubic-bezier(.2,.8,.2,1) .08s both}
+.direction-card img,.inner-image,.feature-image{transition:transform 1s cubic-bezier(.2,.8,.2,1),filter .6s ease}
+.direction-card:hover img{transform:scale(1.055)}
+@media(max-width:980px){.roseen-mobile-menu a{transition:opacity .45s ease,transform .55s cubic-bezier(.2,.8,.2,1),color .2s ease}.roseen-mobile-menu.is-open a{transition-delay:calc(var(--i) * 45ms + 80ms)}}
