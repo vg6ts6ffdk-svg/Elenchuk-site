@@ -3,13 +3,18 @@
 <desc id="desc">ROSEEN — Robotics · Service · Engineering</desc>
 <rect width="760" height="190" rx="28" fill="none"/>
 
-<!-- ROSEEN wordmark: the two E letters are the signature accent -->
+<!-- ROSEEN wordmark: Variant 2 — technological accent in the double E -->
 <text x="34" y="92" fill="#111827" font-family="Arial, Helvetica, sans-serif" font-size="78" font-weight="800" letter-spacing="2">ROS</text>
-<text x="235" y="92" fill="#009E8A" font-family="Arial, Helvetica, sans-serif" font-size="78" font-weight="900" letter-spacing="2">EE</text>
-<text x="343" y="92" fill="#111827" font-family="Arial, Helvetica, sans-serif" font-size="78" font-weight="800" letter-spacing="2">N</text>
-
-<!-- subtle signature line under the double E -->
-<rect x="237" y="105" width="91" height="5" rx="2.5" fill="#009E8A"/>
+<!-- geometric double E signature -->
+<g fill="#009E8A">
+  <rect x="226" y="24" width="42" height="14" rx="2"/>
+  <rect x="226" y="52" width="42" height="14" rx="2"/>
+  <rect x="226" y="80" width="42" height="14" rx="2"/>
+  <rect x="279" y="24" width="42" height="14" rx="2"/>
+  <rect x="279" y="52" width="42" height="14" rx="2"/>
+  <rect x="279" y="80" width="42" height="14" rx="2"/>
+</g>
+<text x="336" y="92" fill="#111827" font-family="Arial, Helvetica, sans-serif" font-size="78" font-weight="800" letter-spacing="2">N</text>
 
 <!-- The requested letter system: RO / SE / EN -->
 <text x="37" y="139" fill="#667085" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" letter-spacing="2.8">
