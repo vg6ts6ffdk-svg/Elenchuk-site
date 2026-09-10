@@ -43,11 +43,9 @@ jobs:
 
           API_BASE_JSON=$(node -p 'JSON.stringify(process.env.ROSEEN_API_BASE || "")')
           for file in dist/*.html; do
-            # Ensure every published HTML page explicitly loads the current theme.
             if ! grep -q 'theme.css' "$file"; then
               sed -i 's#</head>#<link rel="stylesheet" href="theme.css?v=7"></head>#' "$file"
             fi
-            # Keep API endpoint explicit and cache-bust the frontend script.
             sed -i "s#<script src=\"script.js[^\"]*\"></script>#<script>window.ROSEEN_API_BASE=${API_BASE_JSON};</script><script src=\"script.js?v=4\"></script>#g" "$file"
             sed -i "s#<script src=\"./script.js[^\"]*\"></script>#<script>window.ROSEEN_API_BASE=${API_BASE_JSON};</script><script src=\"./script.js?v=4\"></script>#g" "$file"
           done
