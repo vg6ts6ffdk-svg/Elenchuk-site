@@ -34,7 +34,12 @@ jobs:
           for file in *.html; do
             if [ "$file" != "page-template.html" ]; then cp "$file" dist/; fi
           done
-          cp style.css theme.css script.js scroll.js logo.svg robots.txt sitemap.xml CNAME dist/
+
+          # Publish a self-contained stylesheet: the original layout CSS first,
+          # then the branded light-teal theme overrides. This prevents an old
+          # cached theme from restoring the previous dark palette.
+          cat style.css theme.css > dist/style.css
+          cp theme.css script.js scroll.js logo.svg robots.txt sitemap.xml CNAME dist/
           cp robots.jpg dist/assets/robot-lab.png
           cp electronics.jpg dist/assets/electronics-lab.png
           cp home-appliances.jpg dist/assets/appliance-lab.png
@@ -43,17 +48,14 @@ jobs:
 
           API_BASE_JSON=$(node -p 'JSON.stringify(process.env.ROSEEN_API_BASE || "")')
           for file in dist/*.html; do
-            # Replace any existing theme.css reference, regardless of whether it already has a query string.
-            sed -i -E 's#<link rel="stylesheet" href="[^\"]*theme\.css[^\"]*">#<link rel="stylesheet" href="theme.css?v=10">#g' "$file"
-            if ! grep -q 'theme.css?v=10' "$file"; then
-              sed -i 's#</head>#<link rel="stylesheet" href="theme.css?v=10"></head>#' "$file"
-            fi
+            # Normalize the stylesheet reference to one versioned URL.
+            sed -i -E 's#<link rel="stylesheet" href="[^\"]*style\.css[^\"]*">##g' "$file"
+            sed -i -E 's#<link rel="stylesheet" href="[^\"]*theme\.css[^\"]*">##g' "$file"
+            sed -i 's#</head>#<link rel="stylesheet" href="style.css?v=11"></head>#' "$file"
 
-            # Replace any script.js reference and inject the production API base.
-            sed -i -E "s#<script src=\"\.?/script\.js[^\"]*\"></script>#<script>window.ROSEEN_API_BASE=${API_BASE_JSON};</script><script src=\"script.js?v=5\"></script>#g" "$file"
-            if ! grep -q 'script.js?v=5' "$file"; then
-              sed -i "s#</body>#<script>window.ROSEEN_API_BASE=${API_BASE_JSON};</script><script src=\"script.js?v=5\"></script></body>#" "$file"
-            fi
+            # Replace all script.js references and inject the production API base.
+            sed -i -E "s#<script src=\"\.?/script\.js[^\"]*\"></script>##g" "$file"
+            sed -i "s#</body>#<script>window.ROSEEN_API_BASE=${API_BASE_JSON};</script><script src=\"script.js?v=6\"></script></body>#" "$file"
 
             # Cache-bust the branded logo asset.
             sed -i -E 's#assets/logo\.svg(\?v=[0-9]+)?#assets/logo.svg?v=4#g' "$file"
