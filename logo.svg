@@ -1,12 +1,22 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 180" role="img" aria-labelledby="title desc">
-<title id="title">ROSEEN</title><desc id="desc">ROSEEN Robotics Service Engineering</desc>
-<rect width="640" height="180" rx="42" fill="#07090c"/>
-<g fill="none" stroke="#F0A83A" stroke-width="12" stroke-linecap="round" stroke-linejoin="round">
-<path d="M58 128V52h48c25 0 39 12 39 32s-14 32-39 32H58m49-32 43 44"/>
-<path d="M185 128V52h50c24 0 38 13 38 32s-14 32-38 32h-50"/>
-<path d="M185 91h80"/>
-<circle cx="319" cy="90" r="7" fill="#F0A83A" stroke="none"/>
-</g>
-<text x="355" y="103" fill="#F5F7FA" font-family="Arial, Helvetica, sans-serif" font-size="64" font-weight="800" letter-spacing="3">ROSEEN</text>
-<text x="358" y="136" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700" letter-spacing="3"><tspan fill="#F0A83A">RO</tspan><tspan fill="#9AA3AF">BOTICS</tspan><tspan fill="#F0A83A"> • SE</tspan><tspan fill="#9AA3AF">RVICE</tspan><tspan fill="#F0A83A"> • EN</tspan><tspan fill="#9AA3AF">GINEERING</tspan></text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 190" role="img" aria-labelledby="title desc">
+<title id="title">ROSEEN</title>
+<desc id="desc">ROSEEN — Robotics · Service · Engineering</desc>
+<rect width="760" height="190" rx="28" fill="none"/>
+
+<!-- ROSEEN wordmark: the two E letters are the signature accent -->
+<text x="34" y="92" fill="#111827" font-family="Arial, Helvetica, sans-serif" font-size="78" font-weight="800" letter-spacing="2">ROS</text>
+<text x="235" y="92" fill="#009E8A" font-family="Arial, Helvetica, sans-serif" font-size="78" font-weight="900" letter-spacing="2">EE</text>
+<text x="343" y="92" fill="#111827" font-family="Arial, Helvetica, sans-serif" font-size="78" font-weight="800" letter-spacing="2">N</text>
+
+<!-- subtle signature line under the double E -->
+<rect x="237" y="105" width="91" height="5" rx="2.5" fill="#009E8A"/>
+
+<!-- The requested letter system: RO / SE / EN -->
+<text x="37" y="139" fill="#667085" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" letter-spacing="2.8">
+<tspan fill="#009E8A">RO</tspan><tspan>BOTICS</tspan>
+<tspan fill="#98A2B3">  ·  </tspan>
+<tspan fill="#009E8A">SE</tspan><tspan>RVICE</tspan>
+<tspan fill="#98A2B3">  ·  </tspan>
+<tspan fill="#009E8A">EN</tspan><tspan>GINEERING</tspan>
+</text>
 </svg>
