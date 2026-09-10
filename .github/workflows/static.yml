@@ -43,10 +43,10 @@ jobs:
 
           API_BASE_JSON=$(node -p 'JSON.stringify(process.env.ROSEEN_API_BASE || "")')
           for file in dist/*.html; do
-            sed -i "s#<link rel=\"stylesheet\" href=\"style.css\">#<link rel=\"stylesheet\" href=\"style.css\"><link rel=\"stylesheet\" href=\"theme.css?v=5\">#g" "$file"
-            sed -i "s#<link rel=\"stylesheet\" href=\"./style.css\">#<link rel=\"stylesheet\" href=\"./style.css\"><link rel=\"stylesheet\" href=\"theme.css?v=5\">#g" "$file"
-            sed -i "s#<script src=\"script.js\"></script>#<script>window.ROSEEN_API_BASE=${API_BASE_JSON};</script><script src=\"script.js?v=3\"></script>#g" "$file"
-            sed -i "s#<script src=\"./script.js\"></script>#<script>window.ROSEEN_API_BASE=${API_BASE_JSON};</script><script src=\"./script.js?v=3\"></script>#g" "$file"
+            sed -i "s#<link rel=\"stylesheet\" href=\"style.css\">#<link rel=\"stylesheet\" href=\"style.css\"><link rel=\"stylesheet\" href=\"theme.css?v=6\">#g" "$file"
+            sed -i "s#<link rel=\"stylesheet\" href=\"./style.css\">#<link rel=\"stylesheet\" href=\"./style.css\"><link rel=\"stylesheet\" href=\"theme.css?v=6\">#g" "$file"
+            sed -i "s#<script src=\"script.js\"></script>#<script>window.ROSEEN_API_BASE=${API_BASE_JSON};</script><script src=\"script.js?v=4\"></script>#g" "$file"
+            sed -i "s#<script src=\"./script.js\"></script>#<script>window.ROSEEN_API_BASE=${API_BASE_JSON};</script><script src=\"./script.js?v=4\"></script>#g" "$file"
           done
 
       - name: Setup Pages
