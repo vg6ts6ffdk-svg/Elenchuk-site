@@ -44,11 +44,13 @@ jobs:
           API_BASE_JSON=$(node -p 'JSON.stringify(process.env.ROSEEN_API_BASE || "")')
           for file in dist/*.html; do
             if ! grep -q 'theme.css' "$file"; then
-              sed -i 's#</head>#<link rel="stylesheet" href="theme.css?v=7"></head>#' "$file"
+              sed -i 's#</head>#<link rel="stylesheet" href="theme.css?v=9"></head>#' "$file"
+            else
+              sed -i 's#theme.css?v=[0-9]*#theme.css?v=9#g' "$file"
             fi
             sed -i "s#<script src=\"script.js[^\"]*\"></script>#<script>window.ROSEEN_API_BASE=${API_BASE_JSON};</script><script src=\"script.js?v=4\"></script>#g" "$file"
             sed -i "s#<script src=\"./script.js[^\"]*\"></script>#<script>window.ROSEEN_API_BASE=${API_BASE_JSON};</script><script src=\"./script.js?v=4\"></script>#g" "$file"
-            sed -i 's#assets/logo\.svg#assets/logo.svg?v=2#g' "$file"
+            sed -i 's#assets/logo\.svg#assets/logo.svg?v=3#g' "$file"
           done
 
       - name: Setup Pages
