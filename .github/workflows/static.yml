@@ -48,6 +48,7 @@ jobs:
             fi
             sed -i "s#<script src=\"script.js[^\"]*\"></script>#<script>window.ROSEEN_API_BASE=${API_BASE_JSON};</script><script src=\"script.js?v=4\"></script>#g" "$file"
             sed -i "s#<script src=\"./script.js[^\"]*\"></script>#<script>window.ROSEEN_API_BASE=${API_BASE_JSON};</script><script src=\"./script.js?v=4\"></script>#g" "$file"
+            sed -i 's#assets/logo\.svg#assets/logo.svg?v=2#g' "$file"
           done
 
       - name: Setup Pages
