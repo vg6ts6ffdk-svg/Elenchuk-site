@@ -60,8 +60,8 @@ jobs:
             perl -0pi -e 's#<script src="(?:\./)?script\.js(?:\?[^" ]*)?"></script>##g' "$file"
             sed -i "s#</body>#<script>window.ROSEEN_API_BASE=${API_BASE_JSON};</script><script src=\"script.js?v=11\"></script></body>#" "$file"
 
-            # Keep the approved ROSEEN logo unchanged; only bust the browser cache.
-            sed -i -E 's#assets/logo\.svg(\?v=[0-9]+)?#assets/logo.svg?v=6#g' "$file"
+            # Use the approved ROSEEN logo asset and force a fresh browser fetch.
+            sed -i -E 's#assets/logo\.svg(\?v=[0-9]+)?#assets/logo.svg?v=7#g' "$file"
           done
 
       - name: Setup Pages
