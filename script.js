@@ -4,7 +4,7 @@
   if (!document.querySelector('link[data-roseen-theme]')) {
     const theme = document.createElement('link');
     theme.rel = 'stylesheet';
-    theme.href = 'theme.css?v=20260911';
+    theme.href = 'theme.css?v=20260911-logo2';
     theme.dataset.roseenTheme = 'true';
     document.head.appendChild(theme);
   }
@@ -13,7 +13,7 @@
   const API_BASE = (window.ROSEEN_API_BASE || '').replace(/\/$/, '');
 
   const assetMap = {
-    'logo.svg': 'logo.svg',
+    'logo.svg': 'logo-approved.svg',
     'robot-lab.png': 'robots.jpg',
     'electronics-lab.png': 'electronics.jpg',
     'appliance-lab.png': 'home-appliances.jpg',
