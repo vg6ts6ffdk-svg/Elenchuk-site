@@ -24,6 +24,26 @@
     if (assetMap[name]) img.src = assetMap[name];
   });
 
+  // One canonical desktop navigation on every ROSEEN page.
+  // Inner pages used to keep a legacy section-based menu pointing back to index.html.
+  // Normalize it at runtime so navigation stays identical across the whole site.
+  const nav = document.querySelector('.site-header .nav');
+  if (nav) {
+    const items = [
+      ['index.html', 'Главная'],
+      ['services.html', 'Услуги'],
+      ['robotics.html', 'Робототехника'],
+      ['electronics.html', 'Электроника'],
+      ['about.html', 'О компании'],
+      ['contacts.html', 'Контакты']
+    ];
+    const current = location.pathname.split('/').pop() || 'index.html';
+    nav.innerHTML = items.map(([href, label]) => {
+      const active = href === current;
+      return `<a href="${href}"${active ? ' aria-current="page"' : ''}>${label}</a>`;
+    }).join('');
+  }
+
   // One consistent mobile navigation on every ROSEEN page.
   // The legacy <details> menu is disabled so it cannot remain open after navigation.
   const menuWrap = document.querySelector('.menu-wrap');
