@@ -39,7 +39,7 @@ em,.nav a:hover,.hero-card b,.service-card a,.direction-card b,.direction-card-c
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}.hero-glow,.hero-bottom:after,.scan{animation:none!important}.service-card:hover,.direction-card:hover,.hero-card:hover,.btn-primary:hover,.btn-secondary:hover,.btn-outline:hover{transform:none}}
 @media(max-width:980px){.roseen-mobile-menu a{transition:opacity .45s ease,transform .55s cubic-bezier(.2,.8,.2,1),color .2s ease}.roseen-mobile-menu.is-open a{transition-delay:calc(var(--i) * 45ms + 80ms)}}
 
-/* Desktop header: deep corporate graphite with ROSEEN teal as the active accent. Mobile header stays unchanged. */
+/* Desktop header: deep corporate graphite with ROSEEN teal as the active accent. */
 @media(min-width:981px){
   .site-header{background:rgba(17,24,39,.96)!important;color:#F8FAFC!important;border-bottom:1px solid rgba(255,255,255,.10)!important;box-shadow:0 8px 28px rgba(17,24,39,.12)!important}
   .nav a{color:#E5E7EB!important}
@@ -47,5 +47,13 @@ em,.nav a:hover,.hero-card b,.service-card a,.direction-card b,.direction-card-c
   .nav a[aria-current="page"]{color:#00B8A3!important}
   .nav a[aria-current="page"]:after{content:"";display:block;height:2px;margin-top:6px;border-radius:2px;background:#00B8A3;transform-origin:left;animation:roseenNavIn .35s ease both}
   .header-cta{box-shadow:0 10px 28px rgba(0,158,138,.24)!important}
+  .brand{display:flex;align-items:center;background:#FFFFFF;border-radius:10px;padding:4px 10px;box-shadow:0 4px 16px rgba(0,0,0,.12);overflow:hidden}
+  .brand img{width:150px;height:auto}
+}
+
+/* Approved ROSEEN logo is used on both desktop and mobile. */
+@media(max-width:980px){
+  .brand{display:flex;align-items:center;background:#FFFFFF;border-radius:8px;padding:2px 4px;overflow:hidden}
+  .brand img{width:132px;height:auto}
 }
 @keyframes roseenNavIn{from{opacity:0;transform:scaleX(.35)}to{opacity:1;transform:scaleX(1)}}
