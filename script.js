@@ -1,4 +1,14 @@
 (() => {
+  // Load the single corporate theme on every page. Pages share style.css;
+  // theme.css is intentionally injected here so no page can fall back to the legacy dark palette.
+  if (!document.querySelector('link[data-roseen-theme]')) {
+    const theme = document.createElement('link');
+    theme.rel = 'stylesheet';
+    theme.href = 'theme.css?v=20260911';
+    theme.dataset.roseenTheme = 'true';
+    document.head.appendChild(theme);
+  }
+
   const $ = (s, r = document) => [...r.querySelectorAll(s)];
   const API_BASE = (window.ROSEEN_API_BASE || '').replace(/\/$/, '');
 
@@ -46,12 +56,12 @@
     style.textContent = `
       .menu-wrap .mobile-nav{display:none!important}
       @media(max-width:980px){
-        .roseen-mobile-menu{position:fixed;z-index:100000;top:64px;left:0;right:0;bottom:0;display:flex;flex-direction:column;gap:0;padding:28px 24px 40px;background:rgba(5,7,8,.985);border-top:1px solid rgba(255,255,255,.10);overflow-y:auto;overscroll-behavior:contain;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(-12px);transition:opacity .32s var(--ease),transform .42s var(--ease),visibility 0s linear .42s}
+        .roseen-mobile-menu{position:fixed;z-index:100000;top:64px;left:0;right:0;bottom:0;display:flex;flex-direction:column;gap:0;padding:28px 24px 40px;background:rgba(255,255,255,.985);color:#111827;border-top:1px solid rgba(17,24,39,.08);overflow-y:auto;overscroll-behavior:contain;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(-12px);transition:opacity .32s var(--ease),transform .42s var(--ease),visibility 0s linear .42s}
         .roseen-mobile-menu.is-open{opacity:1;visibility:visible;pointer-events:auto;transform:none;transition-delay:0s}
-        .roseen-mobile-menu a{display:block;padding:13px 0;color:#f4f7f4;font-size:27px;line-height:1.12;font-weight:800;letter-spacing:-.025em;border-bottom:1px solid rgba(255,255,255,.08);opacity:0;transform:translateY(-14px);transition:opacity .42s var(--ease),transform .42s var(--ease),color .2s}
+        .roseen-mobile-menu a{display:block;padding:13px 0;color:#111827;font-size:27px;line-height:1.12;font-weight:800;letter-spacing:-.025em;border-bottom:1px solid rgba(17,24,39,.08);opacity:0;transform:translateY(-14px);transition:opacity .42s var(--ease),transform .42s var(--ease),color .2s}
         .roseen-mobile-menu.is-open a{opacity:1;transform:none;transition-delay:calc(var(--i) * 45ms + 80ms)}
-        .roseen-mobile-menu a:hover{color:var(--green2)}
-        .roseen-mobile-menu a:last-child{margin-top:18px;padding:16px 18px;border:1px solid rgba(240,168,58,.45);border-radius:14px;background:rgba(240,168,58,.10);color:var(--green2)}
+        .roseen-mobile-menu a:hover{color:#008577}
+        .roseen-mobile-menu a:last-child{margin-top:18px;padding:16px 18px;border:1px solid rgba(0,158,138,.35);border-radius:14px;background:#DDF5F0;color:#007A6D}
         body.menu-open{overflow:hidden}
       }
       @media(min-width:981px){.roseen-mobile-menu{display:none!important}}
