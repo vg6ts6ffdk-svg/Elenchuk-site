@@ -51,14 +51,14 @@ jobs:
             sed -i -E 's#<link rel="stylesheet" href="[^\"]*style\.css[^\"]*">##g' "$file"
             sed -i -E 's#<link rel="stylesheet" href="[^\"]*theme\.css[^\"]*">##g' "$file"
             sed -i -E 's#<link rel="stylesheet" href="[^\"]*brand\.css[^\"]*">##g' "$file"
-            sed -i 's#</head>#<link rel="stylesheet" href="style.css?v=13"></head>#' "$file"
+            sed -i 's#</head>#<link rel="stylesheet" href="style.css?v=14"></head>#' "$file"
 
             # Exactly one versioned script reference.
             perl -0pi -e 's#<script src="(?:\./)?script\.js(?:\?[^" ]*)?"></script>##g' "$file"
-            sed -i "s#</body>#<script>window.ROSEEN_API_BASE=${API_BASE_JSON};</script><script src=\"script.js?v=8\"></script></body>#" "$file"
+            sed -i "s#</body>#<script>window.ROSEEN_API_BASE=${API_BASE_JSON};</script><script src=\"script.js?v=9\"></script></body>#" "$file"
 
             # Keep the approved ROSEEN logo unchanged; only bust the browser cache.
-            sed -i -E 's#assets/logo\.svg(\?v=[0-9]+)?#assets/logo.svg?v=4#g' "$file"
+            sed -i -E 's#assets/logo\.svg(\?v=[0-9]+)?#assets/logo.svg?v=5#g' "$file"
           done
 
       - name: Setup Pages
