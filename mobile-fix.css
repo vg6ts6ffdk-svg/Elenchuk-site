@@ -1,0 +1,35 @@
+/* ROSEEN mobile layout correction */
+@media (max-width: 620px) {
+  html, body { width:100%; max-width:100%; overflow-x:hidden !important; }
+  .container { width:calc(100% - 28px) !important; max-width:none !important; }
+  .section { padding:64px 0 !important; }
+  .hero { padding-top:96px !important; }
+  h1 { font-size:46px !important; line-height:.98 !important; letter-spacing:-.045em !important; max-width:100% !important; }
+  h2 { font-size:38px !important; line-height:1 !important; letter-spacing:-.04em !important; max-width:100% !important; }
+  h3 { font-size:21px !important; }
+  .lead { font-size:16px !important; line-height:1.45 !important; max-width:100% !important; }
+  .section-head { max-width:100% !important; margin-bottom:34px !important; }
+  .section-head p { font-size:15px !important; }
+  .hero-grid, .inner-grid, .request-grid, .split { grid-template-columns:1fr !important; gap:28px !important; }
+  .hero-art { min-height:340px !important; }
+  .hero-image { height:340px !important; border-radius:24px !important; }
+  .hero-card { right:8px !important; bottom:18px !important; width:210px !important; }
+  .service-grid, .direction-grid, .steps, .numbers-grid, .form-grid { grid-template-columns:1fr !important; }
+  .service-card, .step { min-height:auto !important; }
+  .direction-grid { gap:12px !important; }
+  .direction-card { min-height:auto !important; }
+  .direction-card img { height:220px !important; }
+  .feature-image { min-height:320px !important; }
+  .feature-copy { padding:28px !important; }
+  .number { border-left:0 !important; border-top:1px solid rgba(17,24,39,.12) !important; padding:18px 0 !important; }
+  .number:first-child { border-top:0 !important; }
+  .request-grid { gap:24px !important; }
+  .form { padding:20px !important; }
+  .form-footer { align-items:flex-start !important; flex-direction:column !important; }
+  .form-footer .btn { width:100% !important; }
+  .final-panel { padding:30px !important; }
+  .footer-inner { align-items:flex-start !important; flex-direction:column !important; }
+  .footer-inner img { width:132px !important; }
+  .mobile-nav { inset:64px 0 0 !important; }
+  .mobile-nav a { font-size:24px !important; }
+}
