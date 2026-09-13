@@ -1,12 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1426 282" role="img" aria-labelledby="title desc">
-  <title id="title">ROSEEN — Robotics · Service · Engineering</title>
-  <desc id="desc">ROSEEN corporate logo with the approved lower descriptor alignment.</desc>
-  <defs>
-    <clipPath id="lower"><rect x="0" y="238" width="1426" height="44"/></clipPath>
-  </defs>
-  <image href="../logo.svg" x="0" y="0" width="1426" height="282"/>
-  <rect x="0" y="238" width="1426" height="44" fill="#fff"/>
-  <g transform="translate(60.43 0) scale(0.957356 1)" clip-path="url(#lower)">
-    <image href="../logo.svg" x="0" y="0" width="1426" height="282"/>
-  </g>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1426 282"><image href="/logo-approved.svg" x="0" y="0" width="1426" height="282" preserveAspectRatio="xMidYMid meet"/></svg>
