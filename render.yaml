@@ -4,6 +4,7 @@ services:
     runtime: node
     region: frankfurt
     plan: 0.5c-512mb
+    branch: main
     buildCommand: npm install
     startCommand: npm start
     autoDeployTrigger: checksPass
