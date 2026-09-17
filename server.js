@@ -6,7 +6,6 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import Database from "better-sqlite3";
 import pg from "pg";
-import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import path from "node:path";
 import fs from "node:fs";
 import { randomUUID } from "node:crypto";
@@ -20,21 +19,11 @@ const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "admin@roseen.local";
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "change-me-now";
 const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || "";
 const DATABASE_URL = process.env.DATABASE_URL || "";
-const STORAGE_BUCKET = process.env.S3_BUCKET || "";
-const STORAGE_ENDPOINT = process.env.AWS_ENDPOINT_URL_S3 || "";
-const STORAGE_REGION = process.env.AWS_REGION || "eu-central-1";
-const STORAGE_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID || "";
-const STORAGE_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY || "";
-const STORAGE_FORCE_PATH_STYLE = (process.env.NEON_STORAGE_FORCE_PATH_STYLE || "true") !== "false";
+const STORAGE_SIGNER_URL = (process.env.STORAGE_SIGNER_URL || "").replace(/\/+$/, "");
+const STORAGE_SIGNER_KEY = process.env.STORAGE_SIGNER_KEY || "";
 const ROOT = process.cwd();
 const usePostgres = Boolean(DATABASE_URL);
-const useObjectStorage = Boolean(
-  usePostgres &&
-  STORAGE_BUCKET &&
-  STORAGE_ENDPOINT &&
-  STORAGE_ACCESS_KEY_ID &&
-  STORAGE_SECRET_ACCESS_KEY
-);
+const useObjectStorage = Boolean(usePostgres && STORAGE_SIGNER_URL && STORAGE_SIGNER_KEY);
 
 if (isProduction && JWT_SECRET === "change-this-secret-in-production") {
   throw new Error("JWT_SECRET must be configured in production");
@@ -60,18 +49,6 @@ const DATA_DIR = usePostgres ? null : resolveDataDir();
 const UPLOADS = usePostgres ? null : path.join(DATA_DIR, "uploads");
 const DB_PATH = usePostgres ? null : path.join(DATA_DIR, "roseen.db");
 if (UPLOADS) fs.mkdirSync(UPLOADS, { recursive: true });
-
-const s3 = useObjectStorage
-  ? new S3Client({
-      region: STORAGE_REGION,
-      endpoint: STORAGE_ENDPOINT,
-      forcePathStyle: STORAGE_FORCE_PATH_STYLE,
-      credentials: {
-        accessKeyId: STORAGE_ACCESS_KEY_ID,
-        secretAccessKey: STORAGE_SECRET_ACCESS_KEY
-      }
-    })
-  : null;
 
 let sqlite = null;
 let pool = null;
@@ -231,11 +208,43 @@ function createObjectKey(requestId, originalName) {
   return `requests/${requestId}/${Date.now()}-${randomUUID()}-${safeObjectName(originalName)}`;
 }
 
+async function getSignedStorageUrl(method, key, expiresIn = 300) {
+  if (!useObjectStorage) throw new Error("Object storage is not configured");
+  const response = await fetch(`${STORAGE_SIGNER_URL}/sign`, {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      "x-roseen-storage-key": STORAGE_SIGNER_KEY
+    },
+    body: JSON.stringify({ method, key, expiresIn })
+  });
+  if (!response.ok) {
+    throw new Error(`Storage signer failed with HTTP ${response.status}`);
+  }
+  const payload = await response.json();
+  if (!payload?.url) throw new Error("Storage signer returned no URL");
+  return payload.url;
+}
+
+async function putStoredObject(key, file) {
+  const url = await getSignedStorageUrl("PUT", key, 300);
+  const response = await fetch(url, {
+    method: "PUT",
+    headers: { "content-type": file.mimetype || "application/octet-stream" },
+    body: file.buffer
+  });
+  if (!response.ok) throw new Error(`Object upload failed with HTTP ${response.status}`);
+}
+
 async function deleteStoredObjects(keys) {
-  if (!s3 || !keys.length) return;
-  await Promise.allSettled(
-    keys.map(Key => s3.send(new DeleteObjectCommand({ Bucket: STORAGE_BUCKET, Key })))
-  );
+  if (!useObjectStorage || !keys.length) return;
+  await Promise.allSettled(keys.map(async key => {
+    const url = await getSignedStorageUrl("DELETE", key, 300);
+    const response = await fetch(url, { method: "DELETE" });
+    if (!response.ok && response.status !== 404) {
+      throw new Error(`Object cleanup failed with HTTP ${response.status}`);
+    }
+  }));
 }
 
 app.get("/api/health", async (_req, res) => {
@@ -289,12 +298,7 @@ app.post("/api/requests", upload.array("files", 8), async (req, res) => {
       for (const f of (req.files || [])) {
         if (useObjectStorage) {
           const objectKey = createObjectKey(requestId, f.originalname);
-          await s3.send(new PutObjectCommand({
-            Bucket: STORAGE_BUCKET,
-            Key: objectKey,
-            Body: f.buffer,
-            ContentType: f.mimetype
-          }));
+          await putStoredObject(objectKey, f);
           uploadedKeys.push(objectKey);
           await client.query(
             "INSERT INTO files(request_id,original_name,mime,size,object_key) VALUES($1,$2,$3,$4,$5)",
@@ -404,20 +408,14 @@ app.get("/api/files/:id", auth, async (req, res) => {
     res.setHeader("Content-Type", file.mime || "application/octet-stream");
     res.setHeader("Content-Disposition", `attachment; filename*=UTF-8''${encodeURIComponent(file.original_name)}`);
 
-    if (file.object_key && s3) {
-      const stored = await s3.send(new GetObjectCommand({
-        Bucket: STORAGE_BUCKET,
-        Key: file.object_key
-      }));
-      if (stored.ContentLength != null) res.setHeader("Content-Length", String(stored.ContentLength));
-      if (stored.Body && typeof stored.Body.pipe === "function") {
-        return stored.Body.pipe(res);
-      }
-      if (stored.Body?.transformToByteArray) {
-        const bytes = await stored.Body.transformToByteArray();
-        return res.end(Buffer.from(bytes));
-      }
-      return res.status(500).end();
+    if (file.object_key && useObjectStorage) {
+      const url = await getSignedStorageUrl("GET", file.object_key, 300);
+      const stored = await fetch(url);
+      if (!stored.ok) return res.status(stored.status === 404 ? 404 : 502).end();
+      const length = stored.headers.get("content-length");
+      if (length) res.setHeader("Content-Length", length);
+      const bytes = Buffer.from(await stored.arrayBuffer());
+      return res.end(bytes);
     }
 
     if (file.content) return res.send(file.content);
