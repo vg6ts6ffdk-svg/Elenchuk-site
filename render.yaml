@@ -3,7 +3,7 @@ services:
     name: roseen-api
     runtime: node
     region: frankfurt
-    plan: 0.5c-512mb
+    plan: free
     branch: main
     buildCommand: npm install
     startCommand: npm start
@@ -11,16 +11,14 @@ services:
     healthCheckPath: /api/health
     domains:
       - api.roseen.ru
-    renderSubdomainPolicy: disabled
-    disk:
-      name: roseen-data
-      mountPath: /var/data
-      sizeGB: 10
+    renderSubdomainPolicy: enabled
     envVars:
       - key: NODE_ENV
         value: production
-      - key: ROSEEN_DATA_DIR
-        value: /var/data
+      - key: DATABASE_URL
+        fromDatabase:
+          name: roseen-db
+          property: connectionString
       - key: FRONTEND_ORIGIN
         value: https://roseen.ru,https://www.roseen.ru,https://vg6ts6ffdk-svg.github.io
       - key: ADMIN_EMAIL
@@ -29,3 +27,12 @@ services:
         sync: false
       - key: ADMIN_PASSWORD
         sync: false
+
+databases:
+  - name: roseen-db
+    plan: 0.1c-256mb
+    region: frankfurt
+    databaseName: roseen
+    user: roseen
+    postgresMajorVersion: "18"
+    diskSizeGB: 1
