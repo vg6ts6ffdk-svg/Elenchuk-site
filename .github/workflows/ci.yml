@@ -25,11 +25,25 @@ jobs:
         run: |
           node --check server.js
           node --check script.js
+          node --check build-pages.mjs
+          node --check validate-site.mjs
 
-      - name: Check required site files
+      - name: Check required source files
         run: |
           test -f index.html
           test -f style.css
+          test -f theme.css
+          test -f brand.css
+          test -f mobile-fix.css
           test -f script.js
           test -f server.js
           test -f admin.html
+          test -f CNAME
+
+      - name: Build production site
+        env:
+          ROSEEN_API_BASE: https://api.roseen.ru
+        run: node build-pages.mjs
+
+      - name: Validate production links and assets
+        run: node validate-site.mjs dist
