@@ -17,17 +17,9 @@ services:
         value: production
       - key: DATABASE_URL
         sync: false
-      - key: S3_BUCKET
-        value: roseen-attachments
-      - key: AWS_ENDPOINT_URL_S3
-        value: https://br-crimson-bread-b2b6yi3f.storage.c-6.eu-central-1.aws.neon.tech
-      - key: AWS_REGION
-        value: eu-central-1
-      - key: NEON_STORAGE_FORCE_PATH_STYLE
-        value: "true"
-      - key: AWS_ACCESS_KEY_ID
-        sync: false
-      - key: AWS_SECRET_ACCESS_KEY
+      - key: STORAGE_SIGNER_URL
+        value: https://br-crimson-bread-b2b6yi3f-storagesigner.compute.c-6.eu-central-1.aws.neon.tech
+      - key: STORAGE_SIGNER_KEY
         sync: false
       - key: FRONTEND_ORIGIN
         value: https://roseen.ru,https://www.roseen.ru,https://vg6ts6ffdk-svg.github.io
