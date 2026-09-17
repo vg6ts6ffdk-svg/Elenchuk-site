@@ -8,6 +8,9 @@ const SCRIPT_VERSION = '12';
 const LOGO_VERSION = '13';
 const API_BASE = process.env.ROSEEN_API_BASE || 'https://api.roseen.ru';
 
+const desktopNav = '<nav class="nav"><a href="index.html">Главная</a><a href="services.html">Услуги</a><a href="robotics.html">Робототехника</a><a href="electronics.html">Электроника</a><a href="about.html">О компании</a><a href="contacts.html">Контакты</a></nav>';
+const mobileNav = '<nav class="mobile-nav"><a href="index.html">Главная</a><a href="services.html">Услуги</a><a href="robotics.html">Робототехника</a><a href="electronics.html">Электроника</a><a href="appliances.html">Бытовая техника</a><a href="engineering.html">Инженерия</a><a href="about.html">О компании</a><a href="contacts.html">Контакты</a><a href="contacts.html#request">Оставить заявку ↗</a></nav>';
+
 const exists = async file => {
   try {
     await readFile(file);
@@ -63,6 +66,8 @@ for (const entry of rootEntries) {
   html = html.replace(/<link\b[^>]*rel=["']stylesheet["'][^>]*href=["'][^"']*(?:style|theme|brand|mobile-fix)\.css(?:\?[^"']*)?["'][^>]*>\s*/gi, '');
   html = html.replace(/<script\b[^>]*src=["'](?:\.\/)?script\.js(?:\?[^"']*)?["'][^>]*><\/script>\s*/gi, '');
   html = html.replace(/<script>\s*window\.ROSEEN_API_BASE=.*?<\/script>\s*/gis, '');
+  html = html.replace(/<nav class=["']nav["']>[\s\S]*?<\/nav>/i, desktopNav);
+  html = html.replace(/<nav class=["']mobile-nav["']>[\s\S]*?<\/nav>/i, mobileNav);
   html = html.replace(/assets\/logo\.svg(?:\?v=\d+)?/g, `assets/logo.svg?v=${LOGO_VERSION}`);
   html = html.replace('</head>', `<link rel="stylesheet" href="style.css?v=${STYLE_VERSION}"></head>`);
   html = html.replace('</body>', `<script>window.ROSEEN_API_BASE=${apiBaseJson};</script><script src="script.js?v=${SCRIPT_VERSION}"></script></body>`);
