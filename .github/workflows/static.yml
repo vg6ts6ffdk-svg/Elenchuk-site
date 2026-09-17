@@ -24,45 +24,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
       - name: Build public site
         env:
           ROSEEN_API_BASE: ${{ vars.ROSEEN_API_BASE }}
-        run: |
-          export ROSEEN_API_BASE="${ROSEEN_API_BASE:-https://api.roseen.ru}"
-          rm -rf dist
-          mkdir -p dist/assets
-          for file in *.html; do
-            if [ "$file" != "page-template.html" ]; then cp "$file" dist/; fi
-          done
+        run: node build-pages.mjs
 
-          # Keep the original layout CSS, then apply the branded theme and a
-          # final brand layer. The approved logo is copied byte-for-byte.
-          cat style.css theme.css brand.css > dist/style.css
-          cp theme.css brand.css script.js scroll.js logo.svg robots.txt sitemap.xml CNAME dist/
-          cp robots.jpg dist/assets/robot-lab.png
-          cp electronics.jpg dist/assets/electronics-lab.png
-          cp home-appliances.jpg dist/assets/appliance-lab.png
-          cp robot-cta.jpg dist/assets/robot-cta.jpg
-          cp logo.svg dist/assets/logo.svg
-
-          API_BASE_JSON=$(node -p 'JSON.stringify(process.env.ROSEEN_API_BASE || "")')
-          for file in dist/*.html; do
-            # One deterministic, versioned stylesheet reference.
-            # v=17 intentionally changes whenever the generated CSS bundle changes,
-            # preventing browsers from reusing the previous cached bundle.
-            sed -i -E 's#<link rel="stylesheet" href="[^\"]*style\.css[^\"]*">##g' "$file"
-            sed -i -E 's#<link rel="stylesheet" href="[^\"]*theme\.css[^\"]*">##g' "$file"
-            sed -i -E 's#<link rel="stylesheet" href="[^\"]*brand\.css[^\"]*">##g' "$file"
-            sed -i 's#</head>#<link rel="stylesheet" href="style.css?v=17"></head>#' "$file"
-
-            # Exactly one versioned script reference. v=11 forces browsers to
-            # fetch the navigation-normalization code after deployment.
-            perl -0pi -e 's#<script src="(?:\./)?script\.js(?:\?[^" ]*)?"></script>##g' "$file"
-            sed -i "s#</body>#<script>window.ROSEEN_API_BASE=${API_BASE_JSON};</script><script src=\"script.js?v=11\"></script></body>#" "$file"
-
-            # Use the approved ROSEEN logo asset and force a fresh browser fetch.
-            sed -i -E 's#assets/logo\.svg(\?v=[0-9]+)?#assets/logo.svg?v=10#g' "$file"
-          done
+      - name: Validate production output
+        run: node validate-site.mjs dist
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
