@@ -6,8 +6,10 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import Database from "better-sqlite3";
 import pg from "pg";
+import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import path from "node:path";
 import fs from "node:fs";
+import { randomUUID } from "node:crypto";
 
 const { Pool } = pg;
 const app = express();
@@ -18,8 +20,21 @@ const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "admin@roseen.local";
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "change-me-now";
 const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || "";
 const DATABASE_URL = process.env.DATABASE_URL || "";
+const STORAGE_BUCKET = process.env.S3_BUCKET || "";
+const STORAGE_ENDPOINT = process.env.AWS_ENDPOINT_URL_S3 || "";
+const STORAGE_REGION = process.env.AWS_REGION || "eu-central-1";
+const STORAGE_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID || "";
+const STORAGE_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY || "";
+const STORAGE_FORCE_PATH_STYLE = (process.env.NEON_STORAGE_FORCE_PATH_STYLE || "true") !== "false";
 const ROOT = process.cwd();
 const usePostgres = Boolean(DATABASE_URL);
+const useObjectStorage = Boolean(
+  usePostgres &&
+  STORAGE_BUCKET &&
+  STORAGE_ENDPOINT &&
+  STORAGE_ACCESS_KEY_ID &&
+  STORAGE_SECRET_ACCESS_KEY
+);
 
 if (isProduction && JWT_SECRET === "change-this-secret-in-production") {
   throw new Error("JWT_SECRET must be configured in production");
@@ -45,6 +60,18 @@ const DATA_DIR = usePostgres ? null : resolveDataDir();
 const UPLOADS = usePostgres ? null : path.join(DATA_DIR, "uploads");
 const DB_PATH = usePostgres ? null : path.join(DATA_DIR, "roseen.db");
 if (UPLOADS) fs.mkdirSync(UPLOADS, { recursive: true });
+
+const s3 = useObjectStorage
+  ? new S3Client({
+      region: STORAGE_REGION,
+      endpoint: STORAGE_ENDPOINT,
+      forcePathStyle: STORAGE_FORCE_PATH_STYLE,
+      credentials: {
+        accessKeyId: STORAGE_ACCESS_KEY_ID,
+        secretAccessKey: STORAGE_SECRET_ACCESS_KEY
+      }
+    })
+  : null;
 
 let sqlite = null;
 let pool = null;
@@ -81,9 +108,13 @@ async function initDatabase() {
         original_name TEXT NOT NULL,
         mime TEXT,
         size BIGINT,
-        content BYTEA NOT NULL
+        content BYTEA,
+        object_key TEXT
       );
+      ALTER TABLE files ADD COLUMN IF NOT EXISTS object_key TEXT;
+      ALTER TABLE files ALTER COLUMN content DROP NOT NULL;
       CREATE INDEX IF NOT EXISTS idx_files_request_id ON files(request_id);
+      CREATE INDEX IF NOT EXISTS idx_files_object_key ON files(object_key);
       CREATE INDEX IF NOT EXISTS idx_requests_created_at ON requests(created_at DESC);
     `);
 
@@ -94,6 +125,7 @@ async function initDatabase() {
       console.log(`Initial admin created: ${ADMIN_EMAIL}`);
     }
     console.log("Database backend: PostgreSQL");
+    console.log(`Attachment backend: ${useObjectStorage ? "Neon Object Storage" : "PostgreSQL fallback"}`);
     return;
   }
 
@@ -135,6 +167,7 @@ async function initDatabase() {
     console.log(`Initial admin created: ${ADMIN_EMAIL}`);
   }
   console.log(`Database backend: SQLite (${DB_PATH})`);
+  console.log("Attachment backend: local filesystem");
 }
 
 app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
@@ -189,11 +222,32 @@ function auth(req, res, next) {
   }
 }
 
+function safeObjectName(name) {
+  const base = path.basename(name || "file").replace(/[^a-zA-Z0-9._-]/g, "_");
+  return base || "file";
+}
+
+function createObjectKey(requestId, originalName) {
+  return `requests/${requestId}/${Date.now()}-${randomUUID()}-${safeObjectName(originalName)}`;
+}
+
+async function deleteStoredObjects(keys) {
+  if (!s3 || !keys.length) return;
+  await Promise.allSettled(
+    keys.map(Key => s3.send(new DeleteObjectCommand({ Bucket: STORAGE_BUCKET, Key })))
+  );
+}
+
 app.get("/api/health", async (_req, res) => {
   try {
     if (usePostgres) await pool.query("SELECT 1");
     else sqlite.prepare("SELECT 1").get();
-    res.json({ ok: true, service: "roseen-api", database: usePostgres ? "postgres" : "sqlite" });
+    res.json({
+      ok: true,
+      service: "roseen-api",
+      database: usePostgres ? "postgres" : "sqlite",
+      attachments: useObjectStorage ? "object-storage" : (usePostgres ? "database" : "filesystem")
+    });
   } catch {
     res.status(503).json({ ok: false, service: "roseen-api", database: "unavailable" });
   }
@@ -223,6 +277,7 @@ app.post("/api/requests", upload.array("files", 8), async (req, res) => {
 
   if (usePostgres) {
     const client = await pool.connect();
+    const uploadedKeys = [];
     try {
       await client.query("BEGIN");
       const inserted = await client.query(
@@ -230,16 +285,34 @@ app.post("/api/requests", upload.array("files", 8), async (req, res) => {
         [equipment_type, model || "", problem, contact]
       );
       const requestId = Number(inserted.rows[0].id);
+
       for (const f of (req.files || [])) {
-        await client.query(
-          "INSERT INTO files(request_id,original_name,mime,size,content) VALUES($1,$2,$3,$4,$5)",
-          [requestId, f.originalname, f.mimetype, f.size, f.buffer]
-        );
+        if (useObjectStorage) {
+          const objectKey = createObjectKey(requestId, f.originalname);
+          await s3.send(new PutObjectCommand({
+            Bucket: STORAGE_BUCKET,
+            Key: objectKey,
+            Body: f.buffer,
+            ContentType: f.mimetype
+          }));
+          uploadedKeys.push(objectKey);
+          await client.query(
+            "INSERT INTO files(request_id,original_name,mime,size,object_key) VALUES($1,$2,$3,$4,$5)",
+            [requestId, f.originalname, f.mimetype, f.size, objectKey]
+          );
+        } else {
+          await client.query(
+            "INSERT INTO files(request_id,original_name,mime,size,content) VALUES($1,$2,$3,$4,$5)",
+            [requestId, f.originalname, f.mimetype, f.size, f.buffer]
+          );
+        }
       }
+
       await client.query("COMMIT");
       return res.status(201).json({ id: requestId, status: "new" });
     } catch (error) {
       await client.query("ROLLBACK");
+      await deleteStoredObjects(uploadedKeys);
       throw error;
     } finally {
       client.release();
@@ -321,12 +394,34 @@ app.patch("/api/requests/:id", auth, async (req, res) => {
 
 app.get("/api/files/:id", auth, async (req, res) => {
   if (usePostgres) {
-    const result = await pool.query("SELECT original_name,mime,content FROM files WHERE id=$1", [req.params.id]);
+    const result = await pool.query(
+      "SELECT original_name,mime,size,content,object_key FROM files WHERE id=$1",
+      [req.params.id]
+    );
     const file = result.rows[0];
     if (!file) return res.status(404).end();
+
     res.setHeader("Content-Type", file.mime || "application/octet-stream");
     res.setHeader("Content-Disposition", `attachment; filename*=UTF-8''${encodeURIComponent(file.original_name)}`);
-    return res.send(file.content);
+
+    if (file.object_key && s3) {
+      const stored = await s3.send(new GetObjectCommand({
+        Bucket: STORAGE_BUCKET,
+        Key: file.object_key
+      }));
+      if (stored.ContentLength != null) res.setHeader("Content-Length", String(stored.ContentLength));
+      if (stored.Body && typeof stored.Body.pipe === "function") {
+        return stored.Body.pipe(res);
+      }
+      if (stored.Body?.transformToByteArray) {
+        const bytes = await stored.Body.transformToByteArray();
+        return res.end(Buffer.from(bytes));
+      }
+      return res.status(500).end();
+    }
+
+    if (file.content) return res.send(file.content);
+    return res.status(404).end();
   }
 
   const file = sqlite.prepare("SELECT * FROM files WHERE id=?").get(req.params.id);
