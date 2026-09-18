@@ -28,13 +28,15 @@ const STORAGE_SIGNER_URL = (process.env.STORAGE_SIGNER_URL || "").replace(/\/+$/
 const STORAGE_SIGNER_KEY = process.env.STORAGE_SIGNER_KEY || "";
 const usePostgres = Boolean(DATABASE_URL);
 const useObjectStorage = Boolean(usePostgres && STORAGE_SIGNER_URL && STORAGE_SIGNER_KEY);
+const configurationErrors=[];
 
 if (isProduction && (JWT_SECRET.length < 32 || JWT_SECRET === "change-this-secret-in-production")) {
-  throw new Error("JWT_SECRET must be configured in production");
+  configurationErrors.push('JWT_SECRET');
 }
 if (isProduction && ADMIN_PASSWORD === "change-me-now") {
-  throw new Error("ADMIN_PASSWORD must be configured in production");
+  configurationErrors.push('ADMIN_PASSWORD');
 }
+if(isProduction && !usePostgres) configurationErrors.push('DATABASE_URL');
 
 function resolveDataDir() {
   if (isProduction) throw new Error('Production requires persistent DATABASE_URL; SQLite fallback is disabled');
@@ -43,9 +45,9 @@ function resolveDataDir() {
   return configured;
 }
 
-const DATA_DIR = usePostgres ? null : resolveDataDir();
-const UPLOADS = usePostgres ? null : path.join(DATA_DIR, "uploads");
-const DB_PATH = usePostgres ? null : path.join(DATA_DIR, "roseen.db");
+const DATA_DIR = usePostgres || isProduction ? null : resolveDataDir();
+const UPLOADS = DATA_DIR ? path.join(DATA_DIR, "uploads") : null;
+const DB_PATH = DATA_DIR ? path.join(DATA_DIR, "roseen.db") : null;
 if (UPLOADS) fs.mkdirSync(UPLOADS, { recursive: true });
 
 let sqlite = null;
@@ -60,6 +62,7 @@ async function initDatabase() {
       idleTimeoutMillis: 10000,
       max: 5
     });
+    pool.on('error',error=>console.error('Database pool error:',error.code || 'connection failure'));
 
     await pool.query(`
       CREATE TABLE IF NOT EXISTS admins (
@@ -179,6 +182,24 @@ app.use(cors({
 }));
 app.use(express.json({ limit: "32kb" }));
 app.use(express.urlencoded({ extended: false, limit: '32kb' }));
+let databaseReady;
+async function initialize() {
+  await initDatabase();
+  if(usePostgres) await pool.query('CREATE TABLE IF NOT EXISTS sessions (id TEXT PRIMARY KEY, expires_at BIGINT NOT NULL)');
+  else sqlite.exec('CREATE TABLE IF NOT EXISTS sessions (id TEXT PRIMARY KEY, expires_at INTEGER NOT NULL)');
+}
+// Public pages must remain available during an API/storage outage.
+app.use('/api',async (_req,res,next)=>{
+  if(configurationErrors.length) {
+    console.error('Missing or invalid configuration:',configurationErrors.join(', '));
+    return res.status(503).json({error:'Сервис приёма заявок временно не настроен. Данные остались в форме.',code:'CONFIGURATION_ERROR'});
+  }
+  try { databaseReady ||= initialize(); await databaseReady; next(); }
+  catch(error) {
+    console.error('Database initialization failed:',error.code || error.name);
+    res.status(503).json({error:'Сервис временно недоступен. Данные остались в форме.',code:'DATABASE_UNAVAILABLE'});
+  }
+});
 
 const ALLOWED_MIME_TYPES = new Set([
   "image/jpeg", "image/png", "image/webp", "image/gif", "image/heic", "image/heif",
@@ -506,9 +527,6 @@ app.use((err, req, res, _next) => {
   res.status(500).json({ error: "Внутренняя ошибка сервера" });
 });
 
-await initDatabase();
-if(usePostgres) await pool.query('CREATE TABLE IF NOT EXISTS sessions (id TEXT PRIMARY KEY, expires_at BIGINT NOT NULL)');
-else sqlite.exec('CREATE TABLE IF NOT EXISTS sessions (id TEXT PRIMARY KEY, expires_at INTEGER NOT NULL)');
 export default app;
 if(!process.env.VERCEL) {
   const server=app.listen(PORT, process.env.HOST || (isProduction?'0.0.0.0':'127.0.0.1'),()=>console.log(`ROSEEN listening on ${server.address().port}`));
