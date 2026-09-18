@@ -1,6 +1,185 @@
-<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ROSEEN — Заявка</title><meta name="description" content="Оставить заявку на диагностику и ремонт техники в ROSEEN."><link rel="icon" href="assets/logo.svg"><link rel="stylesheet" href="style.css"></head><body>
-<header class="site-header"><div class="header-inner"><a class="brand" href="index.html"><img src="assets/logo.svg" alt="ROSEEN"></a><nav class="nav"><a href="index.html">Главная</a><a href="services.html">Услуги</a><a href="robotics.html">Робототехника</a><a href="electronics.html">Электроника</a><a href="about.html">О компании</a><a href="contacts.html">Контакты</a></nav><a class="btn btn-primary header-cta magnetic" href="contacts.html#request">Оставить заявку ↗</a><details class="menu-wrap"><summary class="menu" aria-label="Меню"><span></span><span></span></summary><nav class="mobile-nav"><a href="index.html">Главная</a><a href="services.html">Услуги</a><a href="robotics.html">Робототехника</a><a href="electronics.html">Электроника</a><a href="appliances.html">Бытовая техника</a><a href="engineering.html">Инженерия</a><a href="about.html">О компании</a><a href="contacts.html">Контакты</a><a href="contacts.html#request">Оставить заявку ↗</a></nav></details></div></header>
-<main><section class="inner-hero section"><div class="scan"></div><div class="container inner-grid"><div class="reveal"><div class="eyebrow"><i></i> 03 / REQUEST</div><h1>Техника перестала работать?</h1><p class="lead">Опишите симптом, укажите модель и приложите фото или видео. Чем точнее исходные данные, тем быстрее можно перейти к диагностике.</p><div class="trust"><span>Модель</span><span>Симптом</span><span>Код ошибки</span><span>Фото / видео</span></div></div><div class="reveal delay"><img class="inner-image" src="assets/robot-cta.jpg" alt="Заявка на сервис ROSEEN"></div></div></section>
-<section id="request" class="section request"><div class="container request-grid"><div class="reveal"><div class="eyebrow"><i></i> ЗАЯВКА</div><h2>Начнём<br><em>с фактов.</em></h2><p class="lead">Заполните форму. Она передаст данные и прикреплённые файлы в сервисную систему.</p></div><form id="request-form" class="form reveal delay"><div class="form-grid"><div class="field"><label>Направление *</label><select name="category" required><option value="">Выберите</option><option>Робототехника</option><option>Электроника</option><option>Бытовая техника</option><option>Профессиональная техника</option><option>Другое</option></select></div><div class="field"><label>Модель</label><input name="model" placeholder="Производитель / модель"></div><div class="field full"><label>Что произошло? *</label><textarea name="symptom" required placeholder="Опишите симптом, ошибку и когда проблема появилась"></textarea></div><div class="field"><label>Контакт *</label><input name="contact" required placeholder="Telegram / email / телефон"></div><div class="field"><label>Фото / видео</label><input name="files" type="file" accept="image/*,video/*,.pdf" multiple></div></div><div class="form-footer"><button class="btn btn-primary magnetic" type="submit">Отправить заявку ↗</button><span class="form-note">До 8 файлов, до 50 МБ каждый.</span></div><div class="form-status" aria-live="polite"></div></form></div></section>
-<section class="section dark"><div class="container"><div class="section-head reveal"><div class="eyebrow"><i></i> ПЕРЕД ОТПРАВКОЙ</div><h2>Что полезно<br><em>приложить.</em></h2></div><div class="fault-grid"><article class="fault-card reveal"><span>01</span><h3>Фото шильдика</h3><p>Производитель, модель и серийные данные помогают правильно определить технику.</p></article><article class="fault-card reveal"><span>02</span><h3>Код ошибки</h3><p>Если на дисплее или в приложении есть код, укажите его полностью.</p></article><article class="fault-card reveal"><span>03</span><h3>Видео симптома</h3><p>Звук, ошибка, остановка, протечка или другое проявление проблемы.</p></article><article class="fault-card reveal"><span>04</span><h3>История ремонта</h3><p>Если техника уже ремонтировалась, кратко опишите, что меняли и когда.</p></article></div></div></section></main>
-<footer><div class="container footer-inner"><img src="assets/logo.svg" alt="ROSEEN"><div>ROSEEN · Robotics · Service · Engineering<br><span>Диагностика · Ремонт · Сервис</span></div></div></footer><script src="script.js"></script></body></html>
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ROSEEN — Заявка</title>
+<meta name="description" content="Оставить заявку на диагностику и ремонт техники в ROSEEN.">
+<link rel="icon" href="logo-approved.svg">
+<link rel="canonical" href="https://roseen.ru/contacts.html">
+<link rel="stylesheet" href="style.css">
+<script src="api-config.js" defer>
+</script>
+<script src="script.js" defer>
+</script>
+<meta property="og:type" content="website"><meta property="og:locale" content="ru_RU"><meta property="og:title" content="ROSEEN — Заявка"><meta property="og:description" content="Оставить заявку на диагностику и ремонт техники в ROSEEN."><meta property="og:image" content="https://roseen.ru/assets/robotics-1280.webp"></head>
+<body>
+<a class="skip-link" href="#main">Перейти к содержимому</a>
+<header class="site-header">
+<div class="header-inner">
+<a class="brand" href="index.html" aria-label="ROSEEN — главная">
+<img src="logo-approved.svg" alt="ROSEEN" width="1426" height="282">
+</a>
+<nav class="nav" aria-label="Основная навигация">
+<a href="index.html">Главная</a>
+<a href="directions.html">Направления</a>
+<a href="services.html">Услуги</a>
+<a href="about.html">О компании</a>
+<a href="faq.html">FAQ</a>
+</nav>
+<a class="btn btn-primary header-cta magnetic" href="contacts.html#request">Оставить заявку ↗</a>
+<details class="menu-wrap">
+<summary class="menu" aria-label="Меню" aria-expanded="false" aria-controls="mobile-menu">
+<span>
+</span>
+<span>
+</span>
+</summary>
+<nav id="mobile-menu" class="mobile-nav" aria-label="Мобильная навигация">
+<a href="index.html">Главная</a>
+<a href="directions.html">Направления</a>
+<div class="mobile-subnav">
+<a href="robotics.html">Робототехника</a>
+<a href="electronics.html">Электроника</a>
+<a href="appliances.html">Бытовая техника</a>
+<a href="professional.html">Профессиональная техника</a>
+</div>
+<a href="services.html">Услуги</a>
+<div class="mobile-subnav">
+<a href="diagnostika.html">Диагностика</a>
+<a href="remont.html">Ремонт</a>
+<a href="servis.html">Обслуживание</a>
+<a href="engineering.html">Инженерная помощь</a>
+</div>
+<a href="about.html">О компании</a>
+<a href="faq.html">FAQ</a>
+<a href="contacts.html#request">Оставить заявку ↗</a>
+</nav>
+</details>
+</div>
+</header>
+<main id="main"><div class="service-region">Москва и Московская область · Другие регионы — по согласованию</div>
+<section class="inner-hero section">
+<div class="scan">
+</div>
+<div class="container inner-grid">
+<div class="reveal">
+<div class="eyebrow">
+<i>
+</i> 03 / REQUEST</div>
+<h1>Техника перестала работать?</h1>
+<p class="lead">Опишите симптом, укажите модель и приложите фото или видео. Чем точнее исходные данные, тем быстрее можно перейти к диагностике.</p>
+<div class="trust">
+<span>Модель</span>
+<span>Симптом</span>
+<span>Код ошибки</span>
+<span>Фото / видео</span>
+</div>
+</div>
+<div class="reveal delay">
+<img class="inner-image" src="assets/robotics-1280.webp" srcset="assets/robotics-640.webp 640w, assets/robotics-1280.webp 1280w" sizes="(max-width: 800px) 100vw, 50vw" width="1280" height="853" decoding="async" alt="Заявка на сервис ROSEEN" fetchpriority="high">
+</div>
+</div>
+</section>
+<section id="request" class="section request">
+<div class="container request-grid">
+<div class="reveal">
+<div class="eyebrow">
+<i>
+</i> ЗАЯВКА</div>
+<h2>Начнём<br>
+<em>с фактов.</em>
+</h2>
+<p class="lead">Заполните форму. Она передаст данные и прикреплённые файлы в сервисную систему.</p>
+</div>
+<form id="request-form" class="form reveal delay" method="post" action="/api/requests" enctype="multipart/form-data">
+<div class="form-grid">
+<div class="field">
+<label for="equipment_type">Направление *</label>
+<select id="equipment_type" name="equipment_type" required >
+<option value="">Выберите</option>
+<option>Робототехника</option>
+<option>Электроника</option>
+<option>Бытовая техника</option>
+<option>Профессиональная техника</option>
+<option>Другое</option>
+</select>
+</div>
+<div class="field">
+<label for="model">Модель</label>
+<input id="model" name="model" maxlength="200" placeholder="Производитель / модель">
+</div>
+<div class="field full">
+<label for="problem">Что произошло? *</label>
+<textarea id="problem" name="problem" maxlength="5000" required placeholder="Опишите симптом, ошибку и когда проблема появилась">
+</textarea>
+</div>
+<div class="field">
+<label for="contact">Контакт *</label>
+<input id="contact" name="contact" maxlength="300" autocomplete="off" required placeholder="Telegram / email / телефон">
+</div>
+<div class="field">
+<label for="files">Фото / видео</label>
+<input id="files" name="files" type="file" accept=".jpg,.jpeg,.png,.webp,.gif,.heic,.heif,.pdf,.mp4,.mov,.webm" multiple>
+</div>
+</div>
+<div class="form-footer">
+<button class="btn btn-primary magnetic" type="submit">Отправить заявку ↗</button>
+<span class="form-note">До 3 файлов, суммарно до 3 МБ. Большие видео можно передать после согласования.</span>
+</div>
+<div class="form-status" role="status" aria-live="polite" aria-atomic="true">
+</div>
+<noscript>
+<p>JavaScript отключён. После отправки сервис покажет номер заявки в отдельном ответе.</p>
+</noscript>
+</form>
+</div>
+</section>
+<section class="section dark">
+<div class="container">
+<div class="section-head reveal">
+<div class="eyebrow">
+<i>
+</i> ПЕРЕД ОТПРАВКОЙ</div>
+<h2>Что полезно<br>
+<em>приложить.</em>
+</h2>
+</div>
+<div class="fault-grid">
+<article class="fault-card reveal">
+<span>01</span>
+<h3>Фото шильдика</h3>
+<p>Производитель, модель и серийные данные помогают правильно определить технику.</p>
+</article>
+<article class="fault-card reveal">
+<span>02</span>
+<h3>Код ошибки</h3>
+<p>Если на дисплее или в приложении есть код, укажите его полностью.</p>
+</article>
+<article class="fault-card reveal">
+<span>03</span>
+<h3>Видео симптома</h3>
+<p>Звук, ошибка, остановка, протечка или другое проявление проблемы.</p>
+</article>
+<article class="fault-card reveal">
+<span>04</span>
+<h3>История ремонта</h3>
+<p>Если техника уже ремонтировалась, кратко опишите, что меняли и когда.</p>
+</article>
+</div>
+</div>
+</section>
+</main>
+<footer>
+<div class="container footer-inner">
+<a href="index.html" aria-label="ROSEEN — главная">
+<img src="logo-approved.svg" alt="ROSEEN" width="1426" height="282" loading="lazy">
+</a>
+<div>ROSEEN · Robotics · Service · Engineering<br>
+<span>Диагностика · Ремонт · Обслуживание</span>
+</div>
+<a href="contacts.html#request">Связаться с сервисом ↗</a>
+</div>
+<p class="illustration-note">Визуализации оборудования — иллюстрации направлений, не фотографии выполненных работ.</p></footer>
+</body>
+</html>
