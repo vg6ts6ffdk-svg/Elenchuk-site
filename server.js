@@ -4,11 +4,16 @@ import cors from "cors";
 import helmet from "helmet";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import Database from "better-sqlite3";
 import pg from "pg";
 import path from "node:path";
 import fs from "node:fs";
 import { randomUUID } from "node:crypto";
+import { fileURLToPath } from 'node:url';
+import { publicFiles } from './public-files.mjs';
+import { cleanFiles, fields, fileFilter, validateFiles, rateLimit } from './security.mjs';
+
+const ROOT = path.dirname(fileURLToPath(import.meta.url));
+if (fs.existsSync(path.join(ROOT,'.env'))) process.loadEnvFile(path.join(ROOT,'.env'));
 
 const { Pool } = pg;
 const app = express();
@@ -21,11 +26,10 @@ const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || "";
 const DATABASE_URL = process.env.DATABASE_URL || "";
 const STORAGE_SIGNER_URL = (process.env.STORAGE_SIGNER_URL || "").replace(/\/+$/, "");
 const STORAGE_SIGNER_KEY = process.env.STORAGE_SIGNER_KEY || "";
-const ROOT = process.cwd();
 const usePostgres = Boolean(DATABASE_URL);
 const useObjectStorage = Boolean(usePostgres && STORAGE_SIGNER_URL && STORAGE_SIGNER_KEY);
 
-if (isProduction && JWT_SECRET === "change-this-secret-in-production") {
+if (isProduction && (JWT_SECRET.length < 32 || JWT_SECRET === "change-this-secret-in-production")) {
   throw new Error("JWT_SECRET must be configured in production");
 }
 if (isProduction && ADMIN_PASSWORD === "change-me-now") {
@@ -33,16 +37,10 @@ if (isProduction && ADMIN_PASSWORD === "change-me-now") {
 }
 
 function resolveDataDir() {
+  if (isProduction) throw new Error('Production requires persistent DATABASE_URL; SQLite fallback is disabled');
   const configured = process.env.ROSEEN_DATA_DIR || path.join(ROOT, "data");
-  try {
-    fs.mkdirSync(configured, { recursive: true });
-    return configured;
-  } catch {
-    const fallback = path.join("/tmp", "roseen-data");
-    fs.mkdirSync(fallback, { recursive: true });
-    console.warn(`ROSEEN_DATA_DIR is not writable (${configured}); using ephemeral ${fallback}`);
-    return fallback;
-  }
+  fs.mkdirSync(configured, { recursive: true });
+  return configured;
 }
 
 const DATA_DIR = usePostgres ? null : resolveDataDir();
@@ -57,7 +55,9 @@ async function initDatabase() {
   if (usePostgres) {
     pool = new Pool({
       connectionString: DATABASE_URL,
-      ssl: isProduction ? { rejectUnauthorized: false } : false,
+      ssl: isProduction ? { rejectUnauthorized: true } : false,
+      connectionTimeoutMillis: 10000,
+      idleTimeoutMillis: 10000,
       max: 5
     });
 
@@ -106,7 +106,9 @@ async function initDatabase() {
     return;
   }
 
+  const { default: Database } = await import('better-sqlite3');
   sqlite = new Database(DB_PATH);
+  sqlite.pragma('foreign_keys = ON');
   sqlite.pragma("journal_mode = WAL");
   sqlite.exec(`
     CREATE TABLE IF NOT EXISTS admins (
@@ -147,19 +149,36 @@ async function initDatabase() {
   console.log("Attachment backend: local filesystem");
 }
 
-app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
+app.disable('x-powered-by');
+if (process.env.TRUST_PROXY_HOPS) {
+  const hops=Number(process.env.TRUST_PROXY_HOPS);
+  if(!Number.isInteger(hops)||hops<0||hops>3) throw new Error('TRUST_PROXY_HOPS must be 0..3');
+  app.set('trust proxy',hops);
+}
+app.use(helmet({ contentSecurityPolicy: { directives: {
+  scriptSrc: ["'self'"], scriptSrcAttr: ["'none'"],
+  connectSrc: ["'self'",'https://api.roseen.ru'], formAction: ["'self'",'https://api.roseen.ru'],
+  upgradeInsecureRequests: isProduction ? [] : null
+}}}));
+app.use('/api', (req,res,next) => {
+  res.set('Cache-Control','no-store');
+  const origin=req.headers.origin;
+  const allowed=FRONTEND_ORIGIN.split(',').map(v=>v.trim());
+  const own=(isProduction?'https://':'http://')+req.get('host');
+  if(origin && origin!==own && !allowed.includes(origin)) return res.status(403).json({error:'Источник запроса не разрешён'});
+  next();
+});
 app.use(cors({
   origin(origin, callback) {
     if (!origin) return callback(null, true);
-    if (!FRONTEND_ORIGIN) return callback(new Error("FRONTEND_ORIGIN must be configured for cross-origin requests"), false);
-    const allowed = FRONTEND_ORIGIN.split(",").map(value => value.trim()).filter(Boolean);
-    return callback(null, allowed.includes(origin));
+    return callback(null, origin);
   },
+  credentials: true,
   methods: ["GET", "POST", "PATCH", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
-app.use(express.json({ limit: "2mb" }));
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: "32kb" }));
+app.use(express.urlencoded({ extended: false, limit: '32kb' }));
 
 const ALLOWED_MIME_TYPES = new Set([
   "image/jpeg", "image/png", "image/webp", "image/gif", "image/heic", "image/heif",
@@ -179,20 +198,24 @@ const storage = usePostgres
 
 const upload = multer({
   storage,
-  limits: { files: 8, fileSize: 50 * 1024 * 1024 },
-  fileFilter: (_req, file, cb) => {
-    if (!ALLOWED_MIME_TYPES.has(file.mimetype)) {
-      return cb(new Error("Разрешены только изображения, видео и PDF"));
-    }
-    cb(null, true);
-  }
+  limits: { files: 3, fileSize: 3 * 1024 * 1024, fields:4, fieldSize:20*1024, parts:7 },
+  fileFilter
 });
 
-function auth(req, res, next) {
-  const h = req.headers.authorization || "";
-  const token = h.startsWith("Bearer ") ? h.slice(7) : "";
+const cookieName = isProduction ? '__Host-roseen_session' : 'roseen_session';
+const cookieOptions = {httpOnly:true, secure:isProduction, sameSite:'lax', path:'/'};
+const getToken = req => (req.headers.cookie || '').split(';').map(s=>s.trim()).find(s=>s.startsWith(cookieName+'='))?.slice(cookieName.length+1) || '';
+async function sessionQuery(sql, params) {
+  if(usePostgres) return (await pool.query(sql,params)).rows;
+  const query=sql.replace(/\$\d+/g,'?');
+  if(/^SELECT/.test(query)) return sqlite.prepare(query).all(...params);
+  sqlite.prepare(query).run(...params); return [];
+}
+async function auth(req, res, next) {
   try {
-    req.admin = jwt.verify(token, JWT_SECRET);
+    req.admin = jwt.verify(getToken(req), JWT_SECRET, {algorithms:['HS256'],issuer:'roseen-api',audience:'roseen-admin'});
+    const sessions=await sessionQuery('SELECT id FROM sessions WHERE id=$1 AND expires_at>$2',[req.admin.jti,Date.now()]);
+    if(!sessions.length) throw new Error('Session expired');
     next();
   } catch {
     res.status(401).json({ error: "Требуется авторизация" });
@@ -262,8 +285,9 @@ app.get("/api/health", async (_req, res) => {
   }
 });
 
-app.post("/api/auth/login", async (req, res) => {
+app.post("/api/auth/login", rateLimit(10,15*60*1000), async (req, res) => {
   const { email, password } = req.body || {};
+  if(typeof email!=='string' || typeof password!=='string' || email.length>254 || Buffer.byteLength(password)>72) return res.status(400).json({error:'Проверьте логин и пароль'});
   let admin;
   if (usePostgres) {
     const result = await pool.query("SELECT * FROM admins WHERE email=$1 LIMIT 1", [email]);
@@ -271,15 +295,24 @@ app.post("/api/auth/login", async (req, res) => {
   } else {
     admin = sqlite.prepare("SELECT * FROM admins WHERE email=?").get(email);
   }
-  if (!admin || !bcrypt.compareSync(password || "", admin.password_hash)) {
+  if (!admin || !await bcrypt.compare(password, admin.password_hash)) {
     return res.status(401).json({ error: "Неверный логин или пароль" });
   }
-  const token = jwt.sign({ id: admin.id, email: admin.email }, JWT_SECRET, { expiresIn: "8h" });
-  res.json({ token });
+  const id=randomUUID();
+  await sessionQuery('DELETE FROM sessions WHERE expires_at<$1',[Date.now()]);
+  await sessionQuery('INSERT INTO sessions(id,expires_at) VALUES($1,$2)',[id,Date.now()+8*3600000]);
+  const token = jwt.sign({ id: admin.id }, JWT_SECRET, { expiresIn: '8h', jwtid:id,issuer:'roseen-api',audience:'roseen-admin',algorithm:'HS256' });
+  res.cookie(cookieName,token,{...cookieOptions,maxAge:8*3600000}).json({ok:true});
+});
+app.get('/api/auth/session',auth,(_req,res)=>res.json({ok:true}));
+app.post('/api/auth/logout',async (req,res)=>{
+  try {const p=jwt.verify(getToken(req),JWT_SECRET);await sessionQuery('DELETE FROM sessions WHERE id=$1',[p.jti]);} catch {}
+  res.clearCookie(cookieName,cookieOptions).json({ok:true});
 });
 
-app.post("/api/requests", upload.array("files", 8), async (req, res) => {
-  const { equipment_type, model, problem, contact } = req.body || {};
+app.post("/api/requests", rateLimit(20,3600000), upload.array("files", 3), async (req, res) => {
+  const { equipment_type, model, problem, contact } = fields(req.body);
+  validateFiles(req.files);
   if (!equipment_type || !problem || !contact) {
     return res.status(400).json({ error: "Заполните обязательные поля" });
   }
@@ -323,6 +356,7 @@ app.post("/api/requests", upload.array("files", 8), async (req, res) => {
     }
   }
 
+  const save = sqlite.transaction(() => {
   const info = sqlite.prepare(
     "INSERT INTO requests(equipment_type,model,problem,contact) VALUES(?,?,?,?)"
   ).run(equipment_type, model || "", problem, contact);
@@ -333,23 +367,28 @@ app.post("/api/requests", upload.array("files", 8), async (req, res) => {
   for (const f of (req.files || [])) {
     insertFile.run(requestId, f.originalname, f.filename, f.mimetype, f.size);
   }
+  return requestId;
+  });
+  const requestId=save();
   res.status(201).json({ id: requestId, status: "new" });
 });
 
-app.get("/api/requests", auth, async (_req, res) => {
+app.get("/api/requests", auth, async (req, res) => {
+  const limit=Math.min(100,Math.max(1,Math.floor(Number(req.query.limit)||50)));
+  const before=Number(req.query.before)||Number.MAX_SAFE_INTEGER;
   if (usePostgres) {
     const result = await pool.query(`
       SELECT r.*, COUNT(f.id)::int AS files_count
       FROM requests r LEFT JOIN files f ON f.request_id=r.id
-      GROUP BY r.id ORDER BY r.id DESC
-    `);
+      WHERE r.id < $1 GROUP BY r.id ORDER BY r.id DESC LIMIT $2
+    `,[before,limit]);
     return res.json(result.rows);
   }
   const rows = sqlite.prepare(`
     SELECT r.*, COUNT(f.id) AS files_count
     FROM requests r LEFT JOIN files f ON f.request_id=r.id
-    GROUP BY r.id ORDER BY r.id DESC
-  `).all();
+    WHERE r.id < ? GROUP BY r.id ORDER BY r.id DESC LIMIT ?
+  `).all(before,limit);
   res.json(rows);
 });
 
@@ -375,6 +414,7 @@ app.get("/api/requests/:id", auth, async (req, res) => {
 app.patch("/api/requests/:id", auth, async (req, res) => {
   const { status, comment } = req.body || {};
   const allowed = ["new", "diagnostics", "approval", "repair", "ready", "closed"];
+  if(typeof comment!=='string' || comment.length>5000 || !allowed.includes(status)) return res.status(400).json({error:'Проверьте статус и комментарий'});
   if (status && !allowed.includes(status)) return res.status(400).json({ error: "Недопустимый статус" });
 
   if (usePostgres) {
@@ -441,14 +481,18 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(express.static(ROOT));
-
 app.get("/{*splat}", (req, res) => {
-  if (req.path.startsWith("/api/")) return res.status(404).end();
-  res.sendFile(path.join(ROOT, "index.html"));
+  const name=req.path==='/'?'index.html':req.path.slice(1);
+  const base=fs.existsSync(path.join(ROOT,'dist/index.html'))?path.join(ROOT,'dist'):ROOT;
+  if(publicFiles.includes(name)) return res.sendFile(path.join(base,name));
+  if (req.path.startsWith('/api/')) return res.status(404).json({error:'Маршрут не найден'});
+  res.status(404).sendFile(path.join(base,'404.html'));
 });
 
-app.use((err, _req, res, _next) => {
+app.use((err, req, res, _next) => {
+  cleanFiles(req.files);
+  if(res.headersSent) return;
+  if(err.status===400) return res.status(400).json({error:err.message});
   if (err instanceof multer.MulterError) {
     return res.status(400).json({ error: "Слишком большой файл или превышено количество файлов" });
   }
@@ -463,4 +507,10 @@ app.use((err, _req, res, _next) => {
 });
 
 await initDatabase();
-app.listen(PORT, "0.0.0.0", () => console.log(`ROSEEN server listening on ${PORT}`));
+if(usePostgres) await pool.query('CREATE TABLE IF NOT EXISTS sessions (id TEXT PRIMARY KEY, expires_at BIGINT NOT NULL)');
+else sqlite.exec('CREATE TABLE IF NOT EXISTS sessions (id TEXT PRIMARY KEY, expires_at INTEGER NOT NULL)');
+export default app;
+if(!process.env.VERCEL) {
+  const server=app.listen(PORT, process.env.HOST || (isProduction?'0.0.0.0':'127.0.0.1'),()=>console.log(`ROSEEN listening on ${server.address().port}`));
+  for(const signal of ['SIGINT','SIGTERM']) process.on(signal,()=>server.close(async()=>{if(pool)await pool.end();if(sqlite)sqlite.close();process.exit(0);}));
+}

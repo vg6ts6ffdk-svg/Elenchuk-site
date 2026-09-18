@@ -1,7 +1,195 @@
-<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ROSEEN — Услуги</title><meta name="description" content="Диагностика, ремонт, обслуживание и инженерная помощь для сложной техники."><link rel="icon" href="assets/logo.svg"><link rel="stylesheet" href="style.css"></head><body>
-<header class="site-header"><div class="header-inner"><a class="brand" href="index.html"><img src="assets/logo.svg" alt="ROSEEN"></a><nav class="nav"><a href="index.html">Главная</a><a href="services.html">Услуги</a><a href="robotics.html">Робототехника</a><a href="electronics.html">Электроника</a><a href="about.html">О компании</a><a href="contacts.html">Контакты</a></nav><a class="btn btn-primary header-cta magnetic" href="contacts.html">Оставить заявку ↗</a><details class="menu-wrap"><summary class="menu" aria-label="Меню"><span></span><span></span></summary><nav class="mobile-nav"><a href="index.html">Главная</a><a href="services.html">Услуги</a><a href="robotics.html">Робототехника</a><a href="electronics.html">Электроника</a><a href="appliances.html">Бытовая техника</a><a href="engineering.html">Инженерия</a><a href="about.html">О компании</a><a href="contacts.html">Контакты</a><a href="contacts.html">Оставить заявку ↗</a></nav></details></div></header>
-<main><section class="inner-hero section"><div class="scan"></div><div class="container inner-grid"><div class="reveal"><div class="eyebrow"><i></i> 01 / SERVICE</div><h1>Услуги ROSEEN</h1><p class="lead">Диагностика, ремонт, обслуживание и инженерная помощь — от первичного симптома до проверки результата.</p><div class="actions"><a class="btn btn-primary magnetic" href="contacts.html">Оставить заявку ↗</a><a class="btn btn-ghost" href="index.html#directions">Выбрать технику</a></div></div><div class="reveal delay"><img class="inner-image" src="assets/robot-lab.png" alt="Инженерный сервис ROSEEN"></div></div></section>
-<section class="section dark"><div class="container"><div class="section-head reveal"><div class="eyebrow"><i></i> ОСНОВНЫЕ РАБОТЫ</div><h2>Работаем<br><em>по причине.</em></h2><p>Состав работ определяется после диагностики, а не по предположению о неисправной детали.</p></div><div class="service-grid"><article class="service-card reveal"><span class="num">01</span><h3>Диагностика</h3><p>Проверка питания, датчиков, приводов, механики, электроники и ошибок системы.</p><a href="diagnostika.html">Подробнее ↗</a></article><article class="service-card reveal delay"><span class="num">02</span><h3>Ремонт</h3><p>Восстановление неисправных узлов, компонентов, соединений и управляющих модулей.</p><a href="remont.html">Подробнее ↗</a></article><article class="service-card reveal"><span class="num">03</span><h3>Обслуживание</h3><p>Очистка, профилактика, настройка, контроль состояния и подготовка техники к работе.</p><a href="servis.html">Подробнее ↗</a></article><article class="service-card reveal delay"><span class="num">04</span><h3>Инженерия</h3><p>Разбор сложных, повторяющихся и нестандартных неисправностей.</p><a href="engineering.html">Подробнее ↗</a></article></div></div></section>
-<section class="section"><div class="container split"><div class="feature-copy reveal"><div class="eyebrow"><i></i> ПРИНЦИП</div><h2>Сначала<br><em>диагностика.</em></h2><p class="muted">Если симптом может иметь несколько причин, мы проверяем систему целиком и фиксируем результат измерений.</p><div class="feature-list"><div class="feature-item"><strong>01</strong><div><b>Симптом</b><p>Фиксируем, что именно происходит.</p></div></div><div class="feature-item"><strong>02</strong><div><b>Причина</b><p>Проверяем связанные узлы и цепи.</p></div></div><div class="feature-item"><strong>03</strong><div><b>Работы</b><p>Согласовываем необходимое восстановление.</p></div></div><div class="feature-item"><strong>04</strong><div><b>Результат</b><p>Проверяем технику после ремонта.</p></div></div></div></div><div class="media-wrap reveal delay"><img class="feature-image parallax-image" src="assets/electronics-lab.png" alt="Диагностика электроники"></div></div></section>
-<section class="final"><div class="container"><div class="final-panel reveal"><div><div class="eyebrow"><i></i> ROSEEN</div><h2>Опишите неисправность.<br><em>Начнём с фактов.</em></h2></div><a class="btn btn-primary magnetic" href="contacts.html">Оставить заявку ↗</a></div></div></section></main>
-<footer><div class="container footer-inner"><img src="assets/logo.svg" alt="ROSEEN"><div>ROSEEN · Robotics · Service · Engineering<br><span>Диагностика · Ремонт · Сервис</span></div></div></footer><script src="script.js"></script></body></html>
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ROSEEN — Услуги</title>
+<meta name="description" content="Диагностика, ремонт, обслуживание и инженерная помощь для сложной техники.">
+<link rel="icon" href="logo-approved.svg">
+<link rel="canonical" href="https://roseen.ru/services.html">
+<link rel="stylesheet" href="style.css">
+<script src="api-config.js" defer>
+</script>
+<script src="script.js" defer>
+</script>
+<meta property="og:type" content="website"><meta property="og:locale" content="ru_RU"><meta property="og:title" content="ROSEEN — Услуги"><meta property="og:description" content="Диагностика, ремонт, обслуживание и инженерная помощь для сложной техники."><meta property="og:image" content="https://roseen.ru/assets/robotics-1280.webp"></head>
+<body>
+<a class="skip-link" href="#main">Перейти к содержимому</a>
+<header class="site-header">
+<div class="header-inner">
+<a class="brand" href="index.html" aria-label="ROSEEN — главная">
+<img src="logo-approved.svg" alt="ROSEEN" width="1426" height="282">
+</a>
+<nav class="nav" aria-label="Основная навигация">
+<a href="index.html">Главная</a>
+<a href="directions.html">Направления</a>
+<a href="services.html">Услуги</a>
+<a href="about.html">О компании</a>
+<a href="faq.html">FAQ</a>
+</nav>
+<a class="btn btn-primary header-cta magnetic" href="contacts.html#request">Оставить заявку ↗</a>
+<details class="menu-wrap">
+<summary class="menu" aria-label="Меню" aria-expanded="false" aria-controls="mobile-menu">
+<span>
+</span>
+<span>
+</span>
+</summary>
+<nav id="mobile-menu" class="mobile-nav" aria-label="Мобильная навигация">
+<a href="index.html">Главная</a>
+<a href="directions.html">Направления</a>
+<div class="mobile-subnav">
+<a href="robotics.html">Робототехника</a>
+<a href="electronics.html">Электроника</a>
+<a href="appliances.html">Бытовая техника</a>
+<a href="professional.html">Профессиональная техника</a>
+</div>
+<a href="services.html">Услуги</a>
+<div class="mobile-subnav">
+<a href="diagnostika.html">Диагностика</a>
+<a href="remont.html">Ремонт</a>
+<a href="servis.html">Обслуживание</a>
+<a href="engineering.html">Инженерная помощь</a>
+</div>
+<a href="about.html">О компании</a>
+<a href="faq.html">FAQ</a>
+<a href="contacts.html#request">Оставить заявку ↗</a>
+</nav>
+</details>
+</div>
+</header>
+<main id="main"><div class="service-region">Москва и Московская область · Другие регионы — по согласованию</div>
+<section class="inner-hero section">
+<div class="scan">
+</div>
+<div class="container inner-grid">
+<div class="reveal">
+<div class="eyebrow">
+<i>
+</i> 01 / SERVICE</div>
+<h1>Услуги ROSEEN</h1>
+<p class="lead">Диагностика, ремонт, обслуживание и инженерная помощь — от первичного симптома до проверки результата.</p>
+<div class="actions">
+<a class="btn btn-primary magnetic" href="contacts.html">Оставить заявку ↗</a>
+<a class="btn btn-ghost" href="directions.html">Выбрать технику</a>
+</div>
+</div>
+<div class="reveal delay">
+<img class="inner-image" src="assets/robotics-1280.webp" srcset="assets/robotics-640.webp 640w, assets/robotics-1280.webp 1280w" sizes="(max-width: 800px) 100vw, 50vw" width="1280" height="853" decoding="async" alt="Инженерный сервис ROSEEN" fetchpriority="high">
+</div>
+</div>
+</section>
+<section class="section dark">
+<div class="container">
+<div class="section-head reveal">
+<div class="eyebrow">
+<i>
+</i> ОСНОВНЫЕ РАБОТЫ</div>
+<h2>Работаем<br>
+<em>по причине.</em>
+</h2>
+<p>Состав работ определяется после диагностики, а не по предположению о неисправной детали.</p>
+</div>
+<div class="service-grid">
+<article class="service-card reveal">
+<span class="num">01</span>
+<h3>Диагностика</h3>
+<p>Проверка питания, датчиков, приводов, механики, электроники и ошибок системы.</p>
+<a href="diagnostika.html">Подробнее ↗</a>
+</article>
+<article class="service-card reveal delay">
+<span class="num">02</span>
+<h3>Ремонт</h3>
+<p>Восстановление неисправных узлов, компонентов, соединений и управляющих модулей.</p>
+<a href="remont.html">Подробнее ↗</a>
+</article>
+<article class="service-card reveal">
+<span class="num">03</span>
+<h3>Обслуживание</h3>
+<p>Очистка, профилактика, настройка, контроль состояния и подготовка техники к работе.</p>
+<a href="servis.html">Подробнее ↗</a>
+</article>
+<article class="service-card reveal delay">
+<span class="num">04</span>
+<h3>Инженерия</h3>
+<p>Разбор сложных, повторяющихся и нестандартных неисправностей.</p>
+<a href="engineering.html">Подробнее ↗</a>
+</article>
+</div>
+</div>
+</section>
+<section class="section">
+<div class="container split">
+<div class="feature-copy reveal">
+<div class="eyebrow">
+<i>
+</i> ПРИНЦИП</div>
+<h2>Сначала<br>
+<em>диагностика.</em>
+</h2>
+<p class="muted">Если симптом может иметь несколько причин, мы проверяем систему целиком и фиксируем результат измерений.</p>
+<div class="feature-list">
+<div class="feature-item">
+<strong>01</strong>
+<div>
+<b>Симптом</b>
+<p>Фиксируем, что именно происходит.</p>
+</div>
+</div>
+<div class="feature-item">
+<strong>02</strong>
+<div>
+<b>Причина</b>
+<p>Проверяем связанные узлы и цепи.</p>
+</div>
+</div>
+<div class="feature-item">
+<strong>03</strong>
+<div>
+<b>Работы</b>
+<p>Согласовываем необходимое восстановление.</p>
+</div>
+</div>
+<div class="feature-item">
+<strong>04</strong>
+<div>
+<b>Результат</b>
+<p>Проверяем технику после ремонта.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="media-wrap reveal delay">
+<img class="feature-image parallax-image" src="assets/electronics-1280.webp" srcset="assets/electronics-640.webp 640w, assets/electronics-1280.webp 1280w" sizes="(max-width: 800px) 100vw, 50vw" width="1280" height="853" decoding="async" loading="lazy" alt="Диагностика электроники">
+</div>
+</div>
+</section>
+<section class="final">
+<div class="container">
+<div class="final-panel reveal">
+<div>
+<div class="eyebrow">
+<i>
+</i> ROSEEN</div>
+<h2>Опишите неисправность.<br>
+<em>Начнём с фактов.</em>
+</h2>
+</div>
+<a class="btn btn-primary magnetic" href="contacts.html">Оставить заявку ↗</a>
+</div>
+</div>
+</section>
+</main>
+<footer>
+<div class="container footer-inner">
+<a href="index.html" aria-label="ROSEEN — главная">
+<img src="logo-approved.svg" alt="ROSEEN" width="1426" height="282" loading="lazy">
+</a>
+<div>ROSEEN · Robotics · Service · Engineering<br>
+<span>Диагностика · Ремонт · Обслуживание</span>
+</div>
+<a href="contacts.html#request">Связаться с сервисом ↗</a>
+</div>
+<p class="illustration-note">Визуализации оборудования — иллюстрации направлений, не фотографии выполненных работ.</p></footer>
+</body>
+</html>

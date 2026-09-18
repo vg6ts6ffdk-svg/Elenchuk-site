@@ -1,7 +1,8 @@
 User-agent: *
 Allow: /
 Disallow: /admin.html
+Disallow: /api/
 Disallow: /page-template.html
 Disallow: /robots.html
-Disallow: /api/
+Disallow: /request.html
 Sitemap: https://roseen.ru/sitemap.xml

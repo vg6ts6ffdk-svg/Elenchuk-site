@@ -1,0 +1,12 @@
+node_modules/
+dist/
+data/
+.env
+.env.*
+!.env.example
+.vercel/
+.neon
+*.db
+*.db-shm
+*.db-wal
+test-results/

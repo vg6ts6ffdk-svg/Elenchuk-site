@@ -2,7 +2,7 @@ name: Validate site
 
 on:
   push:
-    branches: ["main", "site-audit-fixes-v2"]
+    branches: ["main", "fix/**"]
   pull_request:
     branches: ["main"]
 
@@ -16,10 +16,10 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Check JavaScript syntax
         run: |
@@ -47,3 +47,6 @@ jobs:
 
       - name: Validate production links and assets
         run: node validate-site.mjs dist
+
+      - name: API integration tests
+        run: npm test
