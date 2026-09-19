@@ -32,6 +32,13 @@
     addEventListener('pageshow', () => closeMenu());
   }
 
+  document.body.classList.add('brand-ready');
+  const brandEyebrow = document.querySelector('.hero .eyebrow');
+  if (brandEyebrow && /ROBOTICS.*SERVICE.*ENGINEERING/i.test(brandEyebrow.textContent)) {
+    brandEyebrow.classList.add('brand-sequence');
+    brandEyebrow.innerHTML = '<i></i><span class="brand-token"><b>RO</b>BOTICS</span><span class="brand-token"><b>SE</b>RVICE</span><span class="brand-token"><b>EN</b>GINEERING</span>';
+  }
+
   const current = location.pathname.split('/').pop() || 'index.html';
   all('.nav a, .mobile-nav a').forEach(link => {
     if (link.getAttribute('href').split('#')[0] === current) link.setAttribute('aria-current', 'page');
