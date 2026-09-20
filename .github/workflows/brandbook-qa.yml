@@ -22,7 +22,7 @@ jobs:
       - run: npm run check && npm test && npm run build && node scripts/check-site.mjs dist
       - name: Browser tools (QA only; not runtime dependencies)
         run: |
-          npm install --no-save --package-lock=false --ignore-scripts playwright@1.55.0
+          npm install --no-save --package-lock=false --ignore-scripts playwright@1.63.0
           npx playwright install --with-deps chromium webkit
       - name: Brandbook, mobile, keyboard and form checks
         run: node scripts/brand-qa.mjs
