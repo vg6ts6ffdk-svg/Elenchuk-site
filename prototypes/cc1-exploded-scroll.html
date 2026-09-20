@@ -65,13 +65,12 @@ h1 em{font-style:normal;color:#a7d0ff}
 }
 .robot-wrap::before{
   content:"";position:absolute;left:14%;right:14%;bottom:11%;height:9%;
-  background:#000;filter:blur(28px);opacity:calc(.35 - var(--explode)*.22);border-radius:50%
+  background:#000;filter:blur(28px);opacity:var(--shadow-opacity);border-radius:50%
 }
 .robot-img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none;user-select:none}
-.full{opacity:calc(1 - min(1,var(--explode)*1.7))}
+.full{opacity:var(--full-opacity)}
 .part{
   will-change:transform,opacity;
-  transform:translate(calc(var(--tx)*var(--explode)),calc(var(--ty)*var(--explode))) rotate(calc(var(--rot)*var(--explode))) scale(calc(1 + var(--zoom)*var(--explode)));
   transition:filter .05s linear;
 }
 .part::after{content:""}
@@ -163,14 +162,14 @@ h1 em{font-style:normal;color:#a7d0ff}
         <div class="module water" data-label="WATER MODULE"></div>
       </div>
 
-      <img class="robot-img full" alt="" aria-hidden="true" src="https://cdn.pudutech.com/C7_puducc1_1f5b17c79f.png">
-      <img class="robot-img part top" alt="" aria-hidden="true" src="https://cdn.pudutech.com/C7_puducc1_1f5b17c79f.png">
-      <img class="robot-img part display" alt="" aria-hidden="true" src="https://cdn.pudutech.com/C7_puducc1_1f5b17c79f.png">
-      <img class="robot-img part left" alt="" aria-hidden="true" src="https://cdn.pudutech.com/C7_puducc1_1f5b17c79f.png">
-      <img class="robot-img part center" alt="" aria-hidden="true" src="https://cdn.pudutech.com/C7_puducc1_1f5b17c79f.png">
-      <img class="robot-img part right" alt="" aria-hidden="true" src="https://cdn.pudutech.com/C7_puducc1_1f5b17c79f.png">
-      <img class="robot-img part base" alt="" aria-hidden="true" src="https://cdn.pudutech.com/C7_puducc1_1f5b17c79f.png">
-      <img class="robot-img part cleaning" alt="" aria-hidden="true" src="https://cdn.pudutech.com/C7_puducc1_1f5b17c79f.png">
+      <img class="robot-img full" alt="" aria-hidden="true" src="https://cdn.pudutech.com/parameters_robot_en_4ad12f66a7.png">
+      <img class="robot-img part top" alt="" aria-hidden="true" src="https://cdn.pudutech.com/parameters_robot_en_4ad12f66a7.png">
+      <img class="robot-img part display" alt="" aria-hidden="true" src="https://cdn.pudutech.com/parameters_robot_en_4ad12f66a7.png">
+      <img class="robot-img part left" alt="" aria-hidden="true" src="https://cdn.pudutech.com/parameters_robot_en_4ad12f66a7.png">
+      <img class="robot-img part center" alt="" aria-hidden="true" src="https://cdn.pudutech.com/parameters_robot_en_4ad12f66a7.png">
+      <img class="robot-img part right" alt="" aria-hidden="true" src="https://cdn.pudutech.com/parameters_robot_en_4ad12f66a7.png">
+      <img class="robot-img part base" alt="" aria-hidden="true" src="https://cdn.pudutech.com/parameters_robot_en_4ad12f66a7.png">
+      <img class="robot-img part cleaning" alt="" aria-hidden="true" src="https://cdn.pudutech.com/parameters_robot_en_4ad12f66a7.png">
     </div>
 
     <div class="callout c1"><b>ВЕРХНИЙ МОДУЛЬ</b><span>Крышка, экран и верхняя зона корпуса отделяются первыми.</span></div>
