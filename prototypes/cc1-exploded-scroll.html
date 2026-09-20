@@ -57,9 +57,9 @@ h1 em{font-style:normal;color:#a7d0ff}
 }
 
 .robot-wrap{
-  --explode:0;
+  --stage-scale:1;--full-opacity:1;--shadow-opacity:.35;--core-opacity:0;--core-scale:.88;
   position:absolute;left:50%;top:49%;width:min(52vw,650px);aspect-ratio:1/1;
-  transform:translate(-50%,-50%) scale(calc(1 - var(--explode)*.045));
+  transform:translate(-50%,-50%) scale(var(--stage-scale));
   transition:filter .1s linear;
   filter:drop-shadow(0 36px 50px rgba(0,0,0,.45))
 }
@@ -83,8 +83,8 @@ h1 em{font-style:normal;color:#a7d0ff}
 .part.cleaning{clip-path:polygon(0% 82%,100% 80%,100% 100%,0% 100%);--tx:0px;--ty:220px;--rot:0deg;--zoom:.03}
 
 .core{
-  position:absolute;inset:19% 20% 24%;z-index:-1;opacity:calc(max(0,(var(--explode) - .24)*1.7));
-  transform:scale(calc(.88 + var(--explode)*.12));
+  position:absolute;inset:19% 20% 24%;z-index:-1;opacity:var(--core-opacity);
+  transform:scale(var(--core-scale));
 }
 .core .module{
   position:absolute;border:1px solid #56657a;background:linear-gradient(180deg,#17202d,#0f151e);
@@ -133,7 +133,7 @@ h1 em{font-style:normal;color:#a7d0ff}
   .topbar{padding-top:18px}.topbar span:last-child{display:none}
 }
 @media(prefers-reduced-motion:reduce){
-  .track{height:120svh}.robot-wrap{--explode:.78!important}.progress i{transform:scaleX(.78)!important}
+  .track{height:120svh}.progress i{transform:scaleX(.78)!important}
 }
 </style>
 </head>
