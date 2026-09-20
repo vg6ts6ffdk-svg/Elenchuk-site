@@ -19,6 +19,7 @@ export function brandPage(html, file, { storefront = false } = {}) {
     .replaceAll('alt="ROSEEN"','alt="РОСИН"')
     .replaceAll('aria-label="ROSEEN — главная"','aria-label="РОСИН — главная"')
     .replaceAll('width="1843.5385"','width="1561.1709"'));
+  out = out.replace(/<footer\b[\s\S]*?<\/footer>/, footer => footer.replace(/loading="lazy"/g, 'loading="eager"'));
   if (file === 'index.html') {
     out = out.replace(/<section class="numbers">[\s\S]*?<\/section>/,
       '<section class="numbers" aria-label="Принципы сервиса"><div class="container numbers-grid"><div class="number"><strong>Причина.</strong><span>Сначала диагностика</span></div><div class="number"><strong>Решение.</strong><span>Согласованный объём работ</span></div><div class="number"><strong>Результат.</strong><span>Проверка после ремонта</span></div></div></section>');

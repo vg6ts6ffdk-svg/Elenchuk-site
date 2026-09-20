@@ -24,6 +24,17 @@ async function capture(engine,width,height,file){
  try {
   const res=await page.goto(base+'/'+file,{waitUntil:'networkidle'});assert.equal(res.status(),200);
   await page.evaluate(()=>Promise.race([document.fonts.ready,new Promise(r=>setTimeout(r,7000))]));await page.waitForTimeout(750);
+  await page.evaluate(async()=>{
+    for(const image of document.images){
+      image.scrollIntoView({block:'center',behavior:'instant'});
+      await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+      await Promise.race([image.decode().catch(()=>{}),new Promise(r=>setTimeout(r,5000))]);
+    }
+    scrollTo({top:0,behavior:'instant'});
+  });
+  await page.waitForTimeout(400);
+  const broken=await page.evaluate(()=>[...document.images].filter(i=>!i.complete||!i.naturalWidth).map(i=>i.getAttribute('src')));
+  assert.deepEqual(broken,[], 'All visible image assets must actually load');
   const metrics=await page.evaluate(()=>({width:innerWidth,scroll:document.documentElement.scrollWidth,header:document.querySelector('.brand img')?.getAttribute('src'),footer:document.querySelector('.footer-inner img')?.getAttribute('src'),inter:[...document.fonts].some(f=>f.family.replaceAll('"','')==='Inter'&&f.status==='loaded'),logoTransform:getComputedStyle(document.querySelector('.brand img')).transform}));
   assert.ok(metrics.scroll<=width+1,'horizontal overflow');assert.match(metrics.header,/rosin-wordmark/);assert.match(metrics.footer,/roseen-wordmark/);assert.equal(metrics.logoTransform,'none');assert.equal(metrics.inter,true,'Inter did not load');assert.deepEqual(errors,[]);
   assert.equal(await page.locator('.product-card').count(),0,'No fake product cards in real preview');
