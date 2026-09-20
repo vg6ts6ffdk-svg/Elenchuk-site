@@ -1,4 +1,4 @@
-/* ROSEEN — one stylesheet. Graphite and electric blue; approved logo preserved. */
+/* ROSEEN — graphite and electric blue. */
 :root {
   color-scheme: dark;
   --accent: #4989ff; --accent-light: #8eb8ff;
@@ -33,7 +33,8 @@ em { font-style: normal; color: var(--accent-light); }
 .eyebrow i { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
 .site-header { position: fixed; z-index: 100; inset: 0 0 auto; height: var(--header); background: #0d1016f5; border-bottom: 1px solid var(--line); }
 .header-inner { height: 100%; width: min(calc(100% - 48px),var(--max)); margin: auto; display: flex; align-items: center; gap: 24px; }
-.brand { flex: 0 0 auto; background: #f4f7f4; border-radius: 8px; padding: 10px 12px; }
+.brand { flex: 0 0 auto; display: inline-flex; align-items: center; padding: 10px 0; }
+.brand-wordmark { color: #f4f6f8; font-family: Arial, sans-serif; font-size: 28px; font-weight: 700; line-height: 1.1; letter-spacing: .06em; white-space: nowrap; }
 .brand img { width: 156px; height: auto; }
 .nav { display: flex; align-items: center; gap: 22px; margin-left: auto; }
 .nav a { font-size: .88rem; white-space: nowrap; padding: 12px 0; color: #d4ddd6; }
