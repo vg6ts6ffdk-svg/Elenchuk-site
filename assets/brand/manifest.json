@@ -1,0 +1,16 @@
+{
+  "roseen-wordmark.svg": {
+    "source_archive": "ROSEEN_Brand_Kit_FINAL.zip",
+    "source_file": "ROSEEN_EN_wordmark_negative.svg",
+    "original_sha256": "ba2e1886462d47893aaf5197075a02eb65855daff4c8b6896a9aa9be9ce86954",
+    "web_sha256": "01d229be6517347c909ea22a3661dd3d17c23ffdedfb193b9b637ee3d28efa3e",
+    "change": "Only viewBox and intrinsic size; path data, colours and transforms preserved."
+  },
+  "rosin-wordmark.svg": {
+    "source_archive": "ROSEEN_Brand_Kit_FINAL.zip",
+    "source_file": "ROSIN_RU_wordmark_negative.svg",
+    "original_sha256": "acd7e619d7dd30c8437e894c6101c4bda4a4d03c437f837fdb877ff36c5c0a8c",
+    "web_sha256": "5113b32b4662753a2b3e07c4bfdaaad6092ceef391802f73320fe516528775a6",
+    "change": "Only viewBox and intrinsic size; path data, colours and transforms preserved."
+  }
+}
