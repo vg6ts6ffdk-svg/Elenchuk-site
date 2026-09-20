@@ -2,16 +2,17 @@
 export function brandPage(html, file) {
   if (!html.includes('site-header')) return html;
   // The source copy stays untouched; every published page gets one shared layer.
-  let out = html.replace('</head>', '<meta name="theme-color" content="#0F172A">\n<link rel="preconnect" href="https://rsms.me">\n<link rel="stylesheet" href="brand.css">\n</head>');
+  let out = html
+    .replace(/<span class="brand-wordmark">ROSEEN<\/span>/g, '<img src="logo-approved.svg" alt="ROSEEN" width="1843.5385" height="200">')
+    .replace(/href="style\.css(?:\?[^"]*)?"/g, 'href="style.css"')
+    .replace('</head>', '<meta name="theme-color" content="#0F172A">\n<link rel="preconnect" href="https://rsms.me">\n<link rel="stylesheet" href="brand.css">\n</head>');
   out = out.replace(/<link\b(?=[^>]*rel="icon")[^>]*>/g, '<link rel="icon" type="image/svg+xml" href="favicon.svg">');
   out = out.replace(/<img\b(?=[^>]*src="logo-approved\.svg")[^>]*>/g, (tag) => tag
     .replace('src="logo-approved.svg"','src="assets/brand/roseen-wordmark.svg"')
     .replace(/width="[^"]+"/,'width="1843.5385"').replace(/height="[^"]+"/,'height="200"'));
   out = out.replace(/class="([^"]*)"/g, (_, classes) => 'class="' + classes.split(/\s+/).filter(x => x && !['magnetic','parallax-image'].includes(x)).join(' ') + '"');
-  // Static, correctly spelled descriptor, available without JavaScript.
   out = out.replace(/<div class="eyebrow">\s*<i>\s*<\/i>\s*ROBOTICS\s*[•·]\s*SERVICE\s*[•·]\s*ENGINEERING\s*<\/div>/g,
     '<div class="eyebrow brand-sequence" aria-label="Robotics · Service · Engineering"><span class="brand-token"><b>RO</b>BOTICS</span> <span class="brand-token"><b>SE</b>RVICE</span> <span class="brand-token"><b>EN</b>GINEERING</span></div>');
-  // Footer uses the separate approved Cyrillic master, never a typed imitation.
   out = out.replace(/<footer>[\s\S]*?<\/footer>/, (footer) => footer
     .replaceAll('assets/brand/roseen-wordmark.svg','assets/brand/rosin-wordmark.svg')
     .replaceAll('alt="ROSEEN"','alt="РОСИН"')
@@ -24,6 +25,5 @@ export function brandPage(html, file) {
   return out.replace('<body>', '<body data-brand-release="4.0">');
 }
 export function brandScript(js) {
-  // This old PR block was rebuilding the descriptor and mis-staggering its spans.
   return js.replace(/  document\.body\.classList\.add\('brand-ready'\);[\s\S]*?(?=  const current =)/,'');
 }
