@@ -13,11 +13,12 @@ export function brandPage(html, file) {
   out = out.replace(/class="([^"]*)"/g, (_, classes) => 'class="' + classes.split(/\s+/).filter(x => x && !['magnetic','parallax-image'].includes(x)).join(' ') + '"');
   out = out.replace(/<div class="eyebrow">\s*<i>\s*<\/i>\s*ROBOTICS\s*[•·]\s*SERVICE\s*[•·]\s*ENGINEERING\s*<\/div>/g,
     '<div class="eyebrow brand-sequence" aria-label="Robotics · Service · Engineering"><span class="brand-token"><b>RO</b>BOTICS</span> <span class="brand-token"><b>SE</b>RVICE</span> <span class="brand-token"><b>EN</b>GINEERING</span></div>');
-  out = out.replace(/<footer>[\s\S]*?<\/footer>/, (footer) => footer
+  // Russian light master in the header; English light master in the footer.
+  out = out.replace(/<header\b[\s\S]*?<\/header>/, (header) => header
     .replaceAll('assets/brand/roseen-wordmark.svg','assets/brand/rosin-wordmark.svg')
     .replaceAll('alt="ROSEEN"','alt="РОСИН"')
-    .replaceAll('width="1843.5385"','width="1561.1709"')
-    .replace('ROSEEN · Robotics · Service · Engineering','РОСИН · Инженерный сервис'));
+    .replaceAll('aria-label="ROSEEN — главная"','aria-label="РОСИН — главная"')
+    .replaceAll('width="1843.5385"','width="1561.1709"'));
   if (file === 'index.html') {
     out = out.replace(/<section class="numbers">[\s\S]*?<\/section>/,
       '<section class="numbers" aria-label="Принципы сервиса"><div class="container numbers-grid"><div class="number"><strong>Причина.</strong><span>Сначала диагностика</span></div><div class="number"><strong>Решение.</strong><span>Согласованный объём работ</span></div><div class="number"><strong>Результат.</strong><span>Проверка после ремонта</span></div></div></section>');
