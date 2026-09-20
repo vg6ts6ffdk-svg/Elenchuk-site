@@ -15,5 +15,6 @@ export const publicFiles = [...pages, 'style.css', 'brand.css', 'motion.js', 'mo
   'assets/brand/roseen-wordmark.svg', 'assets/brand/rosin-wordmark.svg',
   'robots.txt', 'sitemap.xml', 'CNAME',
   ...(previewEnabled ? ['store.js', 'store-core.js', 'store.css', 'store-data.json', ...storeMediaFiles()] : []),
+  'prototypes/cc1-exploded-scroll.html', 'prototypes/cc1-exploded-scroll.js',
   ...['robotics','electronics','appliances','professional'].flatMap(name =>
     [640,1280].map(size => 'assets/' + name + '-' + size + '.webp'))];
