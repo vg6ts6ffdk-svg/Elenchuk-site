@@ -39,6 +39,6 @@ export function publicCatalog(catalog = readCatalog()) {
   };
 }
 export function storePageNames() {
-  return ['shop.html', 'cart.html', ...categories.map(c => categoryPage(c.id)), ...publicCatalog().products.map(p => p.url)];
+  return ['shop.html', 'cart.html', 'account.html', ...categories.map(c => categoryPage(c.id)), ...publicCatalog().products.map(p => p.url)];
 }
 export function storeMediaFiles() { return [...new Set(publicCatalog().products.map(p => p.image).filter(Boolean))]; }

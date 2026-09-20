@@ -11,7 +11,7 @@ export const pages = [...servicePages, ...generatedPages];
 export const generatedFiles = [...generatedPages, ...(previewEnabled ? ['store-data.json'] : [])];
 // Explicit public files: source, backups, templates and user data stay private.
 export const publicFiles = [...pages, 'style.css', 'brand.css', 'motion.js', 'motion.css', 'script.js', 'api-config.js',
-  'admin.css', 'admin.js', 'logo-approved.svg', 'favicon.svg',
+  'admin.css', 'admin.js', 'admin-catalog.js', 'logo-approved.svg', 'favicon.svg',
   'assets/brand/roseen-wordmark.svg', 'assets/brand/rosin-wordmark.svg',
   'robots.txt', 'sitemap.xml', 'CNAME',
   ...(previewEnabled ? ['store.js', 'store-core.js', 'store.css', 'store-data.json', ...storeMediaFiles()] : []),
