@@ -1,0 +1,8 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { validateCatalog, compatibilityFor, quoteCart } from '../commerce/catalog.mjs';
+const fixture = () => ({version:1,currency:'RUB',products:[{id:'test',sku:'TEST',name:'Test only',category:'test',manufacturer:'Test',unit:'piece',state:'published',availability:'in_stock',priceMinor:100,stock:3,oem:[],sourceRef:'test-only',verifiedAt:'2026-09-20',compatibility:[]}]});
+test('numeric identifiers cannot be coerced into product IDs',()=>{const c=fixture();c.products[0].id=123;assert.throws(()=>validateCatalog(c),/identifier/);assert.throws(()=>quoteCart(fixture(),[{id:123,quantity:1}]),/cart line/);});
+test('unknown revision does not ignore a specific incompatibility exception',()=>{const p=fixture().products[0];p.compatibility=[{equipmentBrand:'Test',model:'Model',status:'confirmed',sourceRef:'test-only'},{equipmentBrand:'Test',model:'Model',revision:'B',status:'incompatible',sourceRef:'test-only'}];assert.equal(compatibilityFor(p,{brand:'Test',model:'Model'}),'unknown');assert.equal(compatibilityFor(p,{brand:'Test',model:'Model',revision:'B'}),'incompatible');});
+test('amounts exceeding safe integer range are rejected',()=>{const c=fixture();c.products[0].priceMinor=Number.MAX_SAFE_INTEGER;assert.throws(()=>quoteCart(c,[{id:'test',quantity:2}]),/safe integer/);});
+test('an invalid line prevents a misleading payable partial total',()=>{const r=quoteCart(fixture(),[{id:'test',quantity:1},{id:'missing',quantity:1}]);assert.equal(r.subtotalMinor,null);assert.equal(r.goodsReady,false);assert.equal(r.checkoutAuthorized,false);});

@@ -41,10 +41,7 @@ test('brandbook palette, heading sizes and reduced motion rules exist', () => {
  for(const value of ['#0F172A','#3B82F6','#FFFFFF','font-size:56px','font-size:36px','prefers-reduced-motion:reduce']) assert.ok(css.includes(value));
  assert.doesNotMatch(css,/overflow-x:\s*(?:hidden|clip)/);
 });
-test('latest main temporary wordmarks are replaced without changing content', () => {
- const html=fixture.replaceAll('<img src="logo-approved.svg" alt="ROSEEN" width="1426" height="282">','<span class="brand-wordmark">ROSEEN</span>').replace('href="style.css"','href="style.css?v=20260920"');
- const out=brandPage(html,'index.html');
- assert.doesNotMatch(out,/<span class="brand-wordmark">/);
- assert.match(out,/assets\/brand\/roseen-wordmark.svg/);
- assert.match(out,/href="style.css"/);
+test('rejected typed logos fail the build instead of surviving as fallback', () => {
+ const html=fixture.replace('<img src="logo-approved.svg" alt="ROSEEN" width="1426" height="282">','<span class="brand-wordmark">ROSEEN</span>');
+ assert.throws(()=>brandPage(html,'index.html'),/Rejected text logo/);
 });

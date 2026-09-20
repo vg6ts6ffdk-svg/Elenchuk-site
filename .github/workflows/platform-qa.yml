@@ -1,0 +1,42 @@
+name: Platform v5 QA
+on:
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+concurrency:
+  group: platform-v5-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  platform:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      ROSEEN_STOREFRONT_PREVIEW: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - run: npm run check && npm test && npm run build && node scripts/check-site.mjs dist
+      - name: Install isolated browser QA tools
+        run: |
+          npm install --no-save --package-lock=false --ignore-scripts playwright@1.63.0
+          npx playwright install --with-deps chromium webkit
+      - name: Check catalogue, cart, motion and progressive fallbacks
+        run: node scripts/platform-qa.mjs
+      - name: Reproducible source snapshot for this reviewed commit
+        if: always()
+        run: |
+          mkdir -p qa/platform
+          git rev-parse HEAD > qa/platform/source-commit.txt
+          git archive --format=zip --output=qa/platform/source.zip HEAD -- '*.html' '*.css' '*.js' '*.mjs' '*.json' '*.md' '.github/workflows/*' 'assets/*.webp' 'assets/brand/*' 'favicon.svg' 'CNAME' 'robots.txt' 'sitemap.xml' 'logo-approved.svg'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: platform-review
+          path: qa/platform/
+          retention-days: 7

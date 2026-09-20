@@ -12,6 +12,8 @@ import { fileURLToPath } from 'node:url';
 import { publicFiles } from './public-files.mjs';
 import { cleanFiles, fields, fileFilter, validateFiles, rateLimit } from './security.mjs';
 
+import { createStoreRouter } from './storefront/api.mjs';
+
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 if (fs.existsSync(path.join(ROOT,'.env'))) process.loadEnvFile(path.join(ROOT,'.env'));
 
@@ -182,6 +184,8 @@ app.use(cors({
 }));
 app.use(express.json({ limit: "32kb" }));
 app.use(express.urlencoded({ extended: false, limit: '32kb' }));
+// Read-only preview commerce must not initialize or mutate the service database.
+app.use('/api/store', createStoreRouter());
 let databaseReady;
 async function initialize() {
   await initDatabase();
