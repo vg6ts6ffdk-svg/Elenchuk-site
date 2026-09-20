@@ -3,12 +3,13 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { createHash } from 'node:crypto';
 import { pages } from '../public-files.mjs';
+import { renderStoreFiles } from '../storefront/render.mjs';
 import { brandPage } from '../scripts/brand-pages.mjs';
 
 test('every public shell uses the Cyrillic header and English footer master', () => {
- let checked=0;
+ let checked=0; const virtual=renderStoreFiles();
  for(const file of pages){
-  const source=fs.readFileSync(new URL('../'+file,import.meta.url),'utf8');
+  const source=virtual.has(file)?virtual.get(file):fs.readFileSync(new URL('../'+file,import.meta.url),'utf8');
   if(!source.includes('site-header'))continue;
   const html=brandPage(source,file);
   const header=html.match(/<header\b[\s\S]*?<\/header>/)?.[0]||'';

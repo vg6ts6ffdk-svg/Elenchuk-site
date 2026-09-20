@@ -1,0 +1,10 @@
+/* Visible defaults and measured clear space; motion is controlled by motion.js. */
+.brand-token { animation:none; }
+.reveal-ready { opacity:1; transform:none; transition:none; }
+.brand { padding:14px; margin-left:-14px; }
+.brand img { width:200px; height:auto; }
+.footer-inner > a:first-child { display:flex; align-items:center; padding:14px; margin-left:-14px; }
+.footer-inner img { height:25.62px; width:auto; }
+@media (max-width:540px) { .brand img { width:160px; } .footer-inner img { height:20.50px; } }
+@media (hover:hover) and (pointer:fine) { .btn:hover { filter:brightness(1.04); } }
+@media (prefers-reduced-motion:reduce) { .brand-token { animation:none; } }
