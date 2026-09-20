@@ -29,7 +29,25 @@ async function inspect(browser,width,file,engine){
   const response=await page.goto(base+'/'+file,{waitUntil:'domcontentloaded'}); assert.equal(response.status(),200);
   await page.evaluate(()=>Promise.race([document.fonts.ready,new Promise(r=>setTimeout(r,5000))]));
   await page.waitForTimeout(800);
-  await page.evaluate(async()=>{for(let y=0;y<document.body.scrollHeight;y+=700){scrollTo(0,y);await new Promise(r=>setTimeout(r,30));}scrollTo(0,0);});
+  // Visit each image before checking lazy assets. Rapid smooth-scroll jumps
+  // otherwise cancel one another and may never expose an image to the viewport.
+  await page.evaluate(async()=>{
+   const root=document.documentElement;
+   const previous=root.style.scrollBehavior;
+   root.style.scrollBehavior='auto';
+   for(const img of document.images){
+    if(getComputedStyle(img).display==='none') continue;
+    img.scrollIntoView({block:'center',behavior:'instant'});
+    await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+    await Promise.race([img.decode().catch(()=>{}),new Promise(r=>setTimeout(r,5000))]);
+   }
+   for(let y=0;y<document.body.scrollHeight;y+=600){
+    scrollTo({top:y,behavior:'instant'});
+    await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+   }
+   scrollTo({top:0,behavior:'instant'});
+   root.style.scrollBehavior=previous;
+  });
   await page.waitForTimeout(250);
   const metrics=await page.evaluate(()=>({width:innerWidth,scroll:document.documentElement.scrollWidth,bg:getComputedStyle(document.body).backgroundColor,logo:document.querySelector('.brand img')?.getBoundingClientRect().toJSON(),broken:[...document.images].filter(i=>!i.complete||!i.naturalWidth).map(i=>i.getAttribute('src')),inter:[...document.fonts].some(f=>f.family.replaceAll('"','')==='Inter'&&f.status==='loaded')}));
   assert.ok(metrics.scroll<=metrics.width+1,`overflow ${metrics.scroll}/${metrics.width}`);
