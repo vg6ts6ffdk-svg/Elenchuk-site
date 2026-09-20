@@ -162,6 +162,7 @@ if (process.env.TRUST_PROXY_HOPS) {
 }
 app.use(helmet({ contentSecurityPolicy: { directives: {
   scriptSrc: ["'self'"], scriptSrcAttr: ["'none'"],
+  imgSrc: ["'self'", "data:", "https://cdn.pudutech.com"],
   connectSrc: ["'self'",'https://api.roseen.ru'], formAction: ["'self'",'https://api.roseen.ru'],
   upgradeInsecureRequests: isProduction ? [] : null
 }}}));
