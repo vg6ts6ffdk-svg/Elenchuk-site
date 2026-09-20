@@ -7,7 +7,9 @@
   const top=robot.querySelector('.top');
   const brush=robot.querySelector('.brush');
   const core=robot.querySelector('.core');
-  const nodes=[...robot.querySelectorAll('.node')];
+  const motorLeft=robot.querySelector('.motor-left');
+  const motorRight=robot.querySelector('.motor-right');
+  const nodes=[...robot.querySelectorAll('.node')].filter(el=>!el.classList.contains('motor-left')&&!el.classList.contains('motor-right'));
   const callouts=[...document.querySelectorAll('.callout')];
   const clamp=(n,a=0,b=1)=>Math.min(b,Math.max(a,n));
   const smooth=t=>t*t*(3-2*t);
@@ -22,8 +24,9 @@
     const rearP=segment(p,.08,.25);
     const frontP=segment(p,.22,.40);
     const coreP=segment(p,.34,.52);
-    const systemsP=segment(p,.48,.76);
-    const brushP=segment(p,.70,.90);
+    const systemsP=segment(p,.48,.72);
+    const wheelsP=segment(p,.74,.89);
+    const brushP=segment(p,.86,.98);
 
     robot.style.setProperty('--scale',(1-.035*segment(p,.1,.75)).toFixed(4));
     robot.style.setProperty('--full',Math.max(0,1-segment(p,.06,.22)*1.18).toFixed(4));
@@ -40,7 +43,7 @@
     top.style.opacity=(.18+.82*frontP).toFixed(3);
 
     const offsets=[
-      [-36,-8,-2],[32,-4,2],[0,26,0],[-54,44,-5],[-18,58,-2],
+      [-36,-8,-2],[32,-4,2],[0,26,0],[-18,58,-2],
       [18,56,4],[55,42,4],[70,48,6]
     ];
     nodes.forEach((el,i)=>{
@@ -49,6 +52,8 @@
       el.style.transform=`translate(${(x*local).toFixed(1)}px,${(y*local).toFixed(1)}px) rotate(${(rot*local).toFixed(2)}deg)`;
     });
 
+    motorLeft.style.transform=`translate(${(-105*wheelsP).toFixed(1)}px,${(88*wheelsP).toFixed(1)}px) rotate(${(-18*wheelsP).toFixed(2)}deg)`;
+    motorRight.style.transform=`translate(${(105*wheelsP).toFixed(1)}px,${(88*wheelsP).toFixed(1)}px) rotate(${(18*wheelsP).toFixed(2)}deg)`;
     brush.style.transform=`translate(0,${(210*brushP).toFixed(1)}px) scale(${(1+.02*brushP).toFixed(4)})`;
 
     callouts[0].classList.toggle('active',p>.12&&p<.92);
@@ -61,7 +66,8 @@
     if(p>.27) label='03 · ПЕРЕДНЯЯ ЧАСТЬ КОРПУСА';
     if(p>.45) label='04 · БАКИ И ПЛАТЫ';
     if(p>.62) label='05 · ОСНОВНЫЕ УЗЛЫ';
-    if(p>.80) label='06 · ЩЁТОЧНЫЙ УЗЕЛ';
+    if(p>.77) label='06 · МОТОР-КОЛЁСА';
+    if(p>.89) label='07 · ЩЁТОЧНЫЙ УЗЕЛ';
     phase.textContent=label;
   }
 
