@@ -1,0 +1,37 @@
+name: Brandbook browser QA
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+permissions:
+  contents: read
+concurrency:
+  group: brandbook-qa-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  brandbook:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - run: npm run check && npm test && npm run build && node scripts/check-site.mjs dist
+      - name: Browser tools (QA only; not runtime dependencies)
+        run: |
+          npm install --no-save --package-lock=false --ignore-scripts playwright@1.63.0
+          npx playwright install --with-deps chromium webkit
+      - name: Brandbook, mobile, keyboard and form checks
+        run: node scripts/brand-qa.mjs
+      - name: Publish review artifacts, not private source files
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: brandbook-browser-review
+          path: |
+            qa/brandbook/
+            dist/
+          retention-days: 7
