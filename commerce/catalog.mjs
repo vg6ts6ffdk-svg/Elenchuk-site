@@ -11,6 +11,7 @@ const STATES = new Set(['draft', 'published', 'archived']);
 const AVAILABILITY = new Set(['in_stock', 'out_of_stock', 'on_request', 'unknown']);
 const COMPATIBILITY = new Set(['confirmed', 'incompatible', 'unknown']);
 const IDENTIFIER = /^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/;
+const identifier = (x) => typeof x === 'string' && IDENTIFIER.test(x);
 const own = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
 const text = (x) => typeof x === 'string' && x.trim().length > 0;
 const norm = (x) => String(x ?? '').normalize('NFKC').trim().toLocaleLowerCase('ru');
@@ -21,7 +22,7 @@ export function validateCatalog(catalog) {
   if (!catalog || catalog.version !== 1 || catalog.currency !== 'RUB' || !Array.isArray(catalog.products)) fail('Invalid catalogue envelope');
   const ids = new Set(); const skus = new Set();
   for (const p of catalog.products) {
-    if (!p || !IDENTIFIER.test(p.id ?? '') || !IDENTIFIER.test(p.sku ?? '')) fail('Invalid product identifier');
+    if (!p || !identifier(p.id) || !identifier(p.sku)) fail('Invalid product identifier');
     if (ids.has(p.id) || skus.has(p.sku)) fail('Duplicate product id or SKU');
     ids.add(p.id); skus.add(p.sku);
     for (const key of ['name', 'category', 'manufacturer', 'unit']) if (!text(p[key])) fail(`Missing ${key}`);
@@ -49,6 +50,8 @@ export function validateCatalog(catalog) {
 export function compatibilityFor(product, equipment) {
   if (!product || !equipment || !text(equipment.brand) || !text(equipment.model)) return 'unknown';
   const modelRows = (product.compatibility ?? []).filter(c => norm(c.equipmentBrand) === norm(equipment.brand) && norm(c.model) === norm(equipment.model));
+  // A known revision exception means an unspecified revision is not safe to match.
+  if (!text(equipment.revision) && modelRows.some(c => text(c.revision))) return 'unknown';
   const exact = text(equipment.revision) ? modelRows.filter(c => norm(c.revision) === norm(equipment.revision)) : [];
   const rows = exact.length ? exact : modelRows.filter(c => !text(c.revision));
   if (!rows.length || rows.some(c => c.status === 'unknown')) return 'unknown';
@@ -76,7 +79,7 @@ export function quoteCart(catalog, submittedLines) {
   if (!Array.isArray(submittedLines) || submittedLines.length > 100) fail('Invalid cart');
   const quantities = new Map();
   for (const line of submittedLines) {
-    if (!line || !IDENTIFIER.test(line.id ?? '') || !Number.isSafeInteger(line.quantity) || line.quantity < 1 || line.quantity > 99) fail('Invalid cart line');
+    if (!line || !identifier(line.id) || !Number.isSafeInteger(line.quantity) || line.quantity < 1 || line.quantity > 99) fail('Invalid cart line');
     const quantity = (quantities.get(line.id) ?? 0) + line.quantity;
     if (quantity > 99) fail('Quantity limit exceeded');
     quantities.set(line.id, quantity);
