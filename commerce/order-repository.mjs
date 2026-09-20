@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 
 const canonical = order => JSON.stringify({
+  id: order.id,
   customerId: order.customerId ?? null,
   customerType: order.customerType,
   currency: order.currency,
