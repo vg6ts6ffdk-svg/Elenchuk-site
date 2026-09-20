@@ -96,6 +96,9 @@ h1 em{font-style:normal;color:#a7d0ff}
 .core .electronics{left:16%;right:16%;top:59%;height:12%;border-color:#5479a7}
 .core .suction{left:11%;width:34%;bottom:2%;height:22%;border-color:#64788d}
 .core .water{right:11%;width:34%;bottom:2%;height:22%;border-color:#6c824b}
+.core .hose{left:-2%;width:10%;bottom:3%;height:19%;border-color:#73889d;border-radius:999px}
+.core .drain{right:-2%;width:10%;bottom:3%;height:19%;border-color:#8c744d;border-radius:999px}
+.core .hose::after,.core .drain::after{font-size:8px;writing-mode:vertical-rl;letter-spacing:.08em}
 
 .callout{
   position:absolute;z-index:20;width:min(300px,26vw);
@@ -155,11 +158,13 @@ h1 em{font-style:normal;color:#a7d0ff}
 
     <div class="robot-wrap" id="robot">
       <div class="core">
-        <div class="module tank-a" data-label="RECOVERY / SOLUTION ZONE"></div>
-        <div class="module tank-b" data-label="FLUID / AIR PATH"></div>
-        <div class="module electronics" data-label="CONTROL ELECTRONICS"></div>
-        <div class="module suction" data-label="SUCTION"></div>
-        <div class="module water" data-label="WATER MODULE"></div>
+        <div class="module tank-a" data-label="WASTE WATER TANK · 15 L"></div>
+        <div class="module tank-b" data-label="CLEAN WATER TANK · 15 L"></div>
+        <div class="module electronics" data-label="CONTROL BOARDS"></div>
+        <div class="module suction" data-label="TURBINE / VACUUM"></div>
+        <div class="module water" data-label="WATER PUMP"></div>
+        <div class="module hose" data-label="SUCTION HOSE"></div>
+        <div class="module drain" data-label="DRAIN VALVE"></div>
       </div>
 
       <img class="robot-img full" alt="" aria-hidden="true" src="https://cdn.pudutech.com/parameters_robot_en_4ad12f66a7.png">
@@ -174,8 +179,8 @@ h1 em{font-style:normal;color:#a7d0ff}
 
     <div class="callout c1"><b>ВЕРХНИЙ МОДУЛЬ</b><span>Крышка, экран и верхняя зона корпуса отделяются первыми.</span></div>
     <div class="callout c2"><b>БОКОВЫЕ ПАНЕЛИ</b><span>Панели расходятся наружу и освобождают внутренний объём.</span></div>
-    <div class="callout c3"><b>СИЛОВАЯ / УПРАВЛЯЮЩАЯ ЧАСТЬ</b><span>Показываем только подтверждённые функциональные зоны, без выдуманной деталировки.</span></div>
-    <div class="callout c4"><b>НИЖНИЙ CLEANING DECK</b><span>Основание и рабочая часть уходят вниз последним этапом.</span></div>
+    <div class="callout c3"><b>ПЛАТЫ / ТУРБИНА / ВОДЯНОЙ БЛОК</b><span>Группы привязаны к сервисным материалам CC1: платы управления, турбина, насос, всасывающий шланг и клапан слива.</span></div>
+    <div class="callout c4"><b>БАКИ / НИЖНИЙ CLEANING DECK</b><span>Баки чистой и грязной воды показаны отдельными сервисными зонами; основание и рабочая часть уходят вниз последними.</span></div>
 
     <div class="progress"><i id="bar"></i></div>
   </div>
@@ -185,7 +190,7 @@ h1 em{font-style:normal;color:#a7d0ff}
   <div class="end-card">
     <div class="kicker">NEXT ITERATION</div>
     <h2>Сначала — правильная механика.<br>Потом — точная инженерная модель.</h2>
-    <p>Если направление движения устраивает, следующий проход заменяет схематичные внутренние блоки на реальные крупные узлы CC1: панели корпуса, баки, платы управления, турбину/всасывающий тракт, водяной модуль и нижнюю уборочную часть — по сервисным видео и документации.</p>
+    <p>Текущая версия уже раскладывает CC1 на сервисные группы, подтверждённые материалами: корпус, баки, платы управления, турбина/вакуум, блок подачи воды, всасывающий шланг, клапан слива и нижний уборочный модуль. Следующий проход — уточнить реальные контуры, точки крепления и направления снятия деталей по кадрам сервисных видео.</p>
     <div class="note">Этот файл находится только в отдельной prototype-ветке и не подключён к главной странице ROSEEN.</div>
   </div>
 </section>
