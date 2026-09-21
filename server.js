@@ -13,6 +13,7 @@ import { publicFiles } from './public-files.mjs';
 import { cleanFiles, fields, fileFilter, validateFiles, rateLimit } from './security.mjs';
 
 import { createStoreRouter } from './storefront/api.mjs';
+import { createStoreAdminRouter } from './storefront/admin-api.mjs';
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 if (fs.existsSync(path.join(ROOT,'.env'))) process.loadEnvFile(path.join(ROOT,'.env'));
@@ -246,6 +247,8 @@ async function auth(req, res, next) {
     res.status(401).json({ error: "Требуется авторизация" });
   }
 }
+
+app.use('/api/store-admin', createStoreAdminRouter({ auth }));
 
 function safeObjectName(name) {
   const base = path.basename(name || "file").replace(/[^a-zA-Z0-9._-]/g, "_");

@@ -28,7 +28,7 @@ export function brandPage(html, file, { storefront = false } = {}) {
     out = out.replace('</head>', '<link rel="stylesheet" href="store.css">\n<script type="module" src="store.js"></script>\n</head>');
     out = out.replace(/<nav\b[^>]*class="(?:nav|mobile-nav)"[^>]*>[\s\S]*?<\/nav>/g, nav => {
       if (nav.includes('href="shop.html"')) return nav;
-      return nav.replace('</nav>', '<a href="shop.html">Магазин</a><a class="cart-nav" href="cart.html">Корзина <span class="cart-badge" data-cart-count aria-label="товаров">0</span></a></nav>');
+      return nav.replace('</nav>', '<a href="shop.html">Магазин</a><a class="cart-nav" href="cart.html">Корзина <span class="cart-badge" data-cart-count aria-label="товаров">0</span></a><a href="account.html">Кабинет</a></nav>');
     });
   }
   return out.replace('<body>', `<body data-brand-release="4.0"${storefront ? ' data-storefront="preview"' : ''}>`);

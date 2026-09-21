@@ -21,7 +21,7 @@ test('public data is an explicit projection, not internal source records',()=>{
  const data=published([product()]);assert.doesNotMatch(JSON.stringify(data),/private-test-reference|sourceRef|verifiedAt/);validatePublicData(data);
 });
 test('categories and real product records get separate static URLs',()=>{
- const files=renderStoreFiles(published([product()]));assert.ok(files.has('product-TEST.html'));for(const c of categories)assert.ok(files.has(`shop-${c.id}.html`));
+ const files=renderStoreFiles(published([product()]));assert.ok(files.has('product-TEST.html'));for(const c of categories)assert.ok(files.has(`shop-${c.id}.html`));assert.ok(files.has('account.html'));
  assert.match(files.get('product-TEST.html'),/noindex,nofollow/);assert.match(files.get('product-TEST.html'),/data-add-cart="TEST"/);
 });
 test('renderer escapes untrusted product text rather than injecting markup',()=>{

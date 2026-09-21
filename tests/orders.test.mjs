@@ -1,0 +1,6 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {createOrderSnapshot,transitionOrder,applyPaymentState,canViewOrder} from '../commerce/orders.mjs';
+const base=()=>createOrderSnapshot({id:'ORDER-1',idempotencyKey:'ABCDEFGHIJKLMNOP',goodsSubtotalMinor:20000,lines:[{id:'P1',sku:'SKU1',name:'Part',quantity:2,unitPriceMinor:10000}]});
+test('order snapshot is immutable and totals must match',()=>{const o=base();assert.equal(o.status,'draft');assert.throws(()=>createOrderSnapshot({id:'ORDER-2',idempotencyKey:'ABCDEFGHIJKLMNOP',goodsSubtotalMinor:1,lines:[{id:'P1',quantity:1,unitPriceMinor:10000}]}),/amount/);});
+test('invalid order state jumps are rejected',()=>{assert.throws(()=>transitionOrder(base(),'completed'),/not allowed/);assert.equal(transitionOrder(base(),'awaiting_payment').status,'awaiting_payment');});
+test('payment success requires verified provider state',()=>{assert.throws(()=>applyPaymentState(base(),'succeeded'),/Verified/);assert.equal(applyPaymentState(base(),'succeeded',{verified:true}).paymentStatus,'succeeded');});
+test('customer cannot view another customer order',()=>{const o={...base(),customerId:'C1'};assert.equal(canViewOrder(o,{role:'customer',customerId:'C2'}),false);assert.equal(canViewOrder(o,{role:'customer',customerId:'C1'}),true);assert.equal(canViewOrder(o,{role:'store_manager'}),true);});

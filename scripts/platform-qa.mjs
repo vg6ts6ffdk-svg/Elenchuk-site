@@ -44,7 +44,7 @@ async function capture(engine,width,height,file){
 }
 try {
  browser=await chromium.launch();
- for(const [width,height] of [[320,900],[390,844],[768,1024],[1024,768],[1440,1000],[844,390]]) for(const file of ['shop.html','shop-belts.html','cart.html']) await capture('chromium',width,height,file);
+ for(const [width,height] of [[320,900],[390,844],[768,1024],[1024,768],[1440,1000],[844,390]]) for(const file of ['shop.html','shop-belts.html','cart.html','account.html']) await capture('chromium',width,height,file);
  // First-entry brand motion is session-scoped and never alters the logo geometry.
  const ctx=await browser.newContext({viewport:{width:390,height:844}});const p=await ctx.newPage();
  await p.goto(base+'/index.html');assert.equal(await p.locator('html').getAttribute('data-motion-entry'),'first');
@@ -68,7 +68,7 @@ try {
  const denied=await browser.newContext({viewport:{width:320,height:844}});await denied.addInitScript(()=>{Object.defineProperty(window,'sessionStorage',{get(){throw Error('Denied');}});Object.defineProperty(window,'localStorage',{get(){throw Error('Denied');}});window.IntersectionObserver=undefined;});const dp=await denied.newPage();await dp.goto(base+'/shop.html');assert.ok(await dp.locator('h1').isVisible());assert.equal(await dp.locator('html').getAttribute('data-motion-entry'),'static');assert.equal(await dp.evaluate(()=>getComputedStyle(document.querySelector('.brand img')).opacity),'1');await denied.close();report.interactions.push('Denied storage and absent IntersectionObserver keep content visible');
  const reduced=await browser.newContext({reducedMotion:'reduce'});const rp=await reduced.newPage();await rp.goto(base+'/shop.html');assert.equal(await rp.evaluate(()=>document.getAnimations().length),0);await reduced.close();
  const nojs=await browser.newContext({javaScriptEnabled:false,viewport:{width:390,height:844}});const np=await nojs.newPage();await np.goto(base+'/shop.html');assert.ok(await np.locator('h1').isVisible());await np.locator('.menu').click();assert.ok(await np.locator('.mobile-nav a[href="shop.html"]').isVisible());await np.locator('.mobile-nav a[href="shop.html"]').click();await np.locator('a.store-category[href="shop-belts.html"]').click();assert.match(np.url(),/shop-belts.html/);await nojs.close();report.interactions.push('Reduced-motion and JS-off category navigation');
- await browser.close();browser=await webkit.launch();for(const file of ['shop.html','shop-belts.html','cart.html'])await capture('webkit',390,844,file);
+ await browser.close();browser=await webkit.launch();for(const file of ['shop.html','shop-belts.html','cart.html','account.html'])await capture('webkit',390,844,file);
 } catch(e){report.failures.push({suite:'interactions',error:e.stack});}
 finally {if(browser)await browser.close();child.kill();await once(child,'exit').catch(()=>{});fs.rmSync(temp,{recursive:true,force:true});fs.writeFileSync(path.join(dir,'report.json'),JSON.stringify(report,null,2));}
 console.log(JSON.stringify({layouts:report.checked.length,interactions:report.interactions,failures:report.failures},null,2));if(report.failures.length)process.exitCode=1;

@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="admin.css">
 <script src="api-config.js" defer></script>
 <script src="admin.js" defer></script>
+<script src="admin-catalog.js" defer></script>
 </head>
 <body>
 <main class="admin-wrap">
@@ -30,6 +31,16 @@
 <section aria-label="Список заявок"><div id="list" class="admin-list"></div><button id="more" class="btn btn-ghost" type="button" hidden>Показать ещё</button></section>
 <section id="detail" class="admin-panel" aria-label="Карточка заявки" hidden></section>
 </div>
+<section id="catalog-admin" class="admin-panel catalog-admin" hidden aria-labelledby="catalog-admin-title">
+<h2 id="catalog-admin-title">Каталог магазина · предпросмотр импорта</h2>
+<p>CSV проверяется, но не записывается и не публикуется. Все импортированные позиции остаются черновиками.</p>
+<form id="catalog-import-form">
+<div class="field"><label for="catalog-file">CSV-файл</label><input id="catalog-file" type="file" accept=".csv,text/csv,text/plain" required></div>
+<button class="btn btn-primary" type="submit">Проверить файл</button>
+</form>
+<p class="form-note">Колонки: id, sku, name, category, manufacturer, unit, priceMinor, stock, availability, oem. Цена — в копейках. Допустимы запятая или точка с запятой.</p>
+<div id="catalog-import-result" role="status" aria-live="polite"></div>
+</section>
 </section>
 <noscript><p>Для защищённой админ-панели требуется JavaScript.</p></noscript>
 </main>
