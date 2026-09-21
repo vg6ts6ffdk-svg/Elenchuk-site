@@ -15,7 +15,11 @@ test('production cannot accidentally enable the preview with a local flag',()=>{
 });
 test('repository catalogue contains no invented product offers',()=>{
  assert.deepEqual(publicCatalog().products,[]);
- const html=renderStoreFiles().get('shop.html');assert.match(html,/Проверенные товары/);assert.doesNotMatch(html,/TEST-SKU|0 ₽|data-add-cart/);
+ const html=renderStoreFiles().get('shop.html');assert.match(html,/Каталог PUDU CC1/);assert.doesNotMatch(html,/TEST-SKU|0 ₽|data-add-cart/);
+});
+test('storefront exposes a safe PUDU CC1 quick filter without inventing products',()=>{
+ const html=renderStoreFiles().get('shop.html');
+ assert.match(html,/PUDU CC1/);assert.match(html,/equipmentBrand=PUDU&amp;model=CC1/);
 });
 test('public data is an explicit projection, not internal source records',()=>{
  const data=published([product()]);assert.doesNotMatch(JSON.stringify(data),/private-test-reference|sourceRef|verifiedAt/);validatePublicData(data);
