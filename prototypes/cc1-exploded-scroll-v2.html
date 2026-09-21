@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PUDU CC1 — exploded scroll prototype v2</title>
+<meta name="description" content="Второй изолированный motion-прототип разборки PUDU CC1 по скроллу.">
+<style>
+:root{
+  color-scheme:dark;
+  --bg:#080b10;--panel:#111722;--line:#283241;--text:#f5f7fb;--muted:#91a0b2;
+  --blue:#63a0ff;--cyan:#8bc3ff;--lime:#c4ff5a
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+body{overflow-x:hidden}
+.intro{min-height:70svh;display:grid;place-items:center;padding:56px 24px;background:radial-gradient(circle at 68% 35%,rgba(99,160,255,.14),transparent 34%),#080b10}
+.intro-inner{width:min(1080px,100%);display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:end}
+.kicker{font-size:12px;font-weight:800;letter-spacing:.18em;color:#9fc4ff;margin-bottom:18px}
+h1{font-size:clamp(3rem,7vw,6.8rem);line-height:.9;letter-spacing:-.06em;margin:0}
+h1 em{font-style:normal;color:#a9d0ff}
+.lead{max-width:650px;font-size:clamp(1rem,1.45vw,1.2rem);line-height:1.65;color:#bcc8d8;margin-top:26px}
+.meta{border-left:1px solid var(--line);padding-left:28px;color:var(--muted);font-size:.9rem;line-height:1.65}
+.meta b{color:#e2e9f3}
+.scroll-hint{margin-top:22px;font-size:.76rem;letter-spacing:.14em;color:#8ca0b8}
+
+.track{height:500svh;position:relative}
+.stage{position:sticky;top:0;height:100svh;overflow:hidden;background:radial-gradient(circle at 50% 48%,rgba(99,160,255,.095),transparent 31%),#080b10}
+.grid{position:absolute;inset:0;opacity:.19;background-image:linear-gradient(rgba(255,255,255,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.055) 1px,transparent 1px);background-size:48px 48px;mask-image:linear-gradient(to bottom,transparent 2%,#000 24%,#000 80%,transparent)}
+.topbar{position:absolute;left:0;right:0;top:0;z-index:50;display:flex;justify-content:space-between;gap:20px;padding:24px clamp(18px,4vw,52px);font-size:.7rem;letter-spacing:.13em;color:#93a2b5}
+.topbar strong{color:#e8edf5}
+.phase{position:absolute;left:clamp(18px,4vw,52px);bottom:44px;z-index:60;font-size:.73rem;letter-spacing:.13em;color:#9cadc0}
+.progress{position:absolute;left:clamp(18px,4vw,52px);right:clamp(18px,4vw,52px);bottom:24px;height:2px;background:#222b36;z-index:60}
+.progress i{display:block;width:100%;height:100%;background:linear-gradient(90deg,var(--blue),var(--lime));transform-origin:left center;transform:scaleX(var(--p,0))}
+
+.robot{--scale:1;--full:1;--core:0;position:absolute;left:50%;top:49%;width:min(54vw,680px);aspect-ratio:1/1;transform:translate(-50%,-50%) scale(var(--scale));filter:drop-shadow(0 38px 48px rgba(0,0,0,.5))}
+.robot::before{content:"";position:absolute;left:16%;right:16%;bottom:10%;height:8%;border-radius:50%;background:#000;filter:blur(28px);opacity:.25}
+.robot-img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none;user-select:none}
+.full{opacity:var(--full)}
+.shell{will-change:transform,opacity}
+.shell.rear{clip-path:polygon(48% 8%,96% 14%,100% 91%,55% 91%,50% 65%)}
+.shell.front{clip-path:polygon(0 12%,57% 7%,54% 68%,49% 92%,0 89%)}
+.shell.top{clip-path:polygon(15% 2%,86% 2%,86% 27%,15% 27%)}
+.shell.brush{clip-path:polygon(1% 79%,99% 79%,100% 100%,0 100%)}
+
+.core{position:absolute;inset:17% 18% 22%;opacity:var(--core);transform:scale(var(--core-scale,.9));z-index:-1}
+.node{position:absolute;border:1px solid #53647b;background:linear-gradient(180deg,#172131,#101721);border-radius:14px;box-shadow:0 18px 42px rgba(0,0,0,.3),inset 0 0 0 1px rgba(255,255,255,.025);will-change:transform,opacity}
+.node span{position:absolute;inset:0;display:grid;place-items:center;padding:8px;text-align:center;font-size:9px;line-height:1.25;letter-spacing:.075em;color:#b3c1d2}
+
+.tank-dirty{left:7%;right:7%;top:3%;height:25%;border-color:#7c6b64}
+.tank-clean{left:7%;right:7%;top:31%;height:20%;border-color:#567ca5}
+.boards{left:11%;right:11%;top:56%;height:13%;display:grid;grid-template-columns:repeat(5,1fr);gap:4px;padding:6px;border-color:#5d83b7}
+.boards i{display:block;border:1px solid #5378a6;border-radius:5px;background:#132236}
+.boards span{font-size:8px}
+.motor-left,.motor-right{width:16%;bottom:-2%;height:16%;border-radius:50%;border-color:#8e8d65}
+.motor-left{left:5%}.motor-right{right:5%}
+.turbine{left:27%;width:21%;bottom:4%;height:19%;border-radius:50%;border-color:#65798f}
+.hose{left:51%;width:9%;bottom:1%;height:28%;border-radius:999px;border-color:#73899f;transform-origin:50% 85%}
+.water{right:15%;width:20%;bottom:4%;height:19%;border-color:#6e8a60}
+.drain{right:3%;width:9%;bottom:4%;height:19%;border-radius:999px;border-color:#987958}
+.hose span,.drain span{font-size:7px;writing-mode:vertical-rl;letter-spacing:.04em}
+
+.callout{position:absolute;z-index:40;width:min(300px,27vw);padding:13px 15px;border:1px solid rgba(116,138,165,.4);border-radius:14px;background:rgba(10,15,22,.84);backdrop-filter:blur(12px);opacity:0;transform:translateY(10px);transition:opacity .16s linear,transform .16s linear}
+.callout.active{opacity:1;transform:none}
+.callout b{display:block;font-size:.74rem;letter-spacing:.08em;margin-bottom:6px}
+.callout span{display:block;color:#9aa8b8;font-size:.77rem;line-height:1.45}
+.c1{left:4vw;top:21%}.c2{right:4vw;top:21%}.c3{left:4vw;top:58%}.c4{right:4vw;top:58%}
+
+.legend{position:absolute;right:clamp(18px,4vw,52px);bottom:44px;z-index:60;font-size:.68rem;color:#718096;letter-spacing:.08em;text-align:right}
+.end{min-height:72svh;display:grid;place-items:center;padding:70px 24px;border-top:1px solid var(--line)}
+.end-card{width:min(900px,100%);padding:clamp(28px,5vw,58px);border:1px solid var(--line);border-radius:26px;background:#0e141d}
+.end-card h2{font-size:clamp(2rem,4.7vw,4.3rem);line-height:.98;letter-spacing:-.05em;margin:0 0 22px}
+.end-card p{color:#9caabc;line-height:1.7}
+.note{font-size:.78rem;color:#7e8b9d;margin-top:24px;padding-top:20px;border-top:1px solid var(--line)}
+
+@media(max-width:860px){
+  .intro-inner{grid-template-columns:1fr}.meta{border-left:0;border-top:1px solid var(--line);padding:22px 0 0}
+  .robot{width:min(91vw,650px);top:47%}
+  .callout{width:41vw;padding:10px 11px}.callout b{font-size:.66rem}.callout span{font-size:.69rem}
+  .c1,.c3{left:2.5vw}.c2,.c4{right:2.5vw}
+  .legend{display:none}
+}
+@media(max-width:560px){
+  .track{height:450svh}.robot{width:100vw}
+  .callout{width:45vw}.c1,.c2{top:16%}.c3,.c4{top:auto;bottom:12%}
+  .topbar span{display:none}
+}
+@media(prefers-reduced-motion:reduce){
+  .track{height:120svh}.progress i{transform:scaleX(.75)!important}
+}
+</style>
+</head>
+<body>
+<section class="intro">
+  <div class="intro-inner">
+    <div>
+      <div class="kicker">ROSEEN LAB / CC1 STUDY 02</div>
+      <h1>PUDU CC1<br><em>разборка v2.</em></h1>
+      <p class="lead">Более простая и технически понятная схема: корпус снимается в правильной очередности, затем показываются только основные внутренние узлы.</p>
+      <div class="scroll-hint">ПРОКРУТИТЕ ВНИЗ ↓</div>
+    </div>
+    <div class="meta"><b>Логика версии 2</b><br>Сначала задняя часть корпуса, затем передняя. Баки не трактуем как быстросъёмные. Внутренности остаются схематичными до завтрашнего визуального уточнения.<br><br><b>Без лишней деталировки</b><br>Показываем только то, что полезно зрителю сайта.</div>
+  </div>
+</section>
+
+<section class="track" id="track">
+  <div class="stage">
+    <div class="grid"></div>
+    <div class="topbar"><strong>PUDU CC1 / DISASSEMBLY V2</strong><span>ISOLATED PREVIEW · NOT PRODUCTION</span></div>
+    <div class="phase" id="phase">01 · СОБРАН</div>
+    <div class="legend">схематично · без точных креплений</div>
+
+    <div class="robot" id="robot">
+      <div class="core">
+        <div class="node tank-dirty"><span>БАК ГРЯЗНОЙ ВОДЫ</span></div>
+        <div class="node tank-clean"><span>БАК ЧИСТОЙ ВОДЫ</span></div>
+        <div class="node boards"><i></i><i></i><i></i><i></i><i></i><span>4–5 ПЛАТ УПРАВЛЕНИЯ</span></div>
+        <div class="node motor-left"><span>МОТОР-КОЛЕСО</span></div>
+        <div class="node motor-right"><span>МОТОР-КОЛЕСО</span></div>
+        <div class="node turbine"><span>ТУРБИНА</span></div>
+        <div class="node hose"><span>ВСАСЫВАЮЩИЙ ШЛАНГ</span></div>
+        <div class="node water"><span>БЛОК ПОДАЧИ ВОДЫ</span></div>
+        <div class="node drain"><span>СЛИВНОЙ КЛАПАН</span></div>
+      </div>
+
+      <img class="robot-img full" alt="" aria-hidden="true" src="https://cdn.pudutech.com/parameters_robot_en_4ad12f66a7.png">
+      <img class="robot-img shell rear" alt="" aria-hidden="true" src="https://cdn.pudutech.com/parameters_robot_en_4ad12f66a7.png">
+      <img class="robot-img shell front" alt="" aria-hidden="true" src="https://cdn.pudutech.com/parameters_robot_en_4ad12f66a7.png">
+      <img class="robot-img shell top" alt="" aria-hidden="true" src="https://cdn.pudutech.com/parameters_robot_en_4ad12f66a7.png">
+      <img class="robot-img shell brush" alt="" aria-hidden="true" src="https://cdn.pudutech.com/parameters_robot_en_4ad12f66a7.png">
+    </div>
+
+    <div class="callout c1"><b>1. ЗАДНЯЯ ЧАСТЬ КОРПУСА</b><span>Уходит первой. Направление движения в прототипе условное — завтра уточним по реальному роботу.</span></div>
+    <div class="callout c2"><b>2. ПЕРЕДНЯЯ ЧАСТЬ КОРПУСА</b><span>Снимается после задней и открывает основные внутренние зоны.</span></div>
+    <div class="callout c3"><b>БАКИ + ЭЛЕКТРОНИКА</b><span>Два несъёмных бака и группа из 4–5 плат показаны схематично внутри корпуса.</span></div>
+    <div class="callout c4"><b>СЕРВИСНЫЕ УЗЛЫ</b><span>Турбина, всасывающий шланг, блок подачи воды и сливной клапан. Два мотор-колеса снимаются почти в самом конце, перед щёточным узлом.</span></div>
+
+    <div class="progress"><i></i></div>
+  </div>
+</section>
+
+<section class="end">
+  <div class="end-card">
+    <div class="kicker">V2 / REVIEW</div>
+    <h2>Меньше деталей.<br>Понятнее разборка.</h2>
+    <p>Во второй версии задача не в том, чтобы показать ремонтный мануал. Нужно, чтобы зритель понял устройство CC1 и увидел инженерность сервиса: корпус раскрывается, внутри появляются основные системы, а нижний щёточный узел отделяется последним.</p>
+    <div class="note">Точное количество плат и реальные направления снятия деталей уточним по короткому показу робота. Два мотор-колеса находятся в нижней части и относятся к финальным этапам разборки. Основной сайт ROSEEN не изменён.</div>
+  </div>
+</section>
+
+<script src="cc1-exploded-scroll-v2.js" defer></script>
+</body>
+</html>
