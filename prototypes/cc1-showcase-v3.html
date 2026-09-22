@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PUDU CC1 — ROSEEN showcase prototype</title>
+<meta name="description" content="Премиальный scroll-прототип разборки PUDU CC1 для ROSEEN.">
+<style>
+:root{
+  color-scheme:dark;
+  --bg:#07101e;
+  --bg-deep:#050a12;
+  --navy:#0F172A;
+  --blue:#3B82F6;
+  --blue-soft:#93C5FD;
+  --lime:#B9F227;
+  --silver:#C9D3DF;
+  --text:#F8FAFC;
+  --muted:#8491A3;
+  --line:rgba(148,163,184,.18);
+  --p:0;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg-deep);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+body{overflow-x:hidden}
+button{font:inherit}
+.intro{
+  min-height:72svh;display:grid;align-items:end;padding:clamp(48px,7vw,96px) clamp(22px,6vw,88px);
+  background:
+    radial-gradient(circle at 78% 26%,rgba(59,130,246,.17),transparent 32%),
+    linear-gradient(180deg,#08111f 0%,#060b13 100%);
+}
+.intro-grid{width:min(1180px,100%);margin:auto;display:grid;grid-template-columns:1.15fr .85fr;gap:64px;align-items:end}
+.kicker{font-size:11px;font-weight:800;letter-spacing:.19em;color:#8DB8FF;margin-bottom:18px}
+h1{margin:0;font-size:clamp(3rem,7.4vw,7.1rem);line-height:.88;letter-spacing:-.065em}
+h1 span{color:#9CC4FF}
+.lead{max-width:650px;margin:28px 0 0;color:#B5C0CF;font-size:clamp(1rem,1.45vw,1.2rem);line-height:1.65}
+.intro-note{border-left:1px solid var(--line);padding-left:28px;color:#8491A3;font-size:.9rem;line-height:1.7}
+.intro-note strong{color:#D9E2EC;font-weight:650}
+.scroll{margin-top:24px;font-size:.72rem;letter-spacing:.16em;color:#73839A}
+
+.track{position:relative;height:560svh}
+.stage{
+  position:sticky;top:0;height:100svh;overflow:hidden;
+  background:
+    radial-gradient(circle at 50% 49%,rgba(59,130,246,.115),transparent 31%),
+    radial-gradient(circle at 50% 54%,rgba(185,242,39,.035),transparent 24%),
+    #070D17;
+}
+.stage::before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+  background-size:64px 64px;
+  mask-image:linear-gradient(to bottom,transparent 4%,#000 25%,#000 76%,transparent 98%);
+}
+.stage-head{
+  position:absolute;z-index:40;top:0;left:0;right:0;padding:24px clamp(20px,4.5vw,62px);
+  display:flex;justify-content:space-between;align-items:flex-start;gap:24px;
+}
+.stage-brand{font-size:.7rem;font-weight:800;letter-spacing:.16em;color:#D8E2EF}
+.stage-brand span{color:#6E7F95;font-weight:650}
+.stage-status{text-align:right;max-width:330px}
+.stage-status b{display:block;font-size:.75rem;letter-spacing:.11em;color:#9DC3FF;margin-bottom:6px}
+.stage-status span{display:block;color:#718098;font-size:.72rem;line-height:1.45}
+
+.robot-scene{
+  --scene-scale:1;
+  --full-opacity:1;
+  --core-opacity:0;
+  position:absolute;left:50%;top:50%;width:min(55vw,690px);aspect-ratio:1/1;
+  transform:translate(-50%,-50%) scale(var(--scene-scale));
+  filter:drop-shadow(0 38px 54px rgba(0,0,0,.55));
+}
+.robot-scene::before{
+  content:"";position:absolute;left:19%;right:19%;bottom:8%;height:7%;border-radius:50%;
+  background:#000;filter:blur(30px);opacity:.36;
+}
+.robot-img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none;user-select:none}
+.robot-full{opacity:var(--full-opacity)}
+.photo-part{will-change:transform,opacity}
+.photo-part.top{clip-path:polygon(11% 2%,90% 2%,89% 29%,11% 30%)}
+.photo-part.front{clip-path:polygon(0 12%,61% 7%,58% 72%,49% 95%,0 91%)}
+
+.rear-panel{
+  position:absolute;z-index:-1;left:53%;top:23%;width:33%;height:56%;
+  border:1px solid rgba(185,242,39,.55);
+  border-radius:18% 21% 23% 19% / 12% 13% 18% 18%;
+  background:
+    linear-gradient(160deg,rgba(185,242,39,.30),rgba(117,168,23,.15)),
+    rgba(14,24,17,.58);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.03),0 22px 50px rgba(0,0,0,.28);
+  opacity:0;
+  backdrop-filter:blur(4px);
+  will-change:transform,opacity;
+}
+.front-ghost{
+  position:absolute;z-index:-1;left:13%;top:24%;width:42%;height:58%;
+  border:1px solid rgba(201,211,223,.4);
+  border-radius:18% 16% 18% 21%;
+  background:linear-gradient(145deg,rgba(201,211,223,.16),rgba(81,97,117,.11));
+  opacity:0;
+  will-change:transform,opacity;
+}
+
+.core{
+  position:absolute;inset:17% 20% 20%;
+  opacity:var(--core-opacity);transform:scale(var(--core-scale,.91));z-index:-2;
+}
+.tank{
+  position:absolute;left:10%;right:10%;border:1px solid rgba(147,197,253,.3);
+  border-radius:18px;background:linear-gradient(180deg,rgba(32,49,72,.84),rgba(11,21,34,.92));
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.025);
+}
+.tank.dirty{top:5%;height:26%;border-color:rgba(203,160,132,.36)}
+.tank.clean{top:34%;height:22%}
+.tank::after{
+  content:attr(data-label);position:absolute;inset:0;display:grid;place-items:center;
+  color:#77869A;font-size:8px;letter-spacing:.10em;
+}
+.boards{
+  position:absolute;left:14%;right:14%;top:60%;height:12%;
+  display:grid;grid-template-columns:repeat(5,1fr);gap:6px;
+}
+.board{
+  border:1px solid rgba(96,165,250,.48);border-radius:5px;
+  background:linear-gradient(180deg,#14253C,#0B1728);
+  box-shadow:0 8px 18px rgba(0,0,0,.22);
+  will-change:transform,opacity;
+}
+.service-node{
+  position:absolute;border:1px solid rgba(148,163,184,.34);
+  background:linear-gradient(180deg,#152131,#0B141F);box-shadow:0 12px 28px rgba(0,0,0,.26);
+  will-change:transform,opacity;
+}
+.turbine{left:17%;bottom:4%;width:20%;aspect-ratio:1;border-radius:50%;border-color:rgba(147,197,253,.42)}
+.water{right:16%;bottom:6%;width:22%;height:18%;border-radius:12px;border-color:rgba(185,242,39,.30)}
+.hose{
+  left:45%;bottom:2%;width:8%;height:27%;border-radius:999px;
+  border-color:rgba(148,163,184,.42);transform-origin:50% 90%;
+}
+.drain{
+  right:5%;bottom:4%;width:7%;height:16%;border-radius:999px;
+  border-color:rgba(203,160,132,.44);
+}
+
+.wheel{
+  position:absolute;z-index:-1;bottom:14%;width:12.5%;aspect-ratio:1;border-radius:50%;
+  background:
+    radial-gradient(circle at 50% 50%,#28323E 0 20%,#111820 21% 57%,#424D59 58% 65%,#0C1117 66%);
+  border:1px solid rgba(148,163,184,.35);
+  box-shadow:0 16px 28px rgba(0,0,0,.3);
+  opacity:0;will-change:transform,opacity;
+}
+.wheel.left{left:22%}.wheel.right{right:22%}
+
+.brush-module{
+  position:absolute;z-index:-1;left:21%;right:21%;bottom:2%;height:12%;
+  border:1px solid rgba(148,163,184,.36);border-radius:16px;
+  background:linear-gradient(180deg,#182330,#0B121B);
+  box-shadow:0 18px 32px rgba(0,0,0,.34);
+  opacity:0;will-change:transform,opacity;
+}
+.brush-module::before,.brush-module::after{
+  content:"";position:absolute;top:26%;bottom:26%;width:31%;border-radius:999px;
+  background:repeating-linear-gradient(90deg,#667382 0 4px,#27313C 4px 8px);
+}
+.brush-module::before{left:9%}.brush-module::after{right:9%}
+
+.annotation{
+  position:absolute;z-index:35;opacity:0;transform:translateY(8px);
+  transition:opacity .16s linear,transform .16s linear;
+  width:min(250px,24vw);
+}
+.annotation.active{opacity:1;transform:none}
+.annotation b{display:block;font-size:.66rem;letter-spacing:.13em;color:#CAD5E1;margin-bottom:5px}
+.annotation span{display:block;color:#718098;font-size:.72rem;line-height:1.45}
+.annotation::after{
+  content:"";display:block;margin-top:10px;width:76px;height:1px;
+  background:linear-gradient(90deg,rgba(147,197,253,.65),transparent);
+}
+.a1{left:5vw;top:24%}
+.a2{right:5vw;top:29%;text-align:right}
+.a2::after{margin-left:auto;transform:scaleX(-1)}
+.a3{left:5vw;top:60%}
+.a4{right:5vw;top:61%;text-align:right}
+.a4::after{margin-left:auto;transform:scaleX(-1)}
+
+.bottom-ui{
+  position:absolute;z-index:50;left:clamp(20px,4.5vw,62px);right:clamp(20px,4.5vw,62px);bottom:22px;
+}
+.phase{font-size:.7rem;letter-spacing:.13em;color:#8290A3;margin-bottom:10px}
+.progress{height:1px;background:rgba(148,163,184,.16)}
+.progress i{display:block;height:100%;width:100%;transform-origin:left center;transform:scaleX(var(--p));background:linear-gradient(90deg,#3B82F6,#B9F227)}
+
+.outro{
+  min-height:70svh;display:grid;place-items:center;padding:72px 24px;
+  background:linear-gradient(180deg,#070D17,#050A11);
+}
+.outro-card{width:min(900px,100%);padding:clamp(30px,5vw,62px);border:1px solid var(--line);border-radius:28px;background:#0A111C}
+.outro-card h2{font-size:clamp(2.2rem,5vw,4.7rem);line-height:.96;letter-spacing:-.052em;margin:0 0 22px}
+.outro-card p{color:#8B98AA;line-height:1.7;max-width:720px}
+.tag{margin-top:24px;padding-top:20px;border-top:1px solid var(--line);color:#68778B;font-size:.78rem}
+
+@media(max-width:900px){
+  .intro-grid{grid-template-columns:1fr}.intro-note{border-left:0;border-top:1px solid var(--line);padding:22px 0 0}
+  .robot-scene{width:min(92vw,670px);top:48%}
+  .annotation{width:40vw}.a1,.a3{left:3vw}.a2,.a4{right:3vw}
+}
+@media(max-width:560px){
+  .track{height:500svh}.robot-scene{width:102vw}
+  .stage-head{padding-top:18px}.stage-status span{display:none}
+  .annotation{width:44vw}.annotation span{font-size:.66rem}.annotation b{font-size:.6rem}
+  .a1,.a2{top:16%}.a3,.a4{top:auto;bottom:12%}
+}
+@media(prefers-reduced-motion:reduce){
+  .track{height:130svh}
+}
+</style>
+</head>
+<body>
+<section class="intro">
+  <div class="intro-grid">
+    <div>
+      <div class="kicker">ROSEEN · ROBOTICS / MOTION STUDY</div>
+      <h1>PUDU CC1<br><span>inside.</span></h1>
+      <p class="lead">Не ремонтный мануал. Короткая инженерная визуализация, которая показывает устройство робота и усиливает ощущение профессионального сервиса.</p>
+      <div class="scroll">ПРОКРУТИТЕ ВНИЗ ↓</div>
+    </div>
+    <div class="intro-note"><strong>Задача этой версии:</strong><br>сделать эффект дорогим, спокойным и понятным. Детали двигаются ровно настолько, чтобы зритель увидел конструкцию, но не потерял образ самого CC1.</div>
+  </div>
+</section>
+
+<section class="track" id="track">
+  <div class="stage">
+    <div class="stage-head">
+      <div class="stage-brand">РОСИН <span>/ CC1</span></div>
+      <div class="stage-status"><b id="statusTitle">СОБРАН</b><span id="statusSub">Сервисный робот PUDU CC1</span></div>
+    </div>
+
+    <div class="robot-scene" id="robot">
+      <div class="core">
+        <div class="tank dirty" data-label="БАК ГРЯЗНОЙ ВОДЫ"></div>
+        <div class="tank clean" data-label="БАК ЧИСТОЙ ВОДЫ"></div>
+        <div class="boards">
+          <i class="board"></i><i class="board"></i><i class="board"></i><i class="board"></i><i class="board"></i>
+        </div>
+        <div class="service-node turbine"></div>
+        <div class="service-node hose"></div>
+        <div class="service-node water"></div>
+        <div class="service-node drain"></div>
+      </div>
+
+      <div class="rear-panel" aria-hidden="true"></div>
+      <div class="front-ghost" aria-hidden="true"></div>
+      <div class="wheel left" aria-hidden="true"></div>
+      <div class="wheel right" aria-hidden="true"></div>
+      <div class="brush-module" aria-hidden="true"></div>
+
+      <img class="robot-img robot-full" alt="" aria-hidden="true" src="https://cdn.pudutech.com/parameters_robot_en_4ad12f66a7.png">
+      <img class="robot-img photo-part top" alt="" aria-hidden="true" src="https://cdn.pudutech.com/parameters_robot_en_4ad12f66a7.png">
+      <img class="robot-img photo-part front" alt="" aria-hidden="true" src="https://cdn.pudutech.com/parameters_robot_en_4ad12f66a7.png">
+    </div>
+
+    <div class="annotation a1"><b>01 · ВЕРХНЯЯ КРЫШКА</b><span>Первый лёгкий акцент: верх открывает внутреннюю архитектуру.</span></div>
+    <div class="annotation a2"><b>02 · КОРПУС</b><span>Салатовая задняя часть — затем серая передняя.</span></div>
+    <div class="annotation a3"><b>03 · ВНУТРЕННИЕ УЗЛЫ</b><span>Баки остаются внутри. Платы и сервисные узлы лишь слегка расходятся.</span></div>
+    <div class="annotation a4"><b>04 · НИЖНЯЯ ЧАСТЬ</b><span>Два мотор-колеса и щёточный узел завершают разборку.</span></div>
+
+    <div class="bottom-ui">
+      <div class="phase" id="phase">01 / СОБРАН</div>
+      <div class="progress"><i></i></div>
+    </div>
+  </div>
+</section>
+
+<section class="outro">
+  <div class="outro-card">
+    <div class="kicker">ROSEEN / ENGINEERING DETAIL</div>
+    <h2>Сложная техника.<br>Понятный сервис.</h2>
+    <p>Именно такой уровень детализации нужен для сайта: зритель видит, что мы понимаем устройство робота, но сама сцена остаётся чистой, визуальной и не превращается в инструкцию по ремонту.</p>
+    <div class="tag">Тестовый вариант · основной сайт не изменён</div>
+  </div>
+</section>
+
+<script src="cc1-showcase-v3.js" defer></script>
+</body>
+</html>
