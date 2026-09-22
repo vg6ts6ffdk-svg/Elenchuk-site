@@ -17,5 +17,6 @@ export const publicFiles = [...pages, 'style.css', 'brand.css', 'motion.js', 'mo
   ...(previewEnabled ? ['store.js', 'store-core.js', 'store.css', 'store-data.json', ...storeMediaFiles()] : []),
   'prototypes/cc1-exploded-scroll.html', 'prototypes/cc1-exploded-scroll.js',
   'prototypes/cc1-exploded-scroll-v2.html', 'prototypes/cc1-exploded-scroll-v2.js',
+  'prototypes/cc1-showcase-v3.html', 'prototypes/cc1-showcase-v3.js',
   ...['robotics','electronics','appliances','professional'].flatMap(name =>
     [640,1280].map(size => 'assets/' + name + '-' + size + '.webp'))];
