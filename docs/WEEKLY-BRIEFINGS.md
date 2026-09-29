@@ -2,9 +2,11 @@
 
 The owner authorized publication of the Russian weekly robotics/service/retail briefing on roseen.ru and continued publication each Monday (29 September 2026). The existing ChatGPT task remains the researcher and publisher; this repository does not itself run a news-writing agent.
 
+The owner renamed the public section to «Новости» on 29 September 2026. Use «Новости» in desktop/mobile navigation. `briefings.html` is a legacy redirect; never publish new content there. Existing article URLs remain stable.
+
 ## Files and editorial contract
 
-- Archive: `briefings.html`; individual issues: `briefing-YYYY-MM-DD.html` (issue date in Europe/Moscow).
+- News section and archive: `news.html`; individual issues: `briefing-YYYY-MM-DD.html` (issue date in Europe/Moscow).
 - Copy the current issue's HTML shell, approved graphical header/footer, styles and navigation. Replace title, description, canonical/OG URL, period, article and dates. Keep the article readable without JavaScript.
 - Add each issue to `briefingPages` in `public-files.mjs`, to the top of the archive, and to `sitemap.xml`. Preserve prior issues and their URLs. Do not create a duplicate issue on retries.
 - Read primary sources, verify dates, link directly to them, distinguish supplier claims from independently verified results and analysis. Do not mistake publication dates for deployment dates, proposals for completed projects, or maximum values for averages. State uncertainty and unconfirmed Russian availability. No invented metrics, private customer information or internal instructions in public copy.
