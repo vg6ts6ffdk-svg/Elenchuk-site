@@ -43,9 +43,12 @@ jobs:
       - name: Build production site
         env:
           ROSEEN_API_BASE: https://api.roseen.ru
+          ROSEEN_STOREFRONT_PUBLIC: '1'
         run: node build-pages.mjs
 
       - name: Validate production links and assets
+        env:
+          ROSEEN_STOREFRONT_PUBLIC: '1'
         run: node validate-site.mjs dist
 
       - name: API integration tests

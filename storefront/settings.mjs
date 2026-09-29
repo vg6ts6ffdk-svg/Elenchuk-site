@@ -9,8 +9,8 @@ export const categories = Object.freeze([
   { id: 'service-kits', name: 'Сервисные комплекты', detail: 'Наборы для обслуживания и ремонта' }
 ]);
 export function storefrontEnabled(env = process.env) {
-  // No production override. Commercial launch requires a separate reviewed change.
-  return env.VERCEL_ENV === 'preview' || (env.NODE_ENV !== 'production' && env.ROSEEN_STOREFRONT_PREVIEW === '1');
+  // The read-only storefront is public in Vercel Preview and Production. Checkout remains independently disabled until commercial launch gates pass.
+  return env.VERCEL_ENV === 'preview' || env.VERCEL_ENV === 'production' || env.ROSEEN_STOREFRONT_PUBLIC === '1' || (env.NODE_ENV !== 'production' && env.ROSEEN_STOREFRONT_PREVIEW === '1');
 }
 export function readCatalog() {
   const data = JSON.parse(fs.readFileSync(new URL('./catalog.json', import.meta.url), 'utf8'));
