@@ -69,3 +69,10 @@ test('unsafe product URL or photo cannot enter browser-rendered content',()=>{
 test('active source templates no longer contain a typed logo surrogate',()=>{
  for(const file of fs.readdirSync('.').filter(f=>f.endsWith('.html')))assert.doesNotMatch(fs.readFileSync(file,'utf8'),/class="brand-wordmark"/,file);
 });
+
+test('production exposes read-only storefront while checkout remains disabled',()=>{
+  assert.equal(storefrontEnabled({VERCEL_ENV:'production',NODE_ENV:'production'}),true);
+  const data=publicCatalog({version:1,currency:'RUB',products:[]});
+  assert.equal(data.checkoutEnabled,false);
+  assert.equal(data.products.length,0);
+});
