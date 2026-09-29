@@ -10,6 +10,7 @@ const state = query => parseSearch(new URLSearchParams(query));
 test('storefront is public on Vercel but a local production flag cannot enable it elsewhere',()=>{
  assert.equal(storefrontEnabled({NODE_ENV:'production',ROSEEN_STOREFRONT_PREVIEW:'1'}),false);
  assert.equal(storefrontEnabled({VERCEL_ENV:'production',NODE_ENV:'production'}),true);
+ assert.equal(storefrontEnabled({NODE_ENV:'production',ROSEEN_STOREFRONT_PUBLIC:'1'}),true);
  assert.equal(storefrontEnabled({VERCEL_ENV:'preview',NODE_ENV:'production'}),true);
  assert.equal(storefrontEnabled({NODE_ENV:'test',ROSEEN_STOREFRONT_PREVIEW:'1'}),true);
 });
