@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="ru"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Роботы, сервис и ритейл: 21–28 сентября 2026 — ROSEEN</title>
+<meta name="description" content="Gausium у MAKELIS, интеграция AMR, RFID-пилот Lager 157 и проект Kesko: факты, ограничения и практические выводы.">
+<link rel="canonical" href="https://roseen.ru/briefing-2026-09-28.html">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="stylesheet" href="style.css"><link rel="stylesheet" href="briefings.css">
+<meta property="og:type" content="article"><meta property="og:locale" content="ru_RU"><meta property="og:title" content="Роботы, сервис и ритейл: 21–28 сентября 2026 — ROSEEN"><meta property="og:description" content="Gausium у MAKELIS, интеграция AMR, RFID-пилот Lager 157 и проект Kesko: факты, ограничения и практические выводы."><meta property="og:url" content="https://roseen.ru/briefing-2026-09-28.html">
+<script src="api-config.js" defer></script><script src="script.js" defer></script>
+</head><body>
+<a class="skip-link" href="#main">Перейти к содержимому</a>
+<header class="site-header">
+<div class="header-inner">
+<a class="brand" href="index.html" aria-label="РОСИН — главная">
+<img src="assets/brand/rosin-wordmark.svg" alt="РОСИН" width="1561.1709" height="200">
+</a>
+<nav class="nav" aria-label="Основная навигация">
+<a href="index.html">Главная</a>
+<a href="directions.html">Направления</a>
+<a href="services.html">Услуги</a>
+<a href="about.html">О компании</a>
+<a href="faq.html">FAQ</a>
+</nav>
+<a class="btn btn-primary header-cta magnetic" href="contacts.html#request">Оставить заявку ↗</a>
+<details class="menu-wrap">
+<summary class="menu" aria-label="Меню" aria-expanded="false" aria-controls="mobile-menu">
+<span>
+</span>
+<span>
+</span>
+</summary>
+<nav id="mobile-menu" class="mobile-nav" aria-label="Мобильная навигация">
+<a href="index.html">Главная</a>
+<a href="directions.html">Направления</a>
+<div class="mobile-subnav">
+<a href="robotics.html">Робототехника</a>
+<a href="electronics.html">Электроника</a>
+<a href="appliances.html">Бытовая техника</a>
+<a href="professional.html">Профессиональная техника</a>
+</div>
+<a href="services.html">Услуги</a>
+<div class="mobile-subnav">
+<a href="diagnostika.html">Диагностика</a>
+<a href="remont.html">Ремонт</a>
+<a href="servis.html">Обслуживание</a>
+<a href="engineering.html">Инженерная помощь</a>
+</div>
+<a href="about.html">О компании</a>
+<a href="faq.html">FAQ</a>
+<a href="contacts.html#request">Оставить заявку ↗</a>
+</nav>
+</details>
+</div>
+</header>
+<main id="main" class="briefing-main"><div class="container briefing-container"><a class="briefing-back" href="briefings.html">← Все выпуски</a>
+<article>
+<header class="briefing-heading"><p class="eyebrow">Еженедельный обзор · 28 сентября 2026</p>
+<h1>Роботы, сервис<br>и ритейл</h1><p class="lead">21–28 сентября 2026 · Уборочные роботы, управление парком и автоматизация торговых процессов.</p></header>
+<div class="briefing-summary"><h2>Главное за неделю</h2><p>Практическую ценность дают организация работы и измеримые результаты: уборка в подходящее окно, обслуживание на месте и точный учёт остатков. В этом выпуске — один опубликованный кейс уборочного робота, результаты RFID-пилота, рекомендации по интеграции парка и объявленный проект складской автоматизации.</p><p>Ниже отделяем заявления поставщиков от проверенных результатов. Публикация кейса не означает, что внедрение состоялось именно на этой неделе.</p></div>
+<section class="briefing-item"><p class="briefing-meta">22 сентября · Уборочные роботы</p><h2>Gausium Beetle у MAKELIS: уборка после производства</h2>
+<p><strong>Что изменилось.</strong> Gausium опубликовала кейс греческого производителя MAKELIS. По описанию поставщика, Beetle убирает производственный зал дважды за 24 часа после окончания производства. Внедрение партнёром Vamvacas включало картирование, обучение и договор обслуживания.</p>
+<p><strong>Почему важно.</strong> Для сети магазинов и сервиса это пример организации процесса: согласовать маршрут и окно уборки, определить ответственного за ежедневный уход и поддержку.</p>
+<p><strong>Возможность и риск.</strong> Стоит сравнить дневные и внерабочие маршруты по завершению заданий и вмешательствам. Однако кейс сухого подметания нельзя переносить на режимы CC1 или Titan 810 без проверки покрытия, мусора и требований конкретной модели.</p>
+<p class="briefing-evidence"><strong>Уровень подтверждения:</strong> кейс производителя. Нет количественных данных о простоях, вмешательствах и экономии; окупаемость не подтверждена независимо.</p>
+<p><a href="https://gausium.com/de/case/makelis/" rel="noopener">Источник: Gausium, MAKELIS, 22.09.2026 ↗</a></p></section>
+<section class="briefing-item"><p class="briefing-meta">22 сентября · Организация сервиса</p><h2>Brain Corp: интеграция парка важнее отдельных кабинетов</h2>
+<p><strong>Что изменилось.</strong> Brain Corp выпустила материал об интеграции AMR в ритейле: совместной работе оборудования разных производителей, API, систем здания и корпоративного ПО. Это руководство поставщика, а не объявление новой совместимости.</p>
+<p><strong>Почему важно.</strong> При росте парка разрозненные журналы ошибок, отчёты и договоры поддержки увеличивают нагрузку на сервис. Практический вывод редакции: до масштабирования проверить доступ к событиям робота и выгрузке истории работ.</p>
+<p><strong>Возможность и риск.</strong> Начать можно с единого реестра роботов, прошивок, вмешательств, ремонтов и расходников. Совместимость BrainOS с PUDU CC1 и Rosiwit Titan 810 этим материалом не подтверждена. Открытость API, права доступа и работу без облака нужно проверять на конкретной поставке.</p>
+<p class="briefing-evidence"><strong>Уровень подтверждения:</strong> позиция производителя; не независимое сравнение платформ и не доказательство экономии.</p>
+<p><a href="https://www.braincorp.com/fr/resources/how-to-manage-amr-fleets-in-retail-in-2026-the-shift-to-interoperability" rel="noopener">Источник: Brain Corp, 22.09.2026 ↗</a></p></section>
+<section class="briefing-item"><p class="briefing-meta">23 сентября · Автоматизация магазинов</p><h2>Lager 157: опубликованы результаты RFID-пилота</h2>
+<p><strong>Что изменилось.</strong> ClarityRFID рассказала о пилоте в трёх магазинах Lager 157 в Дании, Швеции и Финляндии. Сам пилот проходил в августе–октябре 2025 года. Поставщик сообщает о точности учёта запасов до 98–99,8% и точности по SKU до 97%; стороны готовят более широкое внедрение.</p>
+<p><strong>Почему важно.</strong> Точный учёт помогает связать наличие товара с пополнением полок и обслуживанием покупателя. Это отдельная задача, которую стоит сравнивать с роботизированным сканированием полок по затратам и покрытию процесса.</p>
+<p><strong>Возможность и риск.</strong> Проверить RFID на одной товарной категории, заранее определив исходную точность, трудозатраты, стоимость меток и повторных пересчётов. Значения «до» — не средний результат сети; методика, исходная база и полная экономика в публикации не раскрыты.</p>
+<p class="briefing-evidence"><strong>Уровень подтверждения:</strong> данные поставщика с комментарием представителя клиента; независимого аудита результатов нет в приведённом источнике.</p>
+<p><a href="https://clarityrfid.com/lager-157-poc/" rel="noopener">Источник: ClarityRFID, 23.09.2026 ↗</a></p></section>
+<section class="briefing-item"><p class="briefing-meta">24 сентября · Логистика сети</p><h2>Kesko выбрала KNAPP для нового логистического центра</h2>
+<p><strong>Что изменилось.</strong> KNAPP объявила о выборе её решения для центра Kesko в Нурмиярви, Финляндия. План включает автоматизированную обработку палет, высотное и шаттловое хранение, комплектацию «товар к человеку» совместно с ручными процессами. Монтаж намечен на 2028 год, поэтапный ввод — на 2029–2030 годы.</p>
+<p><strong>Почему важно.</strong> При проектировании автоматизации нужно учитывать разные типы заказов и операции, которые останутся ручными.</p>
+<p><strong>Возможность и риск.</strong> Практический вывод: закладывать этапность внедрения, обслуживание и резервные операции заранее. Заявленные преимущества пока являются целями проекта: действующей установки и измеренных результатов в этом объявлении нет.</p>
+<p class="briefing-evidence"><strong>Уровень подтверждения:</strong> официальное объявление поставщика с комментариями Kesko; будущий проект.</p>
+<p><a href="https://www.knapp.com/en/newsroom/press/kesko-selects-knapp-for-foodservice-logistics/" rel="noopener">Источник: KNAPP, 24.09.2026 ↗</a></p></section>
+<aside class="briefing-note"><h2>Применимость в России</h2><p>Приведённые публикации не подтверждают поставку, условия сервиса или доступность облачных функций этих решений в РФ. Организационные выводы применимы к собственной сети, но доступность оборудования, запчастей, API и поддержки требует отдельного подтверждения поставщика. Новые прошивки и сервисные бюллетени для CC1 и Titan 810 в этом выпуске не подтверждены.</p></aside>
+<section class="briefing-actions"><h2>Что проверить на практике</h2><ol><li>Для CC1 и Titan 810 сравнить долю завершённых заданий, вмешательства и время персонала на двух типовых маршрутах.</li><li>Запросить у поставщиков описание выгрузки логов, историю прошивок и порядок удалённой диагностики; проверить на одном роботе.</li><li>При оценке учёта полок или RFID зафиксировать исходную точность, трудозатраты и критерий успешного пилота до закупки.</li></ol></section>
+<p class="briefing-meta">Подготовлено по открытым источникам. Дата выпуска: 28.09.2026. Опубликовано на сайте: 29.09.2026.</p>
+</article></div></main>
+<footer>
+<div class="container footer-inner">
+<a href="index.html" aria-label="ROSEEN — главная">
+<img src="assets/brand/roseen-wordmark.svg" alt="ROSEEN" width="1843.5385" height="200" loading="eager">
+</a>
+<div>ROSEEN · Robotics · Service · Engineering<br>
+<span>Диагностика · Ремонт · Обслуживание</span>
+</div>
+<a href="contacts.html#request">Связаться с сервисом ↗</a>
+</div>
+</footer>
+</body></html>
