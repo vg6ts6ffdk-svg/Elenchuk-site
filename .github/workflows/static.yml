@@ -32,6 +32,7 @@ jobs:
       - name: Build public site
         env:
           ROSEEN_API_BASE: ${{ vars.ROSEEN_API_BASE }}
+          ROSEEN_STOREFRONT_PUBLIC: '1'
         run: node build-pages.mjs
 
       - name: Validate production output
