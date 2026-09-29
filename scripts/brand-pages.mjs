@@ -25,7 +25,7 @@ export function brandPage(html, file, { storefront = false } = {}) {
       '<section class="numbers" aria-label="Принципы сервиса"><div class="container numbers-grid"><div class="number"><strong>Причина.</strong><span>Сначала диагностика</span></div><div class="number"><strong>Решение.</strong><span>Согласованный объём работ</span></div><div class="number"><strong>Результат.</strong><span>Проверка после ремонта</span></div></div></section>');
   }
   out = out.replace(/<nav\b[^>]*class="(?:nav|mobile-nav)"[^>]*>[\s\S]*?<\/nav>/g, nav =>
-    nav.includes('href="briefings.html"') ? nav : nav.replace('</nav>', '<a href="briefings.html">Обзоры</a></nav>'));
+    nav.includes('href="news.html"') ? nav : nav.replace('</nav>', '<a href="news.html">Новости</a></nav>'));
   if (storefront) {
     out = out.replace('</head>', '<link rel="stylesheet" href="store.css">\n<script type="module" src="store.js"></script>\n</head>');
     out = out.replace(/<nav\b[^>]*class="(?:nav|mobile-nav)"[^>]*>[\s\S]*?<\/nav>/g, nav => {
