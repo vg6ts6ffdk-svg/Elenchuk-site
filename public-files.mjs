@@ -7,10 +7,11 @@ export const servicePages = [
 ];
 export const previewEnabled = storefrontEnabled();
 export const generatedPages = previewEnabled ? storePageNames() : [];
-export const pages = [...servicePages, ...generatedPages];
+export const briefingPages = ['briefings.html', 'briefing-2026-09-28.html'];
+export const pages = [...servicePages, ...briefingPages, ...generatedPages];
 export const generatedFiles = [...generatedPages, ...(previewEnabled ? ['store-data.json'] : [])];
 // Explicit public files: source, backups, templates and user data stay private.
-export const publicFiles = [...pages, 'style.css', 'brand.css', 'motion.js', 'motion.css', 'script.js', 'api-config.js',
+export const publicFiles = [...pages, 'briefings.css', 'style.css', 'brand.css', 'motion.js', 'motion.css', 'script.js', 'api-config.js',
   'admin.css', 'admin.js', 'admin-catalog.js', 'logo-approved.svg', 'favicon.svg',
   'assets/brand/roseen-wordmark.svg', 'assets/brand/rosin-wordmark.svg',
   'robots.txt', 'sitemap.xml', 'CNAME',
