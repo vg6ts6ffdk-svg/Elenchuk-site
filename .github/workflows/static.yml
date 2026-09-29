@@ -36,6 +36,8 @@ jobs:
         run: node build-pages.mjs
 
       - name: Validate production output
+        env:
+          ROSEEN_STOREFRONT_PUBLIC: '1'
         run: node validate-site.mjs dist
 
       - name: Setup Pages
