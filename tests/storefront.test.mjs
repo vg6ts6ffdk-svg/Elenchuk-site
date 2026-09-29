@@ -7,9 +7,9 @@ import { cleanCart, readCart, writeCart, parseSearch, selectProducts, compatibil
 const product = (id='TEST') => ({id,sku:'TEST-SKU',name:'Тестовый компонент',category:'belts',manufacturer:'Test maker',unit:'шт.',state:'published',oem:['TEST-OEM'],priceMinor:12550,stock:3,availability:'in_stock',sourceRef:'private-test-reference',verifiedAt:'2026-09-20',compatibility:[{equipmentBrand:'TEST',model:'MODEL',status:'confirmed',sourceRef:'test-only'}]});
 const published = products => publicCatalog({version:1,currency:'RUB',products});
 const state = query => parseSearch(new URLSearchParams(query));
-test('production cannot accidentally enable the preview with a local flag',()=>{
+test('storefront is public on Vercel but a local production flag cannot enable it elsewhere',()=>{
  assert.equal(storefrontEnabled({NODE_ENV:'production',ROSEEN_STOREFRONT_PREVIEW:'1'}),false);
- assert.equal(storefrontEnabled({VERCEL_ENV:'production',NODE_ENV:'production'}),false);
+ assert.equal(storefrontEnabled({VERCEL_ENV:'production',NODE_ENV:'production'}),true);
  assert.equal(storefrontEnabled({VERCEL_ENV:'preview',NODE_ENV:'production'}),true);
  assert.equal(storefrontEnabled({NODE_ENV:'test',ROSEEN_STOREFRONT_PREVIEW:'1'}),true);
 });
