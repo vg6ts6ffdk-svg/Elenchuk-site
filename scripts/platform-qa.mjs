@@ -62,6 +62,7 @@ try {
  assert.ok(entry.every(a=>a.options.duration+(a.options.delay||0)<=900),'entry exceeds the short motion budget');
  assert.ok(entry.filter(a=>a.tag==='IMG').every(a=>a.frames.every(f=>!f.transform)),'image/logo geometry must remain still');
  await p.emulateMedia({reducedMotion:'reduce'});
+ await p.waitForFunction(()=>document.getAnimations().length===0,null,{timeout:150});
  assert.equal(await p.evaluate(()=>document.getAnimations().length),0,'changing reduced motion cancels entry');
  assert.equal(await p.locator('h1').evaluate(el=>getComputedStyle(el).opacity),'1');
  await p.emulateMedia({reducedMotion:'no-preference'});
