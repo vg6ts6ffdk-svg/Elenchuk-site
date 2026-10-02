@@ -24,8 +24,17 @@ export function brandPage(html, file, { storefront = false } = {}) {
     out = out.replace(/<section class="numbers">[\s\S]*?<\/section>/,
       '<section class="numbers" aria-label="Принципы сервиса"><div class="container numbers-grid"><div class="number"><strong>Причина.</strong><span>Сначала диагностика</span></div><div class="number"><strong>Решение.</strong><span>Согласованный объём работ</span></div><div class="number"><strong>Результат.</strong><span>Проверка после ремонта</span></div></div></section>');
   }
-  out = out.replace(/<nav\b[^>]*class="(?:nav|mobile-nav)"[^>]*>[\s\S]*?<\/nav>/g, nav =>
-    nav.includes('href="news.html"') ? nav : nav.replace('</nav>', '<a href="news.html">Новости</a></nav>'));
+  out = out.replace(/<nav\b[^>]*class="(?:nav|mobile-nav)"[^>]*>[\s\S]*?<\/nav>/g, nav => {
+    if (nav.includes('href="news.html"')) return nav;
+    const news = '<a href="news.html">Новости</a>';
+    // Keep News among primary links and above the request CTA on mobile,
+    // so it is visible without scrolling to the very bottom of the drawer.
+    if (nav.includes('class="mobile-nav"') && nav.includes('<a href="contacts.html#request">')) {
+      return nav.replace('<a href="contacts.html#request">', news + '<a href="contacts.html#request">');
+    }
+    if (nav.includes('<a href="faq.html">FAQ</a>')) return nav.replace('<a href="faq.html">FAQ</a>', '<a href="faq.html">FAQ</a>' + news);
+    return nav.replace('</nav>', news + '</nav>');
+  });
   if (storefront) {
     out = out.replace('</head>', '<link rel="stylesheet" href="store.css">\n<script type="module" src="store.js"></script>\n</head>');
     out = out.replace(/<nav\b[^>]*class="(?:nav|mobile-nav)"[^>]*>[\s\S]*?<\/nav>/g, nav => {
