@@ -20,6 +20,10 @@ export function brandPage(html, file, { storefront = false } = {}) {
     .replaceAll('aria-label="ROSEEN — главная"','aria-label="РОСИН — главная"')
     .replaceAll('width="1843.5385"','width="1561.1709"'));
   out = out.replace(/<footer\b[\s\S]*?<\/footer>/, footer => footer.replace(/loading="lazy"/g, 'loading="eager"'));
+  // Place the disclosure beside each editorial visual, not only in the footer.
+  // Product photos and the approved logo masters are intentionally excluded.
+  out = out.replace(/(<img\b[^>]*class="[^"]*(?:hero-image|inner-image|feature-image)[^"]*"[^>]*>)/g,
+    '$1<p class="visual-caption">AI-иллюстрация направления · не фотография выполненной работы</p>');
   if (file === 'index.html') {
     out = out.replace(/<section class="numbers">[\s\S]*?<\/section>/,
       '<section class="numbers" aria-label="Принципы сервиса"><div class="container numbers-grid"><div class="number"><strong>Причина.</strong><span>Сначала диагностика</span></div><div class="number"><strong>Решение.</strong><span>Согласованный объём работ</span></div><div class="number"><strong>Результат.</strong><span>Проверка после ремонта</span></div></div></section>');

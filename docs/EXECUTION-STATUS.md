@@ -1,3 +1,18 @@
+# Service audit follow-up — 3 October 2026
+
+Baseline: `7bfaed1f66980894185c06eddb156c63465a925b` (current main and Vercel production at start). No open PRs at start. This change is built from main; no historical branch is used.
+
+Changes: model-specific diagnostic copy on robotics/electronics/appliances pages; search titles; expanded service FAQ; latest news card; nearby AI illustration labels; useful catalogue selection state; public account copy without developer terminology; optional HTTPS video link folded into the existing problem field; immediate file-size/count feedback; unchanged upload limits and API contract.
+
+Local checks: source validation; 79/79 tests including isolated SQLite service request + attachment persistence and protected admin retrieval; public build; 30 pages and 1362 local references verified. Tests required network/server sandbox escalation; the initial restricted run could not run the three server suites. No production requests, customer messages or payments created.
+
+Read-only production health: `https://api.roseen.ru/api/health` returned 200, `ok:true`, PostgreSQL and object storage. `https://elenchuk-site.vercel.app/api/health` returned 503. The roseen.ru build uses api.roseen.ru; Vercel uses its own origin. Health alone is not proof of production request delivery or employee notifications. Existing code saves requests; it does not implement outbound employee notification delivery.
+
+Remaining external dependencies: authorised secure sign-in is needed to read the Karex catalogue (current browser shows the login form); no real catalogue rows were obtained. Public ROSEEN phone/address/legal seller, SLA/prices/warranty and cases are not confirmed. Corporate mailbox delivery is not verified. No substitute contacts or invented offers were published. Checkout and customer login remain gated per the master assignment pending verified seller/catalogue/providers and isolated E2E. Vercel backend configuration needs correction through authorised configuration access. DNS, mail, permissions and production data were not changed.
+
+Release gate: CI browser checks and Preview/production observation recorded in the PR and final handoff; this entry alone does not claim they passed or that the full store launched.
+
+---
 # News section — 29 September 2026
 
 Weekly briefing publication shipped in PR #12 (407dc12), verified on roseen.ru. The follow-up renames the public section and menu to «Новости» at `news.html`, preserves the article URL and redirects `briefings.html`. The existing weekly ChatGPT automation is the publisher; repository documentation does not start an agent. This change does not alter commerce readiness or service APIs. Release checks and production verification are recorded in the follow-up PR.

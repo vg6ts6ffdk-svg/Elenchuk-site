@@ -52,7 +52,7 @@ function updateCatalog() {
   if (!result.total) {
     const panel = node('div', '', 'store-empty');
     const hasCatalog = data.products.length > 0;
-    panel.append(node('span', '↗', 'store-empty-mark'), node('h2', hasCatalog ? 'Подходящие товары не найдены.' : 'Проверенные товары ещё не добавлены.'), node('p', hasCatalog ? 'Измените фильтры или передайте запрос инженеру. Отсутствие результата не означает, что деталь не существует.' : 'Артикулы, цены и совместимость проходят проверку перед публикацией. Можно передать модель оборудования и задачу инженеру.'), link('Запросить подбор ↗', serviceLink({ sku: state.q, equipment: equipmentText(state) }), 'btn btn-primary'));
+    panel.append(node('span', '↗', 'store-empty-mark'), node('h2', hasCatalog ? 'Подходящие товары не найдены.' : 'Подберём деталь по вашей задаче.'), node('p', hasCatalog ? 'Измените фильтры или передайте запрос инженеру. Отсутствие результата не означает, что деталь не существует.' : 'Каталог PUDU CC1 готовится к публикации. Укажите модель, артикул или приложите фото детали к заявке. Цена и возможность поставки требуют подтверждения.'), link('Запросить подбор ↗', serviceLink({ sku: state.q, equipment: equipmentText(state) }), 'btn btn-primary'));
     results.append(panel);
   }
   const pagination = $('catalog-pagination'); pagination.replaceChildren();
