@@ -9,10 +9,10 @@ test('static brand layer and independent icon appear once', () => {
  assert.match(out,/href="favicon.svg"/); assert.doesNotMatch(out,/src="logo-approved.svg"/);
  assert.match(out,/assets\/brand\/roseen-wordmark.svg/); assert.match(out,/assets\/brand\/rosin-wordmark.svg/);
 });
-test('descriptor uses RO / SE / EN in DOM order without dynamic innerHTML', () => {
+test('Russian descriptor uses РО / С / ИН in DOM order without dynamic innerHTML', () => {
  const out=brandPage(fixture,'index.html');
- assert.ok(out.indexOf('<b>RO</b>')<out.indexOf('<b>SE</b>'));
- assert.ok(out.indexOf('<b>SE</b>')<out.indexOf('<b>EN</b>'));
+ assert.ok(out.indexOf('<b>РО</b>')<out.indexOf('<b>С</b>'));
+ assert.ok(out.indexOf('<b>С</b>')<out.indexOf('<b>ИН</b>'));
  assert.doesNotMatch(out,/CeRVICE|InGINEERING|ROSIN/);
 });
 test('form contract is untouched and decorative movement is removed', () => {

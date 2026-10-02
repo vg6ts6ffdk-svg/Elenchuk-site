@@ -11,8 +11,8 @@ export function brandPage(html, file, { storefront = false } = {}) {
     .replace('src="logo-approved.svg"','src="assets/brand/roseen-wordmark.svg"')
     .replace(/width="[^"]+"/,'width="1843.5385"').replace(/height="[^"]+"/,'height="200"'));
   out = out.replace(/class="([^"]*)"/g, (_, classes) => 'class="' + classes.split(/\s+/).filter(x => x && !['magnetic','parallax-image'].includes(x)).join(' ') + '"');
-  out = out.replace(/<div class="eyebrow">\s*<i>\s*<\/i>\s*ROBOTICS\s*[•·]\s*SERVICE\s*[•·]\s*ENGINEERING\s*<\/div>/g,
-    '<div class="eyebrow brand-sequence" aria-label="Robotics · Service · Engineering"><span class="brand-token"><b>RO</b>BOTICS</span> <span class="brand-token"><b>SE</b>RVICE</span> <span class="brand-token"><b>EN</b>GINEERING</span></div>');
+  out = out.replace(/<div class="eyebrow">\s*<i>\s*<\/i>\s*(?:РОБОТЫ\s*[•·]\s*СЕРВИС\s*[•·]\s*ИНЖИНИРИНГ|ROBOTICS\s*[•·]\s*SERVICE\s*[•·]\s*ENGINEERING)\s*<\/div>/g,
+    '<div class="eyebrow brand-sequence" aria-label="Роботы · Сервис · Инжиниринг"><span class="brand-token"><b>РО</b>БОТЫ</span> · <span class="brand-token"><b>С</b>ЕРВИС</span> · <span class="brand-token"><b>ИН</b>ЖИНИРИНГ</span></div>');
   // Russian light master in the header; English light master in the footer.
   out = out.replace(/<header\b[\s\S]*?<\/header>/, (header) => header
     .replaceAll('assets/brand/roseen-wordmark.svg','assets/brand/rosin-wordmark.svg')

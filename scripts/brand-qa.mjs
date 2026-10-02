@@ -59,7 +59,7 @@ async function inspect(browser,width,file,engine){
   assert.ok(metrics.logo.width>130&&metrics.logo.width<=220,'brandbook header size');
   assert.equal(errors.length,0,errors.join('; '));
   if(file==='index.html') {
-   const prefixes=await page.locator('.brand-token b').allTextContents(); assert.deepEqual(prefixes,['RO','SE','EN']);
+   const prefixes=await page.locator('.brand-token b').allTextContents(); assert.deepEqual(prefixes,['РО','С','ИН']);
   }
   await page.screenshot({path:path.join(output,`${engine}-${width}-${file.replace('.html','')}.png`),fullPage:true});
   report.checked.push({engine,width,file,...metrics});
