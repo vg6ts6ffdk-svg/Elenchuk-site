@@ -47,7 +47,24 @@ try {
  for(const [width,height] of [[320,900],[390,844],[768,1024],[1024,768],[1440,1000],[844,390]]) for(const file of ['shop.html','shop-belts.html','cart.html','account.html']) await capture('chromium',width,height,file);
  // First-entry brand motion is session-scoped and never alters the logo geometry.
  const ctx=await browser.newContext({viewport:{width:390,height:844}});const p=await ctx.newPage();
+ await ctx.addInitScript(()=>{
+  window.motionQA=[]; const original=Element.prototype.animate;
+  Element.prototype.animate=function(frames,options){
+   window.motionQA.push({tag:this.tagName,classes:this.className,frames,options});
+   return original.call(this,frames,options);
+  };
+ });
  await p.goto(base+'/index.html');assert.equal(await p.locator('html').getAttribute('data-motion-entry'),'first');
+ const entry=await p.evaluate(()=>window.motionQA);
+ assert.ok(entry.some(a=>a.tag==='H1'),'headline should enter with the composition');
+ const tokens=entry.filter(a=>a.classes==='brand-token');
+ assert.equal(tokens.length,3);assert.deepEqual(tokens.map(a=>a.options.delay),[0,180,360]);
+ assert.ok(entry.every(a=>a.options.duration+(a.options.delay||0)<=900),'entry exceeds the short motion budget');
+ assert.ok(entry.filter(a=>a.tag==='IMG').every(a=>a.frames.every(f=>!f.transform)),'image/logo geometry must remain still');
+ await p.emulateMedia({reducedMotion:'reduce'});
+ assert.equal(await p.evaluate(()=>document.getAnimations().length),0,'changing reduced motion cancels entry');
+ assert.equal(await p.locator('h1').evaluate(el=>getComputedStyle(el).opacity),'1');
+ await p.emulateMedia({reducedMotion:'no-preference'});
  await p.goto(base+'/shop.html');assert.equal(await p.locator('html').getAttribute('data-motion-entry'),'static');
  await p.locator('#q').fill('TEST-OEM');await p.locator('.query-row button').click();assert.equal(new URL(p.url()).searchParams.get('q'),'TEST-OEM');await p.goBack();assert.equal(await p.locator('#q').inputValue(),'');report.interactions.push('URL query and browser Back; motion first entry and later navigation');
  // Isolated synthetic data is intercepted only in this test context, not a deployed file.
