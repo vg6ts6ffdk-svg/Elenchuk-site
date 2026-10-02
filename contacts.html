@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ROSEEN — Заявка</title>
+<title>Заявка на ремонт и подбор запчастей — РОСИН</title>
 <meta name="description" content="Оставить заявку на диагностику и ремонт техники в ROSEEN.">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="canonical" href="https://roseen.ru/contacts.html">
@@ -12,7 +12,7 @@
 </script>
 <script src="script.js" defer>
 </script>
-<meta property="og:type" content="website"><meta property="og:locale" content="ru_RU"><meta property="og:title" content="ROSEEN — Заявка"><meta property="og:description" content="Оставить заявку на диагностику и ремонт техники в ROSEEN."><meta property="og:image" content="https://roseen.ru/assets/robotics-1280.webp"></head>
+<meta property="og:type" content="website"><meta property="og:locale" content="ru_RU"><meta property="og:title" content="Заявка на ремонт и подбор запчастей — РОСИН"><meta property="og:description" content="Оставить заявку на диагностику и ремонт техники в ROSEEN."><meta property="og:image" content="https://roseen.ru/assets/robotics-1280.webp"></head>
 <body>
 <a class="skip-link" href="#main">Перейти к содержимому</a>
 <header class="site-header">
@@ -67,7 +67,7 @@
 <div class="eyebrow">
 <i>
 </i> 03 / REQUEST</div>
-<h1>Техника перестала работать?</h1>
+<h1>Ремонт или подбор детали?</h1>
 <p class="lead">Опишите симптом, укажите модель и приложите фото или видео. Чем точнее исходные данные, тем быстрее можно перейти к диагностике.</p>
 <div class="trust">
 <span>Модель</span>
@@ -90,7 +90,7 @@
 <h2>Начнём<br>
 <em>с фактов.</em>
 </h2>
-<p class="lead">Заполните форму. Она передаст данные и прикреплённые файлы в сервисную систему.</p>
+<p class="lead">Укажите модель, задачу и один удобный способ связи. После успешной отправки появится номер заявки — сохраните его для дальнейшего обращения.</p>
 </div>
 <form id="request-form" class="form reveal delay" method="post" action="/api/requests" enctype="multipart/form-data">
 <div class="form-grid">
@@ -116,18 +116,19 @@
 </div>
 <div class="field">
 <label for="contact">Контакт *</label>
-<input id="contact" name="contact" maxlength="300" autocomplete="off" required placeholder="Telegram / email / телефон">
+<input id="contact" name="contact" maxlength="300" autocomplete="off" required placeholder="Телефон, email или Telegram">
 </div>
 <div class="field">
 <label for="files">Фото / видео</label>
-<input id="files" name="files" type="file" accept=".jpg,.jpeg,.png,.webp,.gif,.heic,.heif,.pdf,.mp4,.mov,.webm" multiple>
+<input id="files" name="files" type="file" accept=".jpg,.jpeg,.png,.webp,.gif,.heic,.heif,.pdf,.mp4,.mov,.webm" multiple aria-describedby="file-help">
 </div>
+<div class="field full"><label for="video_link">Ссылка на большое видео <span class="muted">(необязательно)</span></label><input id="video_link" name="video_link" type="url" maxlength="1000" placeholder="https://…" aria-describedby="video-help"><p id="video-help" class="form-note">Проверьте доступ к одному нужному файлу. Не передавайте пароли или ссылку на весь личный диск.</p></div>
 </div>
 <div class="form-footer">
 <button class="btn btn-primary magnetic" type="submit">Отправить заявку ↗</button>
-<span class="form-note">До 3 файлов, суммарно до 3 МБ. Большие видео можно передать после согласования.</span>
+<span class="form-note">До 3 файлов, суммарно до 3 МБ. Для большого видео используйте ссылку выше.</span>
 </div>
-<div class="form-status" role="status" aria-live="polite" aria-atomic="true">
+<p class="form-note">Укажите только данные, необходимые для ответа и диагностики. Не прикладывайте паспорт, платёжные данные или пароли.</p><div class="form-status" role="status" aria-live="polite" aria-atomic="true">
 </div>
 <noscript>
 <p>JavaScript отключён. После отправки сервис покажет номер заявки в отдельном ответе.</p>

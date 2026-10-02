@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ROSEEN — Бытовая техника</title>
+<title>Диагностика и ремонт бытовой техники — РОСИН</title>
 <meta name="description" content="Диагностика, ремонт и обслуживание бытовой техники со сложными системами управления.">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="canonical" href="https://roseen.ru/appliances.html">
@@ -12,7 +12,7 @@
 </script>
 <script src="script.js" defer>
 </script>
-<meta property="og:type" content="website"><meta property="og:locale" content="ru_RU"><meta property="og:title" content="ROSEEN — Бытовая техника"><meta property="og:description" content="Диагностика, ремонт и обслуживание бытовой техники со сложными системами управления."><meta property="og:image" content="https://roseen.ru/assets/robotics-1280.webp"></head>
+<meta property="og:type" content="website"><meta property="og:locale" content="ru_RU"><meta property="og:title" content="Диагностика и ремонт бытовой техники — РОСИН"><meta property="og:description" content="Диагностика, ремонт и обслуживание бытовой техники со сложными системами управления."><meta property="og:image" content="https://roseen.ru/assets/robotics-1280.webp"></head>
 <body>
 <a class="skip-link" href="#main">Перейти к содержимому</a>
 <header class="site-header">
@@ -94,22 +94,22 @@
 <article class="fault-card reveal">
 <span>01</span>
 <h3>Не запускается программа</h3>
-<p>Проверяем соответствующий узел, фиксируем результат и определяем следующий шаг.</p>
+<p>Уточняем этап остановки, индикацию и код ошибки. Проверяем питание, блокировки и команды управления с учётом конкретной модели.</p>
 </article>
 <article class="fault-card reveal">
 <span>02</span>
 <h3>Ошибки нагрева, слива или подачи воды</h3>
-<p>Проверяем соответствующий узел, фиксируем результат и определяем следующий шаг.</p>
+<p>Проверяем соответствующий контур: нагреватель и температурный контроль, насос, клапаны, датчики уровня и соединения.</p>
 </article>
 <article class="fault-card reveal">
 <span>03</span>
 <h3>Сбои управления и датчиков</h3>
-<p>Проверяем соответствующий узел, фиксируем результат и определяем следующий шаг.</p>
+<p>Сопоставляем сигналы датчиков с работой исполнительных узлов. Проверяем разъёмы и питание, прежде чем делать вывод о неисправности платы.</p>
 </article>
 <article class="fault-card reveal">
 <span>04</span>
 <h3>Повторяющиеся ошибки</h3>
-<p>Проверяем соответствующий узел, фиксируем результат и определяем следующий шаг.</p>
+<p>Учитываем условия появления ошибки и предыдущие ремонты. Проверяем связанные узлы, чтобы отделить первопричину от повторного проявления.</p>
 </article>
 </div>
 </div>
@@ -187,17 +187,18 @@
 </div>
 <div class="field">
 <label for="contact">Контакт *</label>
-<input id="contact" name="contact" maxlength="300" autocomplete="off" required placeholder="Telegram / email">
+<input id="contact" name="contact" maxlength="300" autocomplete="off" required placeholder="Телефон, email или Telegram">
 </div>
 <div class="field">
 <label for="files">Фото / видео</label>
-<input id="files" name="files" type="file" accept=".jpg,.jpeg,.png,.webp,.gif,.heic,.heif,.pdf,.mp4,.mov,.webm" multiple>
+<input id="files" name="files" type="file" accept=".jpg,.jpeg,.png,.webp,.gif,.heic,.heif,.pdf,.mp4,.mov,.webm" multiple aria-describedby="file-help">
 </div>
+<div class="field full"><label for="video_link">Ссылка на большое видео <span class="muted">(необязательно)</span></label><input id="video_link" name="video_link" type="url" maxlength="1000" placeholder="https://…" aria-describedby="video-help"><p id="video-help" class="form-note">Проверьте доступ к одному нужному файлу. Не передавайте пароли или ссылку на весь личный диск.</p></div>
 </div>
-<p class="form-note">До 3 файлов, суммарно до 3 МБ. Большие видео — после согласования.</p><div class="form-footer">
+<p id="file-help" class="form-note">До 3 файлов, суммарно до 3 МБ. Для большого видео используйте ссылку выше.</p><div class="form-footer">
 <button class="btn btn-primary magnetic" type="submit">Отправить заявку ↗</button>
 </div>
-<div class="form-status" role="status" aria-live="polite" aria-atomic="true">
+<p class="form-note">Укажите только данные, необходимые для ответа и диагностики. Не прикладывайте паспорт, платёжные данные или пароли.</p><div class="form-status" role="status" aria-live="polite" aria-atomic="true">
 </div>
 <noscript>
 <p>JavaScript отключён. После отправки сервис покажет номер заявки в отдельном ответе.</p>

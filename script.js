@@ -41,6 +41,22 @@
   all('#request-form, #repairForm').forEach(form => {
     const submit = form.querySelector('[type="submit"]');
     const status = form.querySelector('.form-status');
+    const fileInput = form.querySelector('[name="files"]');
+    const fileHelp = form.querySelector('#file-help');
+    const describeFiles = () => {
+      const files = [...(fileInput?.files || [])];
+      const size = files.reduce((sum, file) => sum + file.size, 0);
+      const invalid = files.length > 3 || size > 3 * 1024 * 1024;
+      fileInput?.setCustomValidity(invalid ? 'До 3 файлов и 3 МБ суммарно. Для большого видео добавьте ссылку.' : '');
+      if (fileHelp) {
+        fileHelp.setAttribute('aria-live', 'polite');
+        fileHelp.textContent = files.length
+          ? `Выбрано файлов: ${files.length}, ${(size / 1024 / 1024).toFixed(2)} МБ. ${invalid ? 'Лимит превышен: уберите лишние файлы или добавьте ссылку на видео.' : 'Лимит: 3 файла и 3 МБ суммарно.'}`
+          : 'До 3 файлов, суммарно до 3 МБ. Для большого видео используйте ссылку выше.';
+      }
+    };
+    fileInput?.addEventListener('change', describeFiles);
+    form.addEventListener('reset', () => { setTimeout(describeFiles, 0); });
     form.addEventListener('submit', async event => {
       event.preventDefault();
       if (submit.disabled) return;
@@ -54,6 +70,16 @@
           if (source !== target) data.delete(source);
         }
         if (!data.get('equipment_type') || !data.get('problem') || !data.get('contact')) throw new Error('Заполните направление, описание неисправности и контакт.');
+        const video = String(data.get('video_link') || '').trim();
+        data.delete('video_link');
+        if (video) {
+          let url;
+          try { url = new URL(video); } catch { throw new Error('Укажите полную ссылку на видео, начиная с https://.'); }
+          if (url.protocol !== 'https:' || url.username || url.password || video.length > 1000) throw new Error('Нужна HTTPS-ссылка без логина и пароля в адресе.');
+          const problem = `${data.get('problem')}\n\nВидео: ${url.href}`;
+          if (problem.length > 5000) throw new Error('Сократите описание: вместе со ссылкой допустимо до 5000 символов.');
+          data.set('problem', problem);
+        }
         const files = data.getAll('files').filter(file => file.size > 0);
         if (files.length > 3) throw new Error('Можно прикрепить не больше 3 файлов.');
         if (files.reduce((total, file) => total + file.size, 0) > 3 * 1024 * 1024) throw new Error('Общий размер файлов должен быть не больше 3 МБ.');
