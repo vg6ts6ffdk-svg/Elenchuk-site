@@ -55,6 +55,7 @@ try {
   };
  });
  await p.goto(base+'/index.html');assert.equal(await p.locator('html').getAttribute('data-motion-entry'),'first');
+ await p.waitForFunction(()=>window.motionQA.some(a=>a.tag==='H1'));
  const entry=await p.evaluate(()=>window.motionQA);
  assert.ok(entry.some(a=>a.tag==='H1'),'headline should enter with the composition');
  const tokens=entry.filter(a=>a.classes==='brand-token');
@@ -65,7 +66,12 @@ try {
  await p.waitForFunction(()=>document.getAnimations().length===0,null,{timeout:150});
  assert.equal(await p.evaluate(()=>document.getAnimations().length),0,'changing reduced motion cancels entry');
  assert.equal(await p.locator('h1').evaluate(el=>getComputedStyle(el).opacity),'1');
+ assert.equal(await p.locator('.motion-replay').isDisabled(),true);
  await p.emulateMedia({reducedMotion:'no-preference'});
+ await p.reload();assert.equal(await p.locator('html').getAttribute('data-motion-entry'),'static');
+ await p.waitForFunction(()=>!document.querySelector('.motion-replay').disabled);
+ await p.locator('.motion-replay').click();
+ assert.ok((await p.evaluate(()=>window.motionQA)).some(a=>a.tag==='H1'),'mobile replay must animate even after the first visit');
  await p.goto(base+'/shop.html');assert.equal(await p.locator('html').getAttribute('data-motion-entry'),'static');
  await p.locator('#q').fill('TEST-OEM');await p.locator('.query-row button').click();assert.equal(new URL(p.url()).searchParams.get('q'),'TEST-OEM');await p.goBack();assert.equal(await p.locator('#q').inputValue(),'');report.interactions.push('URL query and browser Back; motion first entry and later navigation');
  // Isolated synthetic data is intercepted only in this test context, not a deployed file.
