@@ -18,14 +18,18 @@
     } catch { /* Static is a complete, accessible fallback. */ }
   }
   let first = false;
+  const hero = document.querySelector('.hero-copy .brand-sequence');
+  const replay = document.querySelector('.motion-replay');
   try {
-    const key = 'roseen.motion.v6.seen';
-    first = sessionStorage.getItem(key) !== '1';
-    sessionStorage.setItem(key, '1');
+    const key = 'roseen.motion.v7.seen';
+    first = !!hero && sessionStorage.getItem(key) !== '1';
+    if (first) sessionStorage.setItem(key, '1');
   } catch { /* Restricted storage: use a static brand instead of looping. */ }
   document.documentElement.dataset.motionEntry = first && !reduced.matches ? 'first' : 'static';
-  if (first && !reduced.matches) {
-    play(document.querySelector('.brand img'), [{ opacity: 0 }, { opacity: 1 }], { duration: 600 });
+  function enter(includeLogo = false) {
+    if (reduced.matches) return;
+    animations.forEach(a => a.cancel()); animations.clear();
+    if (includeLogo) play(document.querySelector('.brand img'), [{ opacity: 0 }, { opacity: 1 }], { duration: 600 });
     document.querySelectorAll('.brand-token').forEach((el, i) => {
       play(el, rise, { duration, delay: i * 180 });
       play(el.querySelector('b'), [{ color: '#93B8FF' }, { color: '#3B82F6' }], { duration, delay: i * 180 });
@@ -45,6 +49,23 @@
     document.querySelectorAll('.hero-art .hero-image, .hero-art .hero-card').forEach((el, i) => {
       if (el.getBoundingClientRect().top < innerHeight) play(el, [{ opacity: 0 }, { opacity: 1 }], { duration, delay: 140 + i * 180 });
     });
+  }
+  // Start after the mobile browser has loaded and painted the page.
+  if (first && !reduced.matches) {
+    const start = () => requestAnimationFrame(() => requestAnimationFrame(() => {
+      if (!reduced.matches) enter(true);
+    }));
+    if (document.readyState === 'complete') start();
+    else addEventListener('load', start, { once:true });
+  }
+  if (replay) {
+    const sync = () => {
+      replay.hidden = false;
+      replay.disabled = reduced.matches;
+      replay.title = reduced.matches ? 'Анимация отключена настройками устройства' : 'Повторить появление первого экрана';
+    };
+    sync(); reduced.addEventListener('change', sync);
+    replay.addEventListener('click', () => enter());
   }
   if (!reduced.matches && 'IntersectionObserver' in window) {
     try {

@@ -1,6 +1,10 @@
 /* Visible defaults and measured clear space; motion is controlled by motion.js. */
 .brand-token { animation:none; }
 .reveal-ready { opacity:1; transform:none; transition:none; }
+.motion-replay { margin-top:12px; padding:8px 0; min-height:44px; border:0; background:transparent; color:#93B8FF; font:inherit; font-size:12px; cursor:pointer; }
+.motion-replay[hidden] { display:none; }
+.motion-replay:focus-visible { outline:2px solid #93B8FF; outline-offset:4px; border-radius:4px; }
+.motion-replay:disabled { color:#94A3B8; cursor:default; }
 .brand { padding:14px; margin-left:-14px; }
 .brand img { width:200px; height:auto; }
 .footer-inner > a:first-child { display:flex; align-items:center; padding:14px; margin-left:-14px; }
