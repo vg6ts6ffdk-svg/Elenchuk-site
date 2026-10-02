@@ -1,3 +1,15 @@
+# Site-wide motion — 3 October 2026
+
+Baseline: `a2fef64b4cf1f8de56117b82907cfd81bf80c6ae`. Shared progressive motion now covers service headings, cards, steps, forms, FAQ, news articles and the storefront/categories/cart/account. Each content unit appears once per visit: opacity and 10px/250ms on mobile, 14px/320ms on desktop, short row staggering. Images fade without transforms. FAQ and mobile-menu opening use a 180ms fade. The existing home first-session RO/С/ИН composition and replay remain; header/logo masters and footer geometry are untouched.
+
+All content remains visible without JS, observer or storage. Reduced motion cancels active effects and disables decorative openings. Focus cancels an effect containing the focused control. Dynamically loaded product cards share the same reveal; input values and live status messages are not animation targets. No parallax, loops or blocking preload.
+
+Past discussion: uniform scroll appearances across pages and mobile were agreed. The later CC1 direction is an unobtrusive large-part disassembly/assembly on Robotics, without board labels or invented internals. Existing schematic prototypes remain excluded from production pending geometry review; this release does not claim that robot effect is finished.
+
+Local validation: source check passed; 79/79 tests passed; public build passed; 30 pages and 1362 references checked. Browser QA runs in CI (Playwright is not installed in the local repository). Release evidence is recorded in the PR. No production requests, messages, transactions or catalogue data changes are made by motion QA.
+
+---
+
 # Service audit follow-up — 3 October 2026
 
 Baseline: `7bfaed1f66980894185c06eddb156c63465a925b` (current main and Vercel production at start). No open PRs at start. This change is built from main; no historical branch is used.

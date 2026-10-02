@@ -17,6 +17,43 @@ const base=process.env.PLATFORM_QA_URL||origin;
 const fixture = {version:1,currency:'RUB',products:Array.from({length:14},(_,i)=>({id:'TEST-'+i,sku:'TEST-SKU-'+i,name:'ТЕСТОВЫЙ ТОВАР '+String(i).padStart(2,'0'),category:'belts',manufacturer:'Test maker',unit:'шт.',state:'published',oem:['TEST-OEM-'+i],priceMinor:i===13?null:10001+i,stock:3,availability:'in_stock',sourceRef:'isolated-test-only',verifiedAt:'2026-09-20',compatibility:[{equipmentBrand:'Test',model:'Model',status:'confirmed',sourceRef:'isolated-test-only'}]}))};
 const testData=publicCatalog(fixture);
 let browser;
+async function checkSiteMotion(engine) {
+ const ctx=await browser.newContext({viewport:{width:390,height:844}});
+ await ctx.addInitScript(()=>{
+  window.motionQA=[];const original=Element.prototype.animate;
+  Element.prototype.animate=function(frames,options){
+   window.motionQA.push({tag:this.tagName,classes:this.className,frames,options});
+   return original.call(this,frames,options);
+  };
+ });
+ const page=await ctx.newPage();
+ try {
+  for(const file of ['services.html','robotics.html','about.html','contacts.html','faq.html','news.html','briefing-2026-09-28.html','shop.html','shop-belts.html','cart.html','account.html']) {
+   await page.goto(base+'/'+file);
+   await page.waitForFunction(()=>window.motionQA.some(a=>a.tag==='H1'));
+   const entry=await page.evaluate(()=>window.motionQA);
+   assert.ok(entry.every(a=>a.options.duration+(a.options.delay||0)<=900),file+' motion budget');
+   assert.ok(entry.filter(a=>a.tag==='IMG').every(a=>a.frames.every(f=>!f.transform)),file+' image geometry');
+   assert.equal(await page.locator('.brand img').evaluate(el=>getComputedStyle(el).transform),'none');
+  }
+  await page.goto(base+'/services.html');
+  const card=page.locator('.service-card').first();await card.scrollIntoViewIfNeeded();
+  await page.waitForFunction(()=>window.motionQA.some(a=>a.classes.includes('service-card')));
+  const count=await page.evaluate(()=>window.motionQA.filter(a=>a.classes.includes('service-card')).length);
+  await page.locator('h1').scrollIntoViewIfNeeded();await card.scrollIntoViewIfNeeded();
+  await page.waitForTimeout(450);
+  assert.equal(await page.evaluate(()=>window.motionQA.filter(a=>a.classes.includes('service-card')).length),count,'cards reveal once per visit');
+  await page.goto(base+'/contacts.html#request');
+  await page.locator('#model').focus();
+  assert.equal(await page.locator('#model').evaluate(el=>el===document.activeElement),true,'form focus remains available');
+  await page.emulateMedia({reducedMotion:'reduce'});
+  await page.waitForFunction(()=>document.getAnimations().length===0);
+  await page.goto(base+'/faq.html');await page.locator('.faq summary').first().click();
+  assert.equal(await page.evaluate(()=>document.getAnimations().length),0,'FAQ stays static with reduced motion');
+  assert.equal(await page.locator('.faq p').first().evaluate(el=>getComputedStyle(el).opacity),'1');
+  report.interactions.push(engine+': mobile motion on 11 service/store/news pages; one-time scroll cards; form focus; reduced-motion FAQ');
+ } finally { await ctx.close(); }
+}
 async function capture(engine,width,height,file){
  const ctx=await browser.newContext({viewport:{width,height},deviceScaleFactor:1});const page=await ctx.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));
  // Never create a service request while checking a real deployment.
@@ -44,6 +81,7 @@ async function capture(engine,width,height,file){
 }
 try {
  browser=await chromium.launch();
+ await checkSiteMotion('chromium');
  for(const [width,height] of [[320,900],[390,844],[768,1024],[1024,768],[1440,1000],[844,390]]) for(const file of ['shop.html','shop-belts.html','cart.html','account.html']) await capture('chromium',width,height,file);
  // First-entry brand motion is session-scoped and never alters the logo geometry.
  const ctx=await browser.newContext({viewport:{width:390,height:844}});const p=await ctx.newPage();
@@ -92,7 +130,7 @@ try {
  const denied=await browser.newContext({viewport:{width:320,height:844}});await denied.addInitScript(()=>{Object.defineProperty(window,'sessionStorage',{get(){throw Error('Denied');}});Object.defineProperty(window,'localStorage',{get(){throw Error('Denied');}});window.IntersectionObserver=undefined;});const dp=await denied.newPage();await dp.goto(base+'/shop.html');assert.ok(await dp.locator('h1').isVisible());assert.equal(await dp.locator('html').getAttribute('data-motion-entry'),'static');assert.equal(await dp.evaluate(()=>getComputedStyle(document.querySelector('.brand img')).opacity),'1');await denied.close();report.interactions.push('Denied storage and absent IntersectionObserver keep content visible');
  const reduced=await browser.newContext({reducedMotion:'reduce'});const rp=await reduced.newPage();await rp.goto(base+'/shop.html');assert.equal(await rp.evaluate(()=>document.getAnimations().length),0);await reduced.close();
  const nojs=await browser.newContext({javaScriptEnabled:false,viewport:{width:390,height:844}});const np=await nojs.newPage();await np.goto(base+'/shop.html');assert.ok(await np.locator('h1').isVisible());await np.locator('.menu').click();assert.ok(await np.locator('.mobile-nav a[href="shop.html"]').isVisible());await np.locator('.mobile-nav a[href="shop.html"]').click();await np.locator('a.store-category[href="shop-belts.html"]').click();assert.match(np.url(),/shop-belts.html/);await nojs.close();report.interactions.push('Reduced-motion and JS-off category navigation');
- await browser.close();browser=await webkit.launch();for(const file of ['shop.html','shop-belts.html','cart.html','account.html'])await capture('webkit',390,844,file);
+ await browser.close();browser=await webkit.launch();await checkSiteMotion('webkit');for(const file of ['shop.html','shop-belts.html','cart.html','account.html'])await capture('webkit',390,844,file);
 } catch(e){report.failures.push({suite:'interactions',error:e.stack});}
 finally {if(browser)await browser.close();child.kill();await once(child,'exit').catch(()=>{});fs.rmSync(temp,{recursive:true,force:true});fs.writeFileSync(path.join(dir,'report.json'),JSON.stringify(report,null,2));}
 console.log(JSON.stringify({layouts:report.checked.length,interactions:report.interactions,failures:report.failures},null,2));if(report.failures.length)process.exitCode=1;
