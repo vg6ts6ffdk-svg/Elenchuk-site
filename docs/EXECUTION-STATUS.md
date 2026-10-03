@@ -1,3 +1,11 @@
+# Neutral colour balance — 3 October 2026
+
+Baseline: `bd21b4cfd338617b3c37f3a75e9d162083b044a1`. Owner requested less blue and explicitly deferred CC1 disassembly. Large backgrounds/cards/inputs now use neutral graphite; large emphasized headings and section numbers are white/grey. Corporate blue remains in approved logo masters, descriptor initials, primary service CTA, active navigation and focus states. The desktop header CTA is now a neutral outline, avoiding two competing blue buttons on the first screen. News follows shared tokens; store/categories/cart/account replace hardcoded navy surfaces with the same neutral tokens. CSS URLs are versioned to refresh mobile caches.
+
+Approved SVGs, page structure, copy, animation and service/commerce behavior are unchanged. CC1 disassembly is deferred, not a release dependency. Validation and Preview/production evidence are recorded in the PR.
+
+---
+
 # Site-wide motion — 3 October 2026
 
 Baseline: `a2fef64b4cf1f8de56117b82907cfd81bf80c6ae`. Shared progressive motion now covers service headings, cards, steps, forms, FAQ, news articles and the storefront/categories/cart/account. Each content unit appears once per visit: opacity and 10px/250ms on mobile, 14px/320ms on desktop, short row staggering. Images fade without transforms. FAQ and mobile-menu opening use a 180ms fade. The existing home first-session RO/С/ИН composition and replay remain; header/logo masters and footer geometry are untouched.

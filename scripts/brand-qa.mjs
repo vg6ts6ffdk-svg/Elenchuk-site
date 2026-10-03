@@ -55,7 +55,7 @@ async function inspect(browser,width,file,engine){
   const metrics=await page.evaluate(()=>({width:innerWidth,scroll:document.documentElement.scrollWidth,bg:getComputedStyle(document.body).backgroundColor,logo:document.querySelector('.brand img')?.getBoundingClientRect().toJSON(),broken:[...document.images].filter(i=>!i.complete||!i.naturalWidth).map(i=>i.getAttribute('src')),inter:[...document.fonts].some(f=>f.family.replaceAll('"','')==='Inter'&&f.status==='loaded')}));
   assert.ok(metrics.scroll<=metrics.width+1,`overflow ${metrics.scroll}/${metrics.width}`);
   assert.equal(metrics.broken.length,0,`broken images ${metrics.broken.join(',')}`);
-  assert.equal(metrics.bg,'rgb(15, 23, 42)');
+  assert.equal(metrics.bg,'rgb(22, 24, 29)');
   assert.ok(metrics.logo.width>130&&metrics.logo.width<=220,'brandbook header size');
   assert.equal(errors.length,0,errors.join('; '));
   if(file==='index.html') {

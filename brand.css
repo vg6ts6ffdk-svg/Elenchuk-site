@@ -3,8 +3,8 @@
 @import url('https://rsms.me/inter/inter.css');
 :root {
   --accent:#3B82F6; --accent-light:#93B8FE;
-  --bg:#0F172A; --bg2:#131F34; --panel:#19263C;
-  --text:#FFFFFF; --muted:#BBC6D6; --line:#34445C;
+  --bg:#16181D; --bg2:#1C1F25; --panel:#24282F;
+  --text:#FFFFFF; --muted:#C3C7CF; --line:#454A53;
   --max:1240px; --header:80px;
   --ease:cubic-bezier(.2,.75,.2,1);
 }
@@ -14,13 +14,16 @@ h1,h2,h3 { font-weight:600; overflow-wrap:normal; word-break:normal; }
 h1 { font-size:56px; line-height:1.1072; letter-spacing:-.035em; }
 h2 { font-size:36px; line-height:1.1667; letter-spacing:-.025em; }
 h3 { font-size:22px; line-height:1.25; letter-spacing:-.015em; }
+/* Blue identifies the brand and primary action; large surfaces stay graphite. */
+h1 em,h2 em,h3 em { color:var(--text); }
+.dark { background:var(--bg2); }
 p { overflow-wrap:break-word; }
 img { height:auto; }
 .container,.header-inner { width:min(calc(100% - 48px),var(--max)); }
 .section { padding:88px 0; }
 .lead { color:var(--muted); font-size:18px; line-height:1.55; max-width:38em; }
-.eyebrow { font-size:12px; line-height:1.42; letter-spacing:.08em; font-weight:600; }
-.site-header { background:var(--bg); }
+.eyebrow { color:var(--muted); font-size:12px; line-height:1.42; letter-spacing:.08em; font-weight:600; }
+.site-header { background:#0F172A; }
 .header-inner { gap:28px; }
 .brand { display:flex; align-items:center; min-height:44px; padding:12px 0; background:none; border-radius:0; overflow:visible; }
 .brand::after { content:none; }
@@ -28,13 +31,16 @@ img { height:auto; }
 .brand:hover img { transform:none; filter:none; }
 .nav { gap:24px; }
 .nav a { color:var(--text); font-size:14px; }
-.nav a:hover,.nav a[aria-current] { color:var(--accent-light); }
+.nav a:hover,.nav a[aria-current] { color:var(--text); }
 .btn { min-height:48px; border-radius:6px; padding:13px 20px; font-size:14px; font-weight:600; transition:background-color .18s,border-color .18s; }
-.btn-primary { background:var(--accent); border-color:var(--accent); color:#0F172A; }
+.btn-primary { background:var(--accent); border-color:var(--accent); color:#0F172A; box-shadow:none; }
 .btn-primary:hover { background:#75A6FA; border-color:#75A6FA; }
+.header-cta.btn-primary { background:transparent; border-color:#64748B; color:var(--text); }
+.header-cta.btn-primary:hover { background:#24282F; border-color:#C3C7CF; }
 .btn-ghost { background:transparent; color:var(--text); }
 .btn:focus-visible,a:focus-visible,summary:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible { outline:3px solid var(--accent-light); outline-offset:4px; }
 .menu { border-radius:6px; background:transparent; }
+.menu span { background:var(--text); }
 .mobile-nav { padding:20px max(20px,env(safe-area-inset-right)) max(28px,env(safe-area-inset-bottom)) max(20px,env(safe-area-inset-left)); }
 .mobile-nav a { font-size:18px; min-height:44px; }
 .mobile-subnav a { font-size:16px; }
@@ -48,8 +54,8 @@ img { height:auto; }
 .hero-copy .lead { margin-top:24px; }
 .hero-image { height:460px; object-fit:cover; border-radius:12px; }
 .media-wrap { border-radius:12px; }
-.hero-card { bottom:20px; right:20px; background:#0F172A; border-color:var(--line); border-radius:6px; padding:18px; }
-.hero-card b { letter-spacing:.06em; }
+.hero-card { bottom:20px; right:20px; background:#1C1F25; border-color:var(--line); border-radius:6px; padding:18px; }
+.hero-card b { color:var(--muted); letter-spacing:.06em; }
 .trust { gap:8px 16px; font-size:12px; }
 .eyebrow.brand-sequence { gap:6px 12px; flex-wrap:wrap; color:var(--text); }
 .brand-sequence > i { display:none; }
@@ -63,15 +69,17 @@ img { height:auto; }
 .service-grid,.steps { gap:20px; }
 .service-card,.step,.fault-card { padding:28px; border-radius:8px; }
 .service-card p,.step p,.fault-card p { font-size:16px; line-height:1.5625; }
-.service-card a { min-height:44px; display:inline-flex; align-items:center; }
-.num,.fault-card span { font-size:12px; font-variant-numeric:tabular-nums; }
+.service-card a { min-height:44px; display:inline-flex; align-items:center; color:var(--text); }
+.service-card a:hover { color:var(--accent-light); }
+.num,.fault-card span { color:var(--muted); font-size:12px; font-variant-numeric:tabular-nums; }
+.step strong,.feature-item strong { color:var(--muted); }
 .direction-card { border-radius:12px; transition:transform .2s var(--ease),border-color .2s; }
 .direction-card:hover { transform:translateY(-4px); }
 .direction-card img { transition:none; }
 .direction-card:hover img { transform:none; filter:none; }
 .direction-card-content { padding:28px; }
-.direction-card-content span { font-size:12px; }
-.direction-card-content b { display:inline-flex; align-items:center; min-height:44px; font-size:14px; }
+.direction-card-content span { color:var(--muted); font-size:12px; }
+.direction-card-content b { color:var(--text); display:inline-flex; align-items:center; min-height:44px; font-size:14px; }
 .feature-copy { padding:36px; border-radius:12px; }
 .feature-image { height:100%; min-height:420px; }
 .feature-item p { font-size:16px; }
@@ -79,7 +87,7 @@ img { height:auto; }
 .request { background:var(--bg2); }
 .form { border-radius:12px; padding:32px; }
 .field label { color:var(--text); font-size:14px; }
-.field input,.field select,.field textarea { background:#0F172A; border-color:#64748B; border-radius:5px; min-height:48px; font-size:16px; }
+.field input,.field select,.field textarea { background:var(--bg); border-color:#64748B; border-radius:5px; min-height:48px; font-size:16px; }
 .field input::placeholder,.field textarea::placeholder { color:#AEBCCD; }
 .form-note { font-size:12px; line-height:1.5; }
 .form-status { border-radius:6px; }
@@ -87,7 +95,7 @@ img { height:auto; }
 .faq summary { font-size:18px; line-height:1.4; }
 .final-panel { border-radius:12px; border-color:var(--line); border-top:3px solid var(--accent); }
 .numbers { background:var(--bg2); }
-.number strong { font-size:28px; font-weight:600; }
+.number strong { color:var(--text); font-size:28px; font-weight:600; }
 .number span { font-size:14px; }
 .footer-inner { align-items:flex-start; padding:12px 0; }
 .footer-inner img { width:auto; height:22px; padding:0; border-radius:0; background:none; }
