@@ -17,7 +17,7 @@
     try {
       // Phones get a single opacity effect, without delayed translations or
       // overlapping child animations while the user is swiping.
-      const a = el.animate(mobile ? fade : keyframes, { ...options, ...(mobile ? { duration: 220, delay: 0 } : {}), easing: 'cubic-bezier(.16,1,.3,1)', fill: 'backwards' });
+      const a = el.animate(mobile ? fade : keyframes, { ...options, ...(mobile ? { duration: el.matches('.brand img') ? 600 : 220, delay: 0 } : {}), easing: 'cubic-bezier(.16,1,.3,1)', fill: 'backwards' });
       animations.add(a);
       a.addEventListener('finish', () => animations.delete(a), { once: true });
       a.addEventListener('cancel', () => animations.delete(a), { once: true });
