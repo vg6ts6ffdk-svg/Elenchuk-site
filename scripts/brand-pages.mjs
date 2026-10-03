@@ -1,4 +1,4 @@
-/** Approved logo geometry 4.0, palette 4.1 and clean primary icons 4.4. */
+/** Approved logo geometry 4.0, palette 4.1 and refined blue-light primary icons 4.5. */
 export const brandIconLinks = '<link rel="icon" type="image/png" sizes="32x32" href="assets/brand/favicon-32.png">\n<link rel="icon" type="image/svg+xml" href="favicon.svg">\n<link rel="apple-touch-icon" sizes="180x180" href="assets/brand/apple-touch-icon.png">';
 export function brandPage(html, file, { storefront = false } = {}) {
   if (!html.includes('site-header')) return html;

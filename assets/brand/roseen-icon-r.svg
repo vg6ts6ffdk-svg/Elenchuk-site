@@ -1,6 +1,36 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
 <title id="title">ROSEEN — монограмма R</title>
-<desc id="desc">Белая монограмма R на однотонном графитовом фоне. Исходные контуры сохранены.</desc>
-<rect width="512" height="512" rx="112" fill="#16181D"/>
-<g fill="#FFFFFF" transform="translate(82 128) scale(1.22)"><path fill="#FFFFFF" d="M0.0 0.0H207.6923076923077C255.76923076923077 0.0 286.53846153846155 23.076923076923077 286.53846153846155 67.3076923076923C286.53846153846155 105.76923076923077 261.53846153846155 126.92307692307692 211.53846153846155 126.92307692307692H194.23076923076923L280.7692307692308 200.0H175.0L59.61538461538462 76.92307692307692H190.3846153846154C202.8846153846154 76.92307692307692 209.6153846153846 72.11538461538461 209.6153846153846 63.46153846153846C209.6153846153846 54.80769230769231 202.8846153846154 50.0 190.3846153846154 50.0H30.76923076923077L0.0 0.0Z"/></g>
+<desc id="desc">Исходный фирменный знак на тёмной объёмной поверхности с мягкой синей подсветкой границ.</desc>
+<defs>
+ <linearGradient id="face" x1="0" y1="0" x2=".85" y2="1"><stop stop-color="#151E2D"/><stop offset=".46" stop-color="#090F1B"/><stop offset="1" stop-color="#040811"/></linearGradient>
+ <linearGradient id="rim" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#285B9D"/><stop offset=".22" stop-color="#5B9BFA"/><stop offset=".52" stop-color="#15385F"/><stop offset=".79" stop-color="#3B82F6"/><stop offset="1" stop-color="#1A3F6C"/></linearGradient>
+ <linearGradient id="bevel" x1="0" y1="0" x2=".65" y2="1"><stop stop-color="#AFCCFA" stop-opacity=".16"/><stop offset=".32" stop-color="#80AFF8" stop-opacity=".035"/><stop offset="1" stop-color="#80AFF8" stop-opacity="0"/></linearGradient>
+</defs>
+<rect width="512" height="512" fill="#080C14"/>
+<rect x="38" y="38" width="436" height="436" rx="98" fill="none" stroke="#3B82F6" stroke-width="46" opacity="0.00490"/>
+<rect x="38" y="38" width="436" height="436" rx="98" fill="none" stroke="#3B82F6" stroke-width="44" opacity="0.00242"/>
+<rect x="38" y="38" width="436" height="436" rx="98" fill="none" stroke="#3B82F6" stroke-width="42" opacity="0.00343"/>
+<rect x="38" y="38" width="436" height="436" rx="98" fill="none" stroke="#3B82F6" stroke-width="40" opacity="0.00476"/>
+<rect x="38" y="38" width="436" height="436" rx="98" fill="none" stroke="#3B82F6" stroke-width="38" opacity="0.00649"/>
+<rect x="38" y="38" width="436" height="436" rx="98" fill="none" stroke="#3B82F6" stroke-width="36" opacity="0.00869"/>
+<rect x="38" y="38" width="436" height="436" rx="98" fill="none" stroke="#3B82F6" stroke-width="34" opacity="0.01141"/>
+<rect x="38" y="38" width="436" height="436" rx="98" fill="none" stroke="#3B82F6" stroke-width="32" opacity="0.01471"/>
+<rect x="38" y="38" width="436" height="436" rx="98" fill="none" stroke="#3B82F6" stroke-width="30" opacity="0.01864"/>
+<rect x="38" y="38" width="436" height="436" rx="98" fill="none" stroke="#3B82F6" stroke-width="28" opacity="0.02318"/>
+<rect x="38" y="38" width="436" height="436" rx="98" fill="none" stroke="#3B82F6" stroke-width="26" opacity="0.02833"/>
+<rect x="38" y="38" width="436" height="436" rx="98" fill="none" stroke="#3B82F6" stroke-width="24" opacity="0.03401"/>
+<rect x="38" y="38" width="436" height="436" rx="98" fill="none" stroke="#3B82F6" stroke-width="22" opacity="0.04008"/>
+<rect x="38" y="38" width="436" height="436" rx="98" fill="none" stroke="#3B82F6" stroke-width="20" opacity="0.04634"/>
+<rect x="38" y="38" width="436" height="436" rx="98" fill="none" stroke="#3B82F6" stroke-width="18" opacity="0.05250"/>
+<rect x="38" y="38" width="436" height="436" rx="98" fill="none" stroke="#3B82F6" stroke-width="16" opacity="0.05817"/>
+<rect x="38" y="38" width="436" height="436" rx="98" fill="none" stroke="#3B82F6" stroke-width="14" opacity="0.06281"/>
+<rect x="38" y="38" width="436" height="436" rx="98" fill="none" stroke="#3B82F6" stroke-width="12" opacity="0.06577"/>
+<rect x="38" y="38" width="436" height="436" rx="98" fill="none" stroke="#3B82F6" stroke-width="10" opacity="0.06626"/>
+<rect x="38" y="38" width="436" height="436" rx="98" fill="none" stroke="#3B82F6" stroke-width="8" opacity="0.06345"/>
+<rect x="38" y="38" width="436" height="436" rx="98" fill="none" stroke="#3B82F6" stroke-width="6" opacity="0.05657"/>
+<rect x="38" y="38" width="436" height="436" rx="98" fill="none" stroke="#3B82F6" stroke-width="4" opacity="0.04517"/>
+<rect x="38" y="38" width="436" height="436" rx="98" fill="none" stroke="#3B82F6" stroke-width="2" opacity="0.02941"/>
+<rect x="38" y="38" width="436" height="436" rx="98" fill="url(#face)" stroke="url(#rim)" stroke-width="1.4"/>
+<rect x="40.5" y="40.5" width="431" height="431" rx="96" fill="none" stroke="url(#bevel)" stroke-width="1"/>
+<g fill="#FFFFFF" transform="translate(91.24 139) scale(1.15)"><path d="M0.0 0.0H207.6923076923077C255.76923076923077 0.0 286.53846153846155 23.076923076923077 286.53846153846155 67.3076923076923C286.53846153846155 105.76923076923077 261.53846153846155 126.92307692307692 211.53846153846155 126.92307692307692H194.23076923076923L280.7692307692308 200.0H175.0L59.61538461538462 76.92307692307692H190.3846153846154C202.8846153846154 76.92307692307692 209.6153846153846 72.11538461538461 209.6153846153846 63.46153846153846C209.6153846153846 54.80769230769231 202.8846153846154 50.0 190.3846153846154 50.0H30.76923076923077L0.0 0.0Z"/></g>
 </svg>

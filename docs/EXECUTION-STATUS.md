@@ -1,6 +1,12 @@
-# Clean primary icons - 4 October 2026
+# Refined blue edge light - 4 October 2026
 
-Baseline: `31ccb2b677881aacb7506870acee2eb1b12fa9e2`. The owner rejected the blue illuminated edges. Primary R and EE badges now use one solid Graphite #16181D rounded surface, with no outline, glow, shadow or gradient. The original glyph paths are unchanged; the white R remains legible at small favicon sizes. The iOS 180px export is opaque for the system's home-screen mask. Browser asset fingerprints refresh automatically from the changed SVG/PNG bytes. Brandbook 4.4 and its downloadable icon set use the same clean artwork, with native vector icons and text in the print PDF. Release evidence is recorded in the PR.
+Baseline: `1f124c406fa105805615cf1df0a1909294fd7b1a`. The owner clarified that blue edge light should remain because it adds depth; the previous removal was an interpretation error. Primary R and EE now have restrained blue light, a precise rim and subtle dark face shading. The approved glyph paths remain exact; uniform sizing improves prominence while preserving padding. Layered native vector strokes represent the soft light, preserving print quality without rasterising the icon page. Web exports and brandbook 4.5 share the same artwork. Release evidence is recorded in the PR after checks and publication.
+
+---
+
+# Clean primary icons - 4 October 2026 (superseded interpretation)
+
+Baseline: `31ccb2b677881aacb7506870acee2eb1b12fa9e2`. The assistant interpreted a comment about the blue illuminated edges as a request to remove them; the owner subsequently clarified the opposite. This superseded 4.4 revision used one solid Graphite #16181D rounded surface without glow. The original glyph paths were unchanged and browser asset fingerprints refreshed from SVG/PNG bytes. Revision 4.5 restores and refines the light according to the owner's explicit correction.
 
 ---
 
