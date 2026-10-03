@@ -5,7 +5,7 @@ export function brandPage(html, file, { storefront = false } = {}) {
   // Graphic source masters are preserved; build adds shared presentation only.
   let out = html
     .replace(/href="style\.css(?:\?[^"]*)?"/g, 'href="style.css"')
-    .replace('</head>', '<meta name="theme-color" content="#0F172A">\n<link rel="preconnect" href="https://rsms.me">\n<link rel="stylesheet" href="brand.css?v=graphite-restored-20261003">\n<link rel="stylesheet" href="motion.css?v=sitewide-20261003">\n<script src="motion.js?v=sitewide-20261003" defer></script>\n</head>');
+    .replace('</head>', '<meta name="theme-color" content="#0F172A">\n<link rel="preconnect" href="https://rsms.me">\n<link rel="stylesheet" href="brand.css?v=graphite-polish-20261003">\n<link rel="stylesheet" href="motion.css?v=sitewide-20261003">\n<script src="motion.js?v=sitewide-20261003" defer></script>\n</head>');
   out = out.replace(/<link\b(?=[^>]*rel="icon")[^>]*>/g, '<link rel="icon" type="image/svg+xml" href="favicon.svg">');
   out = out.replace(/<img\b(?=[^>]*src="logo-approved\.svg")[^>]*>/g, (tag) => tag
     .replace('src="logo-approved.svg"','src="assets/brand/roseen-wordmark.svg"')
@@ -40,12 +40,26 @@ export function brandPage(html, file, { storefront = false } = {}) {
     return nav.replace('</nav>', news + '</nav>');
   });
   if (storefront) {
-    out = out.replace('</head>', '<link rel="stylesheet" href="store.css?v=graphite-restored-20261003">\n<script type="module" src="store.js"></script>\n</head>');
+    out = out.replace('</head>', '<link rel="stylesheet" href="store.css?v=graphite-polish-20261003">\n<script type="module" src="store.js"></script>\n</head>');
     out = out.replace(/<nav\b[^>]*class="(?:nav|mobile-nav)"[^>]*>[\s\S]*?<\/nav>/g, nav => {
       if (nav.includes('href="shop.html"')) return nav;
       return nav.replace('</nav>', '<a href="shop.html">Магазин</a><a class="cart-nav" href="cart.html">Корзина <span class="cart-badge" data-cart-count aria-label="товаров">0</span></a><a href="account.html">Кабинет</a></nav>');
     });
   }
+  // Keep the current section visible on articles, categories and detail pages,
+  // including when JavaScript is disabled. Exact pages retain page semantics.
+  const section = /^briefing-/.test(file) ? 'news.html'
+    : /^(?:shop-|product-)/.test(file) ? 'shop.html'
+    : ['robotics.html','electronics.html','appliances.html','professional.html'].includes(file) ? 'directions.html'
+    : ['diagnostika.html','remont.html','servis.html','engineering.html'].includes(file) ? 'services.html'
+    : file;
+  out = out.replace(/<nav\b[^>]*class="(?:nav|mobile-nav)"[^>]*>[\s\S]*?<\/nav>/g, nav =>
+    nav.replace(/<a\b[^>]*href="([^"]+)"[^>]*>/g, (tag, href) => {
+      const target = href.split('#')[0];
+      const clean = tag.replace(/\saria-current="[^"]*"/g, '');
+      const state = target === file ? 'page' : target === section ? 'location' : null;
+      return state ? clean.replace(/>$/, ` aria-current="${state}">`) : clean;
+    }));
   return out.replace('<body>', `<body data-brand-release="4.0"${storefront ? ' data-storefront="preview"' : ''}>`);
 }
 export function brandScript(js) {
