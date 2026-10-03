@@ -92,3 +92,7 @@ Use Platform v5 QA artifact report.json and Brandbook browser QA for this commit
 ## News archive addition — 3 October 2026
 
 Added the 14–21 September briefing as `briefing-2026-09-21.html`, below the newer issue in Новости. Original issue and actual website publication dates are separate. Sources distinguish supplier claims, planned support and contracted units from independently measured results. Publication follows the verified PR and Pages workflow; this note alone is not deployment evidence.
+
+## News editorial rule — 3 October 2026
+
+Removed the regional-applicability and practical-check sections from both published briefings at the owner’s request. Future website issues omit these blocks; the publication guide and existing weekly automation carry the rule. News facts, source links and article URLs are preserved.
