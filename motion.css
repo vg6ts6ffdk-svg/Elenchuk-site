@@ -10,5 +10,15 @@
 .footer-inner > a:first-child { display:flex; align-items:center; padding:14px; margin-left:-14px; }
 .footer-inner img { height:25.62px; width:auto; }
 @media (max-width:540px) { .brand img { width:160px; } .footer-inner img { height:20.50px; } }
-@media (hover:hover) and (pointer:fine) { .btn:hover { filter:brightness(1.04); } }
-@media (prefers-reduced-motion:reduce) { .brand-token { animation:none; } }
+.direction-card:hover { transform:none; }
+@media (hover:hover) and (pointer:fine) {
+  .btn { transition:background-color .18s,border-color .18s,filter .18s; }
+  .btn:hover { filter:brightness(1.04); }
+  .store-category, .service-card, .fault-card, .briefing-card { transition:border-color .18s; }
+  .store-category:hover, .service-card:hover, .fault-card:hover, .briefing-card:hover { border-color:#3B82F6; }
+}
+@media (prefers-reduced-motion:reduce) {
+  html { scroll-behavior:auto; }
+  .brand-token { animation:none; }
+  .btn, .direction-card, .store-category, .service-card, .fault-card, .briefing-card { transition:none; }
+}
