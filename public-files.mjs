@@ -14,6 +14,8 @@ export const generatedFiles = [...generatedPages, ...(previewEnabled ? ['store-d
 export const publicFiles = [...pages, 'briefings.css', 'style.css', 'brand.css', 'motion.js', 'motion.css', 'script.js', 'api-config.js',
   'admin.css', 'admin.js', 'admin-catalog.js', 'logo-approved.svg', 'favicon.svg',
   'assets/brand/roseen-wordmark.svg', 'assets/brand/rosin-wordmark.svg',
+  'assets/brand/roseen-icon-r.svg', 'assets/brand/roseen-icon-ee.svg',
+  'assets/brand/favicon-32.png', 'assets/brand/apple-touch-icon.png',
   'robots.txt', 'sitemap.xml', 'CNAME',
   ...(previewEnabled ? ['store.js', 'store-core.js', 'store.css', 'store-data.json', ...storeMediaFiles()] : []),
   ...['robotics','electronics','appliances','professional'].flatMap(name =>

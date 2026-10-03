@@ -1,4 +1,5 @@
-/** Approved brandbook 4.0 -> static output. No client-side logo swapping. */
+/** Approved logo geometry 4.0, palette 4.1 and primary icons 4.3. */
+export const brandIconLinks = '<link rel="icon" type="image/png" sizes="32x32" href="assets/brand/favicon-32.png">\n<link rel="icon" type="image/svg+xml" href="favicon.svg">\n<link rel="apple-touch-icon" sizes="180x180" href="assets/brand/apple-touch-icon.png">';
 export function brandPage(html, file, { storefront = false } = {}) {
   if (!html.includes('site-header')) return html;
   if (/class="brand-wordmark"/.test(html)) throw new Error('Rejected text logo in ' + file);
@@ -6,7 +7,8 @@ export function brandPage(html, file, { storefront = false } = {}) {
   let out = html
     .replace(/href="style\.css(?:\?[^"]*)?"/g, 'href="style.css"')
     .replace('</head>', '<meta name="theme-color" content="#16181D">\n<link rel="preconnect" href="https://rsms.me">\n<link rel="stylesheet" href="brand.css?v=graphite-brand-20261003">\n<link rel="stylesheet" href="motion.css?v=visible-motion-20261004">\n<script src="motion.js?v=visible-motion-20261004" defer></script>\n</head>');
-  out = out.replace(/<link\b(?=[^>]*rel="icon")[^>]*>/g, '<link rel="icon" type="image/svg+xml" href="favicon.svg">');
+  out = out.replace(/<link\b(?=[^>]*rel="(?:icon|apple-touch-icon)")[^>]*>\s*/g, '')
+    .replace('</head>', brandIconLinks + '\n</head>');
   out = out.replace(/<img\b(?=[^>]*src="logo-approved\.svg")[^>]*>/g, (tag) => tag
     .replace('src="logo-approved.svg"','src="assets/brand/roseen-wordmark.svg"')
     .replace(/width="[^"]+"/,'width="1843.5385"').replace(/height="[^"]+"/,'height="200"'));

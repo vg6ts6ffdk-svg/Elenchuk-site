@@ -6,7 +6,7 @@ import { chromium, webkit } from 'playwright';
 import { pages } from '../public-files.mjs';
 const root=path.resolve('dist');
 const output=path.resolve('qa/brandbook'); fs.mkdirSync(output,{recursive:true});
-const mime={'.html':'text/html; charset=utf-8','.css':'text/css','.js':'text/javascript','.svg':'image/svg+xml','.webp':'image/webp'};
+const mime={'.html':'text/html; charset=utf-8','.css':'text/css','.js':'text/javascript','.svg':'image/svg+xml','.png':'image/png','.webp':'image/webp'};
 const server=http.createServer((req,res)=>{
  const pathname=decodeURIComponent(new URL(req.url,'http://localhost').pathname);
  const file=path.resolve(root,'.'+(pathname==='/'?'/index.html':pathname));
@@ -83,6 +83,15 @@ async function inspect(browser,width,file,engine){
   assert.equal(errors.length,0,errors.join('; '));
   if(file==='index.html') {
    const prefixes=await page.locator('.brand-token b').allTextContents(); assert.deepEqual(prefixes,['РО','С','ИН']);
+   // Decode the actual linked icons in each engine, not only their HTML tags.
+   for(const [selector,size] of [['link[rel="icon"][type="image/svg+xml"]',512],['link[rel="icon"][type="image/png"]',32],['link[rel="apple-touch-icon"]',180]]){
+    assert.equal(await page.locator(selector).count(),1,'one link per icon format');
+    const dimensions=await page.locator(selector).evaluate(async link=>{
+     const image=new Image(); image.src=link.href; await image.decode();
+     return [image.naturalWidth,image.naturalHeight];
+    });
+    assert.deepEqual(dimensions,[size,size],selector+' decodes at its declared size');
+   }
   }
   await page.screenshot({path:path.join(output,`${engine}-${width}-${file.replace('.html','')}.png`),fullPage:true});
   report.checked.push({engine,width,file,...metrics});

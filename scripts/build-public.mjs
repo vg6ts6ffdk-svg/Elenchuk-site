@@ -27,7 +27,7 @@ for (const file of publicFiles) {
   hashes.set(file, createHash('sha256').update(content).digest('hex').slice(0, 12));
 }
 for (const file of publicFiles.filter(file => file.endsWith('.html'))) {
-  const html = fs.readFileSync(path.join(dist, file), 'utf8').replace(/(src|href)="([^"?#]+\.(?:js|css|svg|jpg|webp))"/g,
+  const html = fs.readFileSync(path.join(dist, file), 'utf8').replace(/(src|href)="([^"?#]+\.(?:js|css|svg|png|jpg|webp))"/g,
     (match, attr, name) => hashes.has(name) ? `${attr}="${name}?v=${hashes.get(name)}"` : match);
   fs.writeFileSync(path.join(dist, file), html);
 }
