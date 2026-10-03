@@ -1,15 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
 <title id="title">ROSEEN — знак EE</title>
-<desc id="desc">Тёмная иконка с синей подсветкой. Шесть неизменённых полос EE из утверждённого векторного мастера.</desc>
-<defs>
- <radialGradient id="surround"><stop offset="0" stop-color="#102844"/><stop offset="1" stop-color="#06111F"/></radialGradient>
- <radialGradient id="tile"><stop offset="0" stop-color="#040C16"/><stop offset="1" stop-color="#020710"/></radialGradient>
- <filter id="halo" x="-30%" y="-30%" width="160%" height="160%" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="8"/></filter>
- <filter id="edge" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="2.5"/></filter>
-</defs>
-<rect width="512" height="512" fill="url(#surround)"/>
-<rect x="45" y="45" width="422" height="422" rx="80" fill="none" stroke="#3B82F6" stroke-width="7" opacity=".42" filter="url(#halo)"/>
-<rect x="46" y="46" width="420" height="420" rx="79" fill="none" stroke="#3B82F6" stroke-width="3" opacity=".38" filter="url(#edge)"/>
-<rect x="49" y="49" width="414" height="414" rx="77" fill="url(#tile)" stroke="#163358" stroke-width="1.2"/>
-<g fill="#3B82F6" transform="translate(17.92 17.92) scale(.93)"><path d="M112 144H224V200H112Z"/><path d="M112 228H224V284H112Z"/><path d="M112 312H224V368H112Z"/><path d="M288 144H400V200H288Z"/><path d="M288 228H400V284H288Z"/><path d="M288 312H400V368H288Z"/></g>
+<desc id="desc">Шесть синих полос EE на однотонном графитовом фоне. Исходные контуры сохранены.</desc>
+<rect width="512" height="512" rx="112" fill="#16181D"/>
+<g fill="#3B82F6" transform="translate(-56.32 -56.32) scale(1.22)"><path d="M112 144H224V200H112Z"/><path d="M112 228H224V284H112Z"/><path d="M112 312H224V368H112Z"/><path d="M288 144H400V200H288Z"/><path d="M288 228H400V284H288Z"/><path d="M288 312H400V368H288Z"/></g>
 </svg>

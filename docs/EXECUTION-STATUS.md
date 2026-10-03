@@ -1,4 +1,10 @@
-# Primary icon set on the website - 4 October 2026
+# Clean primary icons - 4 October 2026
+
+Baseline: `31ccb2b677881aacb7506870acee2eb1b12fa9e2`. The owner rejected the blue illuminated edges. Primary R and EE badges now use one solid Graphite #16181D rounded surface, with no outline, glow, shadow or gradient. The original glyph paths are unchanged; the white R remains legible at small favicon sizes. The iOS 180px export is opaque for the system's home-screen mask. Browser asset fingerprints refresh automatically from the changed SVG/PNG bytes. Brandbook 4.4 and its downloadable icon set use the same clean artwork, with native vector icons and text in the print PDF. Release evidence is recorded in the PR.
+
+---
+
+# Primary icon set on the website - 4 October 2026 (superseded icon styling)
 
 Baseline: `07edc342abc95d27bd968cc4edfc3da4d738c3ed`. Brandbook 4.3 now treats the owner's selected R and EE badges as the primary icon set. Their approved vector paths are preserved in the web assets. Browser tabs use a uniformly enlarged R with the same dark tile and blue glow, plus a 32px PNG fallback. iOS home-screen bookmarks use the badge rendered directly from vector at 180px. All source pages and generated storefront shells include the relevant links; production builds fingerprint PNG as well as SVG URLs so updated icons do not reuse stale cached resources.
 

@@ -15,30 +15,38 @@
   },
   "roseen-icon-r.svg": {
     "source_file": "ROSEEN_R_Icon.svg",
-    "brandbook_revision": "4.3",
-    "web_sha256": "eef57066346dca77ba2482cb093101676700d3df4704c57d4f36ad794d51588e",
-    "change": "Approved 4.3 tile and glow; exact original glyph paths; intrinsic size reduced to 512."
+    "brandbook_revision": "4.4",
+    "web_sha256": "dc46a35eb8e6f63a6c11be41daac84bcfd3d3f39fc11dcb0e3211c7bc7e0131f",
+    "change": "Exact approved glyph paths on solid Graphite #16181D; no strokes, filters, shadows or gradients."
   },
   "roseen-icon-ee.svg": {
     "source_file": "ROSEEN_EE_Icon.svg",
-    "brandbook_revision": "4.3",
-    "web_sha256": "87289b8d2a54f18bbb7576b6e25903ddf9387cd923299247f6bc4a5dcfd55b4e",
-    "change": "Approved 4.3 tile and glow; exact original glyph paths; intrinsic size reduced to 512."
+    "brandbook_revision": "4.4",
+    "web_sha256": "0543f34d9099d9df7f59379d1c8fd71fbc2ad71f55b3f4900aec935f6043e238",
+    "change": "Exact approved glyph paths on solid Graphite #16181D; no strokes, filters, shadows or gradients."
   },
   "../../favicon.svg": {
     "source_file": "ROSEEN_R_Icon.svg",
-    "brandbook_revision": "4.3",
-    "web_sha256": "b2b2fbf1a370583736d38bbf6ae84b7265e0106804634f0587bd994d0fd92bf3",
-    "change": "Exact R path, uniformly enlarged for small browser tabs; approved dark tile and glow."
+    "brandbook_revision": "4.4",
+    "web_sha256": "dc46a35eb8e6f63a6c11be41daac84bcfd3d3f39fc11dcb0e3211c7bc7e0131f",
+    "change": "Exact approved glyph paths on solid Graphite #16181D; no strokes, filters, shadows or gradients."
   },
   "favicon-32.png": {
     "source_file": "../../favicon.svg",
-    "web_sha256": "0e66a0b4e266ab2c88f0ef696124a810a995990f1ef0a80809904eb8a11e223e",
-    "change": "Native vector rendered directly at target pixel dimensions; no bitmap upscaling."
+    "web_sha256": "aef5e2cafd60bab6beee884e46bb9681c129f082eac513512218051e1784f7ca",
+    "change": "Direct vector export at native target dimensions; no glow. iOS touch image is opaque for the system mask.",
+    "brandbook_revision": "4.4"
   },
   "apple-touch-icon.png": {
     "source_file": "roseen-icon-r.svg",
-    "web_sha256": "fb8a0cfb62bfa18e126d0bd1d5dfe581463f1e989a282d27e50f2cded6ece945",
-    "change": "Native vector rendered directly at target pixel dimensions; no bitmap upscaling."
+    "web_sha256": "9ac66fc4da3500247d2e548157dd292625a9353b82b4a8e853a1b53a03b4e764",
+    "change": "Direct vector export at native target dimensions; no glow. iOS touch image is opaque for the system mask.",
+    "brandbook_revision": "4.4"
+  },
+  "roseen-icon-r-512.png": {
+    "source_file": "roseen-icon-r.svg",
+    "brandbook_revision": "4.4",
+    "web_sha256": "fa5f9e6ea1bb5eb8449f43ea043c8ec26032ae90e3975b1d3424b34c71400473",
+    "change": "Direct vector export at native target dimensions; no glow. iOS touch image is opaque for the system mask."
   }
 }
