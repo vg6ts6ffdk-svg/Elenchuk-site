@@ -48,6 +48,7 @@ async function checkVisibleTouchMotion(engine) {
   assert.equal(result.transform,'none','touch reveal never moves layout');
   assert.equal(result.finalOpacity,'1');
   await page.emulateMedia({reducedMotion:'reduce'});
+  await page.waitForFunction(()=>document.querySelector('.motion-replay')?.disabled===true);
   assert.match(await page.locator('.motion-replay').innerText(),/отключена настройками устройства/);
   report.interactions.push(engine+': real visible touch fade survives a swipe; no offscreen completion; stationary layout; reduced-motion explanation');
  } finally {await ctx.close();}
