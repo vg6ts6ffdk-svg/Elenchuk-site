@@ -4,7 +4,7 @@
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const animations = new Set();
   let observer;
-  const mobile = matchMedia('(max-width: 800px)').matches;
+  const mobile = matchMedia('(max-width: 1100px), (pointer: coarse)').matches;
   const rise = [{ opacity: 0, transform: `translateY(${mobile ? 12 : 16}px)` }, { opacity: 1, transform: 'none' }];
   const duration = mobile ? 320 : 350;
   const fade = [{ opacity: 0 }, { opacity: 1 }];
@@ -15,7 +15,9 @@
   function play(el, keyframes, options) {
     if (!el || reduced.matches || el.contains(document.activeElement)) return;
     try {
-      const a = el.animate(keyframes, { ...options, easing: 'cubic-bezier(.16,1,.3,1)', fill: 'backwards' });
+      // Phones get a single opacity effect, without delayed translations or
+      // overlapping child animations while the user is swiping.
+      const a = el.animate(mobile ? fade : keyframes, { ...options, ...(mobile ? { duration: 220, delay: 0 } : {}), easing: 'cubic-bezier(.16,1,.3,1)', fill: 'backwards' });
       animations.add(a);
       a.addEventListener('finish', () => animations.delete(a), { once: true });
       a.addEventListener('cancel', () => animations.delete(a), { once: true });
@@ -36,7 +38,7 @@
     if (includeLogo) play(document.querySelector('.brand img'), [{ opacity: 0 }, { opacity: 1 }], { duration: 600 });
     document.querySelectorAll('.brand-token').forEach((el, i) => {
       play(el, rise, { duration, delay: i * 180 });
-      play(el.querySelector('b'), [{ color: '#93B8FF' }, { color: '#3B82F6' }], { duration, delay: i * 180 });
+      if (!mobile) play(el.querySelector('b'), [{ color: '#93B8FF' }, { color: '#3B82F6' }], { duration, delay: i * 180 });
     });
     // A short opening composition, then the page remains still. Animate only
     // elements already on screen; lower content keeps its scroll reveal.
@@ -88,6 +90,10 @@
     if (seen.has(el)) return;
     seen.add(el); pending.delete(el); observer?.unobserve(el);
     el.dataset.motionVisible = 'true';
+    if (mobile) {
+      play(el, fade, { duration: 220 });
+      return;
+    }
     // Editorial blocks have a reading order, rather than moving every paragraph
     // in a large panel at once. The panel itself and all its content stay visible
     // by default; each effect is additive and can be cancelled immediately.
@@ -146,7 +152,7 @@
           entries.forEach(entry => {
             if (entry.isIntersecting) reveal(entry.target, rowDelay(entry.target));
           });
-        }, { threshold: 0.03, rootMargin: '0px 0px -24px 0px' });
+        }, { threshold: 0.03, rootMargin: mobile ? '0px 0px 120px 0px' : '0px 0px -24px 0px' });
       } catch { /* Content is visible even without an observer. */ }
     }
     if (first) enter(true);
@@ -168,20 +174,18 @@
   const start = () => requestAnimationFrame(() => requestAnimationFrame(startContent));
   if (document.readyState !== 'loading') start();
   else addEventListener('DOMContentLoaded', start, { once: true });
-  document.querySelectorAll('details.faq, details.menu-wrap').forEach(details => {
+  document.querySelectorAll('details.faq').forEach(details => {
     details.addEventListener('toggle', () => {
       if (!details.open) return;
       [...details.children].filter(el => el.tagName !== 'SUMMARY').forEach(el => play(el, fade, { duration: 180 }));
-      if (details.matches('.menu-wrap')) {
-        details.querySelectorAll('.mobile-nav > a, .mobile-subnav').forEach((el, i) => {
-          play(el, rise, { duration: 250, delay: Math.min(i, 7) * 35 });
-        });
-      }
     });
   });
   document.addEventListener('focusin', e => {
     animations.forEach(a => { if (a.effect?.target?.contains(e.target)) a.cancel(); });
   });
+  if (mobile) addEventListener('touchmove', () => {
+    animations.forEach(a => a.cancel()); animations.clear();
+  }, { passive: true });
   const header = document.querySelector('.site-header');
   let headerFrame = false;
   function updateHeader() {

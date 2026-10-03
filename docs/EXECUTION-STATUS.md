@@ -1,3 +1,13 @@
+# Mobile regression fix — 3 October 2026
+
+Baseline: `bd0f27f078598e9721eb88744ceabf1a4e0cc77d`. Owner reported mobile jitter and missing navigation after the premium motion release. The previous layout QA did not cover opening the menu after scrolling.
+
+Removed backdrop-filter from the fixed header: it established a containing block for the nested fixed menu, collapsing its viewport area after the header switched to its scrolled state. Header is opaque graphite; mobile header transitions and process-line drawing are disabled. Touch/narrow layouts now use one short 220ms opacity effect per content unit, without translation, nested child sequences or delays. Mobile scroll reveals start ahead of the viewport; touch movement cancels active effects. Navigation opens immediately without animations, and touch layouts use native scrolling.
+
+Added Chromium/WebKit touch regressions at 320, 390, 768 and 844 landscape widths, across homepage, services, news and store: scroll before opening, full viewport menu bounds, actual link taps, close/scroll position retention, no navigation animation, no mobile content transforms/delays. Cache versions updated. Physical iPhone testing is not available in this environment. Local/CI checks and publication results are recorded in the fix PR before release.
+
+---
+
 # Premium motion refinement — 3 October 2026
 
 Baseline: `875742e04f47e92ebb045e6e3550c19ed484eae3` (main and Vercel production at start). Owner requested a premium Apple-like presentation on the existing site; graphite surfaces and small blue brand accents remain.
