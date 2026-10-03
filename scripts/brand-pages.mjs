@@ -5,7 +5,7 @@ export function brandPage(html, file, { storefront = false } = {}) {
   // Graphic source masters are preserved; build adds shared presentation only.
   let out = html
     .replace(/href="style\.css(?:\?[^"]*)?"/g, 'href="style.css"')
-    .replace('</head>', '<meta name="theme-color" content="#16181D">\n<link rel="preconnect" href="https://rsms.me">\n<link rel="stylesheet" href="brand.css?v=graphite-brand-20261003">\n<link rel="stylesheet" href="motion.css?v=graphite-brand-20261003">\n<script src="motion.js?v=mobile-fix-20261003" defer></script>\n</head>');
+    .replace('</head>', '<meta name="theme-color" content="#16181D">\n<link rel="preconnect" href="https://rsms.me">\n<link rel="stylesheet" href="brand.css?v=graphite-brand-20261003">\n<link rel="stylesheet" href="motion.css?v=visible-motion-20261004">\n<script src="motion.js?v=visible-motion-20261004" defer></script>\n</head>');
   out = out.replace(/<link\b(?=[^>]*rel="icon")[^>]*>/g, '<link rel="icon" type="image/svg+xml" href="favicon.svg">');
   out = out.replace(/<img\b(?=[^>]*src="logo-approved\.svg")[^>]*>/g, (tag) => tag
     .replace('src="logo-approved.svg"','src="assets/brand/roseen-wordmark.svg"')

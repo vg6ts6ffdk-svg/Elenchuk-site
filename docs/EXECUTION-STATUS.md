@@ -1,3 +1,11 @@
+# Visible touch motion and print reconstruction - 4 October 2026
+
+Baseline: `f166d97e2cc2398cdba5f8b12e2ff2bf34f90989`. Owner reported imperceptible animations and unreadable brandbook pages. Mobile opacity effects previously completed 120px below the viewport and were cancelled on each touchmove. Reveals now begin inside the viewport, last 350ms and finish during swiping without any translation or layout change. Only the separate first-session brand tokens use a 0/180/360ms sequence. The reduced-motion replay control now states why animation is disabled. Fixed mobile navigation remains immediately tappable.
+
+Added Chromium/WebKit regression for real active opacity during a swipe, below-viewport timing and final visible state, alongside existing menu-after-scroll and stationary-layout checks. Print source audit found 35 legacy pages embedded as 498x352px thumbnails; the owner's requested repair requires vector text/tables and improved photographic vehicle examples on pages 33/35. Print reconstruction and final publication evidence are recorded in the release PR after validation.
+
+---
+
 # Graphite palette and brandbook colours — 3 October 2026
 
 Baseline: `8c12833edb66a7b8c7d8022705f56680d5b5b342`. Owner accepted graphite/white/silver with restrained corporate blue and asked to update the brandbook colours. Removed decorative blue rules in submenus, callout panels and store notices, neutralised secondary markers and replay text. Corporate blue remains in approved logo masters, primary CTA, active navigation and links; green is reserved for confirmed success. Theme colour and written master prompt now use the current palette, avoiding a return to navy/light surfaces.

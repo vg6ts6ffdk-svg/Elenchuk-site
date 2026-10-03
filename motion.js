@@ -15,9 +15,9 @@
   function play(el, keyframes, options) {
     if (!el || reduced.matches || el.contains(document.activeElement)) return;
     try {
-      // Phones get a single opacity effect, without delayed translations or
-      // overlapping child animations while the user is swiping.
-      const a = el.animate(mobile ? fade : keyframes, { ...options, ...(mobile ? { duration: el.matches('.brand img') ? 600 : 220, delay: 0 } : {}), easing: 'cubic-bezier(.16,1,.3,1)', fill: 'backwards' });
+      // Phones keep their layout still. Brand tokens may use their short
+      // sequence; scrolling content starts immediately inside the viewport.
+      const a = el.animate(mobile ? fade : keyframes, { ...options, ...(mobile ? { duration: el.matches('.brand img') ? 600 : 350, delay: el.matches('.brand-token') ? (options.delay || 0) : 0 } : {}), easing: 'cubic-bezier(.16,1,.3,1)', fill: 'backwards' });
       animations.add(a);
       a.addEventListener('finish', () => animations.delete(a), { once: true });
       a.addEventListener('cancel', () => animations.delete(a), { once: true });
@@ -60,6 +60,7 @@
     const sync = () => {
       replay.hidden = false;
       replay.disabled = reduced.matches;
+      replay.textContent = reduced.matches ? 'Анимация отключена настройками устройства' : '↻ Повторить анимацию';
       replay.title = reduced.matches ? 'Анимация отключена настройками устройства' : 'Повторить появление первого экрана';
     };
     sync(); reduced.addEventListener('change', sync);
@@ -91,7 +92,7 @@
     seen.add(el); pending.delete(el); observer?.unobserve(el);
     el.dataset.motionVisible = 'true';
     if (mobile) {
-      play(el, fade, { duration: 220 });
+      play(el, fade, { duration: 350 });
       return;
     }
     // Editorial blocks have a reading order, rather than moving every paragraph
@@ -152,7 +153,7 @@
           entries.forEach(entry => {
             if (entry.isIntersecting) reveal(entry.target, rowDelay(entry.target));
           });
-        }, { threshold: 0.03, rootMargin: mobile ? '0px 0px 120px 0px' : '0px 0px -24px 0px' });
+        }, { threshold: 0.03, rootMargin: '0px 0px -24px 0px' });
       } catch { /* Content is visible even without an observer. */ }
     }
     if (first) enter(true);
@@ -183,9 +184,8 @@
   document.addEventListener('focusin', e => {
     animations.forEach(a => { if (a.effect?.target?.contains(e.target)) a.cancel(); });
   });
-  if (mobile) addEventListener('touchmove', () => {
-    animations.forEach(a => a.cancel()); animations.clear();
-  }, { passive: true });
+  // Opacity-only touch effects do not move the page and must finish during a
+  // swipe. Cancelling on every touchmove made all scroll reveals invisible.
   const header = document.querySelector('.site-header');
   let headerFrame = false;
   function updateHeader() {

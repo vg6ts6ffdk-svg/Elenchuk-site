@@ -17,6 +17,41 @@ const base=process.env.PLATFORM_QA_URL||origin;
 const fixture = {version:1,currency:'RUB',products:Array.from({length:14},(_,i)=>({id:'TEST-'+i,sku:'TEST-SKU-'+i,name:'ТЕСТОВЫЙ ТОВАР '+String(i).padStart(2,'0'),category:'belts',manufacturer:'Test maker',unit:'шт.',state:'published',oem:['TEST-OEM-'+i],priceMinor:i===13?null:10001+i,stock:3,availability:'in_stock',sourceRef:'isolated-test-only',verifiedAt:'2026-09-20',compatibility:[{equipmentBrand:'Test',model:'Model',status:'confirmed',sourceRef:'isolated-test-only'}]}))};
 const testData=publicCatalog(fixture);
 let browser;
+async function checkVisibleTouchMotion(engine) {
+ const ctx=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
+ const page=await ctx.newPage();
+ try {
+  await page.goto(base+'/index.html');
+  await page.locator('.direction-card').first().waitFor();
+  await page.evaluate(async()=>{
+   const el=document.querySelector('.direction-card');
+   scrollTo({top:scrollY+el.getBoundingClientRect().top-innerHeight-60,behavior:'instant'});
+   await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+  });
+  assert.equal(await page.locator('.direction-card').first().getAttribute('data-motion-visible'),null,'touch reveal must not finish below the viewport');
+  const result=await page.evaluate(async()=>{
+   const el=document.querySelector('.direction-card');
+   scrollBy({top:110,behavior:'instant'});
+   await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+   const a=el.getAnimations()[0];
+   if(!a)return {started:false};
+   a.currentTime=120;
+   document.dispatchEvent(new Event('touchmove'));
+   const during={started:true,state:a.playState,opacity:Number(getComputedStyle(el).opacity),transform:getComputedStyle(el).transform,top:el.getBoundingClientRect().top};
+   await a.finished;
+   return {...during,finalOpacity:getComputedStyle(el).opacity};
+  });
+  assert.equal(result.started,true,'visible card has a real animation');
+  assert.equal(result.state,'running','a swipe must not cancel the visible opacity effect');
+  assert.ok(result.opacity>0 && result.opacity<1,'fade is perceptible while inside the viewport');
+  assert.ok(result.top<844 && result.top>0);
+  assert.equal(result.transform,'none','touch reveal never moves layout');
+  assert.equal(result.finalOpacity,'1');
+  await page.emulateMedia({reducedMotion:'reduce'});
+  assert.match(await page.locator('.motion-replay').innerText(),/отключена настройками устройства/);
+  report.interactions.push(engine+': real visible touch fade survives a swipe; no offscreen completion; stationary layout; reduced-motion explanation');
+ } finally {await ctx.close();}
+}
 async function checkSiteMotion(engine) {
  const ctx=await browser.newContext({viewport:{width:390,height:844}});
  await ctx.addInitScript(()=>{
@@ -92,7 +127,7 @@ async function checkMobileNavigation(engine) {
     await page.waitForFunction(()=>!document.body.classList.contains('menu-open'));
     await page.locator('h1').waitFor();
     await page.waitForFunction(()=>window.motionQA.some(a=>a.tag==='H1'));
-    assert.ok((await page.evaluate(()=>window.motionQA)).every(a=>a.frames.every(f=>!f.transform)&&(a.options.delay||0)===0),'touch content never translates or waits in a stagger');
+    assert.ok((await page.evaluate(()=>window.motionQA)).every(a=>a.frames.every(f=>!f.transform)&&((a.options.delay||0)===0 || a.classes==='brand-token')),'touch content stays still and starts immediately; only brand tokens use their short sequence');
    }
    report.interactions.push(`${engine}: touch menu after scroll, close/scroll retention and real link taps at ${width}x${height}; opacity-only mobile content`);
   } finally {await ctx.close();}
@@ -155,6 +190,7 @@ async function checkPremiumMotion(engine) {
 try {
  browser=await chromium.launch();
  await checkMobileNavigation('chromium');
+ await checkVisibleTouchMotion('chromium');
  await checkSiteMotion('chromium');
  await checkPremiumMotion('chromium');
  for(const [width,height] of [[320,900],[390,844],[768,1024],[1024,768],[1440,1000]]) await capture('chromium',width,height,'index.html');
@@ -174,7 +210,7 @@ try {
  const entry=await p.evaluate(()=>window.motionQA);
  assert.ok(entry.some(a=>a.tag==='H1'),'headline should enter with the composition');
  const tokens=entry.filter(a=>a.classes==='brand-token');
- assert.equal(tokens.length,3);assert.deepEqual(tokens.map(a=>a.options.delay),[0,0,0]);
+ assert.equal(tokens.length,3);assert.deepEqual(tokens.map(a=>a.options.delay),[0,180,360]);
  assert.ok(entry.every(a=>a.options.duration+(a.options.delay||0)<=900),'entry exceeds the short motion budget');
  assert.ok(entry.filter(a=>a.tag==='IMG').every(a=>a.frames.every(f=>!f.transform)),'image/logo geometry must remain still');
  await p.emulateMedia({reducedMotion:'reduce'});
@@ -207,7 +243,7 @@ try {
  const denied=await browser.newContext({viewport:{width:320,height:844}});await denied.addInitScript(()=>{Object.defineProperty(window,'sessionStorage',{get(){throw Error('Denied');}});Object.defineProperty(window,'localStorage',{get(){throw Error('Denied');}});window.IntersectionObserver=undefined;});const dp=await denied.newPage();await dp.goto(base+'/shop.html');assert.ok(await dp.locator('h1').isVisible());assert.equal(await dp.locator('html').getAttribute('data-motion-entry'),'static');assert.equal(await dp.evaluate(()=>getComputedStyle(document.querySelector('.brand img')).opacity),'1');await denied.close();report.interactions.push('Denied storage and absent IntersectionObserver keep content visible');
  const reduced=await browser.newContext({reducedMotion:'reduce'});const rp=await reduced.newPage();await rp.goto(base+'/shop.html');assert.equal(await rp.evaluate(()=>document.getAnimations().length),0);await reduced.close();
  const nojs=await browser.newContext({javaScriptEnabled:false,viewport:{width:390,height:844}});const np=await nojs.newPage();await np.goto(base+'/shop.html');assert.ok(await np.locator('h1').isVisible());await np.locator('.menu').click();assert.ok(await np.locator('.mobile-nav a[href="shop.html"]').isVisible());await np.locator('.mobile-nav a[href="shop.html"]').click();await np.locator('a.store-category[href="shop-belts.html"]').click();assert.match(np.url(),/shop-belts.html/);await nojs.close();report.interactions.push('Reduced-motion and JS-off category navigation');
- await browser.close();browser=await webkit.launch();await checkMobileNavigation('webkit');await checkSiteMotion('webkit');await checkPremiumMotion('webkit');for(const file of ['index.html','services.html','news.html','shop.html','shop-belts.html','cart.html','account.html'])await capture('webkit',390,844,file);
+ await browser.close();browser=await webkit.launch();await checkMobileNavigation('webkit');await checkVisibleTouchMotion('webkit');await checkSiteMotion('webkit');await checkPremiumMotion('webkit');for(const file of ['index.html','services.html','news.html','shop.html','shop-belts.html','cart.html','account.html'])await capture('webkit',390,844,file);
 } catch(e){report.failures.push({suite:'interactions',error:e.stack});}
 finally {if(browser)await browser.close();child.kill();await once(child,'exit').catch(()=>{});fs.rmSync(temp,{recursive:true,force:true});fs.writeFileSync(path.join(dir,'report.json'),JSON.stringify(report,null,2));}
 console.log(JSON.stringify({layouts:report.checked.length,interactions:report.interactions,failures:report.failures},null,2));if(report.failures.length)process.exitCode=1;
