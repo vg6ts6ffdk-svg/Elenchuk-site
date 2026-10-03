@@ -12,5 +12,33 @@
     "original_sha256": "acd7e619d7dd30c8437e894c6101c4bda4a4d03c437f837fdb877ff36c5c0a8c",
     "web_sha256": "5113b32b4662753a2b3e07c4bfdaaad6092ceef391802f73320fe516528775a6",
     "change": "Only viewBox and intrinsic size; path data, colours and transforms preserved."
+  },
+  "roseen-icon-r.svg": {
+    "source_file": "ROSEEN_R_Icon.svg",
+    "brandbook_revision": "4.3",
+    "web_sha256": "eef57066346dca77ba2482cb093101676700d3df4704c57d4f36ad794d51588e",
+    "change": "Approved 4.3 tile and glow; exact original glyph paths; intrinsic size reduced to 512."
+  },
+  "roseen-icon-ee.svg": {
+    "source_file": "ROSEEN_EE_Icon.svg",
+    "brandbook_revision": "4.3",
+    "web_sha256": "87289b8d2a54f18bbb7576b6e25903ddf9387cd923299247f6bc4a5dcfd55b4e",
+    "change": "Approved 4.3 tile and glow; exact original glyph paths; intrinsic size reduced to 512."
+  },
+  "../../favicon.svg": {
+    "source_file": "ROSEEN_R_Icon.svg",
+    "brandbook_revision": "4.3",
+    "web_sha256": "b2b2fbf1a370583736d38bbf6ae84b7265e0106804634f0587bd994d0fd92bf3",
+    "change": "Exact R path, uniformly enlarged for small browser tabs; approved dark tile and glow."
+  },
+  "favicon-32.png": {
+    "source_file": "../../favicon.svg",
+    "web_sha256": "0e66a0b4e266ab2c88f0ef696124a810a995990f1ef0a80809904eb8a11e223e",
+    "change": "Native vector rendered directly at target pixel dimensions; no bitmap upscaling."
+  },
+  "apple-touch-icon.png": {
+    "source_file": "roseen-icon-r.svg",
+    "web_sha256": "fb8a0cfb62bfa18e126d0bd1d5dfe581463f1e989a282d27e50f2cded6ece945",
+    "change": "Native vector rendered directly at target pixel dimensions; no bitmap upscaling."
   }
 }

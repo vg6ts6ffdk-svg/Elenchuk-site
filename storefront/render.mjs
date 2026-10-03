@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { brandIconLinks } from '../scripts/brand-pages.mjs';
 import { categories, publicCatalog, categoryPage } from './settings.mjs';
 import { formatPrice, serviceLink, availabilityLabel } from '../store-core.js';
 export const esc = x => String(x ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
@@ -13,7 +14,7 @@ function shell(title, main, file) {
   const header = source.match(/<header\b[\s\S]*?<\/header>/)?.[0];
   const footer = source.match(/<footer\b[\s\S]*?<\/footer>/)?.[0];
   if (!header || !footer) throw new Error('Public site shell missing');
-  return `<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)} — РОСИН</title><meta name="description" content="Каталог запчастей и расходных материалов ROSEEN. Подбор по артикулу и оборудованию."><meta name="robots" content="noindex,nofollow"><link rel="icon" href="favicon.svg"><link rel="canonical" href="https://roseen.ru/${esc(file)}"><link rel="stylesheet" href="style.css"><script src="api-config.js" defer></script><script src="script.js" defer></script></head><body><a class="skip-link" href="#main">Перейти к содержимому</a>${header}<main id="main" class="store-main">${main}</main>${footer}</body></html>`;
+  return `<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)} — РОСИН</title><meta name="description" content="Каталог запчастей и расходных материалов ROSEEN. Подбор по артикулу и оборудованию."><meta name="robots" content="noindex,nofollow">${brandIconLinks}<link rel="canonical" href="https://roseen.ru/${esc(file)}"><link rel="stylesheet" href="style.css"><script src="api-config.js" defer></script><script src="script.js" defer></script></head><body><a class="skip-link" href="#main">Перейти к содержимому</a>${header}<main id="main" class="store-main">${main}</main>${footer}</body></html>`;
 }
 function searchForm(category, products) {
   const manufacturers = [...new Set(products.map(p => p.manufacturer))].sort();

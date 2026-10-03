@@ -1,3 +1,11 @@
+# Primary icon set on the website - 4 October 2026
+
+Baseline: `07edc342abc95d27bd968cc4edfc3da4d738c3ed`. Brandbook 4.3 now treats the owner's selected R and EE badges as the primary icon set. Their approved vector paths are preserved in the web assets. Browser tabs use a uniformly enlarged R with the same dark tile and blue glow, plus a 32px PNG fallback. iOS home-screen bookmarks use the badge rendered directly from vector at 180px. All source pages and generated storefront shells include the relevant links; production builds fingerprint PNG as well as SVG URLs so updated icons do not reuse stale cached resources.
+
+The full graphical RU header and EN footer remain in their established roles. Asset sources and hashes are recorded in `assets/brand/manifest.json`. Existing Chromium/WebKit browser QA now decodes each linked icon and checks its declared dimensions. Release checks and deployed-domain observations are recorded in the PR; an emulated browser check does not claim a physical iPhone home-screen test.
+
+---
+
 # Visible touch motion and print reconstruction - 4 October 2026
 
 Baseline: `f166d97e2cc2398cdba5f8b12e2ff2bf34f90989`. Owner reported imperceptible animations and unreadable brandbook pages. Mobile opacity effects previously completed 120px below the viewport and were cancelled on each touchmove. Reveals now begin inside the viewport, last 350ms and finish during swiping without any translation or layout change. Only the separate first-session brand tokens use a 0/180/360ms sequence. The reduced-motion replay control now states why animation is disabled. Fixed mobile navigation remains immediately tappable.

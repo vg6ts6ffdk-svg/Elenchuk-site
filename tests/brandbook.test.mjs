@@ -7,6 +7,9 @@ test('static brand layer and independent icon appear once', () => {
  const out=brandPage(fixture,'index.html');
  assert.equal((out.match(/href="brand\.css(?:\?[^"\s]+)?"/g)||[]).length,1);
  assert.match(out,/href="favicon.svg"/); assert.doesNotMatch(out,/src="logo-approved.svg"/);
+ assert.equal((out.match(/rel="icon" type="image\/svg\+xml"/g)||[]).length,1);
+ assert.equal((out.match(/rel="icon" type="image\/png" sizes="32x32"/g)||[]).length,1);
+ assert.equal((out.match(/rel="apple-touch-icon" sizes="180x180"/g)||[]).length,1);
  assert.match(out,/assets\/brand\/roseen-wordmark.svg/); assert.match(out,/assets\/brand\/rosin-wordmark.svg/);
 });
 test('Russian descriptor uses РО / С / ИН in DOM order without dynamic innerHTML', () => {
