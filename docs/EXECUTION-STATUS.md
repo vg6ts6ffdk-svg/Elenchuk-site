@@ -1,3 +1,11 @@
+# Light working surfaces — 3 October 2026
+
+Baseline: `1a171eaa34a17e34cb23dd8f6a73c816b1471bb6`. Owner accepted trying light working surfaces for news and catalogue. News/archive/articles and storefront/category/cart/account main areas use Cloud #F1F5F9, white cards, Deep Navy #0F172A text, Slate #475569 secondary text and readable blue #1D4ED8 links/focus. The graphite service pages and dark header/footer remain. Existing light logo masters stay on their approved dark header/footer surfaces.
+
+Store text/link/placeholder colors now follow contextual tokens instead of fixed white/pale-blue values. Primary blue CTA keeps navy text. CSS URLs versioned for refresh. Existing motion, navigation, forms and commerce gates are preserved; CC1 remains deferred. QA/release evidence is recorded in the PR.
+
+---
+
 # Neutral colour balance — 3 October 2026
 
 Baseline: `bd21b4cfd338617b3c37f3a75e9d162083b044a1`. Owner requested less blue and explicitly deferred CC1 disassembly. Large backgrounds/cards/inputs now use neutral graphite; large emphasized headings and section numbers are white/grey. Corporate blue remains in approved logo masters, descriptor initials, primary service CTA, active navigation and focus states. The desktop header CTA is now a neutral outline, avoiding two competing blue buttons on the first screen. News follows shared tokens; store/categories/cart/account replace hardcoded navy surfaces with the same neutral tokens. CSS URLs are versioned to refresh mobile caches.

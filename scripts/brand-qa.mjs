@@ -56,6 +56,21 @@ async function inspect(browser,width,file,engine){
   assert.ok(metrics.scroll<=metrics.width+1,`overflow ${metrics.scroll}/${metrics.width}`);
   assert.equal(metrics.broken.length,0,`broken images ${metrics.broken.join(',')}`);
   assert.equal(metrics.bg,'rgb(22, 24, 29)');
+  // Switching reading/catalogue surfaces must not leave white or pale-blue text.
+  const contrastFailures=await page.evaluate(()=>{
+   const luminance=color=>{
+    const channels=(color.match(/[\d.]+/g)||[]).slice(0,3).map(Number).map(v=>v/255);
+    return channels.map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4).reduce((sum,v,i)=>sum+v*[.2126,.7152,.0722][i],0);
+   };
+   return [...document.querySelectorAll('.store-main h1,.store-main p,.store-main small,.store-main label,.store-main .store-text-link,.briefing-main h1,.briefing-main p,.briefing-main a')].filter(el=>el.getBoundingClientRect().height&&getComputedStyle(el).visibility==='visible').flatMap(el=>{
+    let parent=el,bg;
+    while(parent){bg=getComputedStyle(parent).backgroundColor;if(bg!=='rgba(0, 0, 0, 0)'&&bg!=='transparent')break;parent=parent.parentElement;}
+    const values=[luminance(getComputedStyle(el).color),luminance(bg)].sort((a,b)=>a-b);
+    const ratio=(values[1]+.05)/(values[0]+.05);
+    return ratio<4.5?[{text:el.textContent.slice(0,60),ratio}]:[];
+   });
+  });
+  assert.deepEqual(contrastFailures,[],'Readable text on light working surfaces');
   assert.ok(metrics.logo.width>130&&metrics.logo.width<=220,'brandbook header size');
   assert.equal(errors.length,0,errors.join('; '));
   if(file==='index.html') {
