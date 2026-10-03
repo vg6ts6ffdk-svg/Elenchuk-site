@@ -1,8 +1,8 @@
-/* ROSEEN — approved brandbook 4.0, pages 15–18 and 24.
+/* ROSEEN — brandbook 4.1 palette, approved 4.0 logo geometry.
    Shared presentation layer. Master artwork is never generated or deformed. */
 @import url('https://rsms.me/inter/inter.css');
 :root {
-  --accent:#3B82F6; --accent-light:#93B8FE;
+  --accent:#3B82F6; --accent-light:#93B8FE; --success:#4ADE80;
   --bg:#16181D; --bg2:#1C1F25; --panel:#24282F;
   --text:#FFFFFF; --muted:#C3C7CF; --line:#454A53;
   --max:1240px; --header:80px;
@@ -23,7 +23,7 @@ img { height:auto; }
 .section { padding:88px 0; }
 .lead { color:var(--muted); font-size:18px; line-height:1.55; max-width:38em; }
 .eyebrow { color:var(--muted); font-size:12px; line-height:1.42; letter-spacing:.08em; font-weight:600; }
-.site-header { background:#0F172A; }
+.site-header { background:var(--bg); }
 .header-inner { gap:28px; }
 .brand { display:flex; align-items:center; min-height:44px; padding:12px 0; background:none; border-radius:0; overflow:visible; }
 .brand::after { content:none; }
@@ -33,7 +33,7 @@ img { height:auto; }
 .nav a { color:var(--text); font-size:14px; }
 .nav a:hover,.nav a[aria-current] { color:var(--text); }
 .btn { min-height:48px; border-radius:6px; padding:13px 20px; font-size:14px; font-weight:600; transition:background-color .18s,border-color .18s; }
-.btn-primary { background:var(--accent); border-color:var(--accent); color:#0F172A; box-shadow:none; }
+.btn-primary { background:var(--accent); border-color:var(--accent); color:var(--bg); box-shadow:none; }
 .btn-primary:hover { background:#75A6FA; border-color:#75A6FA; }
 .header-cta.btn-primary { background:transparent; border-color:#64748B; color:var(--text); }
 .header-cta.btn-primary:hover { background:#24282F; border-color:#C3C7CF; }
@@ -93,7 +93,7 @@ img { height:auto; }
 .form-status { border-radius:6px; }
 .faq { border-radius:8px; }
 .faq summary { font-size:18px; line-height:1.4; }
-.final-panel { border-radius:12px; border-color:var(--line); border-top:3px solid var(--accent); }
+.final-panel { border-radius:12px; border-color:var(--line); border-top:1px solid var(--line); }
 .numbers { background:var(--bg2); }
 .number strong { color:var(--text); font-size:28px; font-weight:600; }
 .number span { font-size:14px; }
@@ -165,3 +165,11 @@ img { height:auto; }
 .briefing-card h2 a:not(.btn) { color:var(--text); text-decoration:none; }
 .briefing-card h2 a:hover,.briefing-card h2 a:focus-visible { color:var(--accent-light); text-decoration:underline; }
 .mobile-nav a[aria-current] { color:var(--text); box-shadow:inset 3px 0 var(--accent); padding-left:12px; }
+
+/* Colour balance: blue signals actions, neutral lines structure the page. */
+.mobile-subnav { border-left-color:var(--line); }
+.trust span::before,.eyebrow i { color:var(--muted); }
+.eyebrow i { background:var(--muted); }
+.form-status { border-color:var(--line); }
+
+.skip-link { color:var(--bg); }

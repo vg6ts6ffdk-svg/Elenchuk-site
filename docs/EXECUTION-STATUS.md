@@ -1,3 +1,11 @@
+# Graphite palette and brandbook colours — 3 October 2026
+
+Baseline: `8c12833edb66a7b8c7d8022705f56680d5b5b342`. Owner accepted graphite/white/silver with restrained corporate blue and asked to update the brandbook colours. Removed decorative blue rules in submenus, callout panels and store notices, neutralised secondary markers and replay text. Corporate blue remains in approved logo masters, primary CTA, active navigation and links; green is reserved for confirmed success. Theme colour and written master prompt now use the current palette, avoiding a return to navy/light surfaces.
+
+Palette revision is 4.1; approved logo geometry is still 4.0. The existing 42-page restored brandbook is updated in place, with colour rules and digital applications revised. Its raster manufacturing/photo examples remain construction references; current colour specifications take priority. Site/browser and PDF visual validation results are recorded in the release PR.
+
+---
+
 # Mobile regression fix — 3 October 2026
 
 Baseline: `bd0f27f078598e9721eb88744ceabf1a4e0cc77d`. Owner reported mobile jitter and missing navigation after the premium motion release. The previous layout QA did not cover opening the menu after scrolling.
