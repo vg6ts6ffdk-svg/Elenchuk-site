@@ -100,6 +100,7 @@ async function checkPremiumMotion(engine) {
   await page.emulateMedia({reducedMotion:'no-preference'});
   const step=page.locator('.step').last();await step.scrollIntoViewIfNeeded();
   await page.waitForFunction(()=>document.querySelector('.step:last-child').dataset.motionVisible==='true');
+  await page.waitForFunction(()=>document.querySelector('.step:last-child').getAnimations().length===0);
   assert.equal(await step.evaluate(el=>getComputedStyle(el).opacity),'1','re-enabling motion resumes pending content');
   await page.locator('h1').scrollIntoViewIfNeeded();
   assert.equal(await page.locator('.brand img').evaluate(el=>getComputedStyle(el).transform),'none');
