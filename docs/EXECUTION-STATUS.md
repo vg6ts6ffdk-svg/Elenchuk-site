@@ -1,3 +1,7 @@
+# Graphite working surfaces restored — 3 October 2026
+
+Owner rejected the trial light surfaces. Removed the news/store light theme override so their content, cards and fields inherit the approved neutral graphite palette with white text. Retained the small brand blue accents, token-based storefront colours and text contrast QA. Updated stylesheet versions to refresh mobile caches.
+
 # Light working surfaces — 3 October 2026
 
 Baseline: `1a171eaa34a17e34cb23dd8f6a73c816b1471bb6`. Owner accepted trying light working surfaces for news and catalogue. News/archive/articles and storefront/category/cart/account main areas use Cloud #F1F5F9, white cards, Deep Navy #0F172A text, Slate #475569 secondary text and readable blue #1D4ED8 links/focus. The graphite service pages and dark header/footer remain. Existing light logo masters stay on their approved dark header/footer surfaces.
@@ -88,7 +92,3 @@ Confirm seller/tax/legal context and real product catalogue (SKU, price, stock, 
 
 ## QA evidence
 Use Platform v5 QA artifact report.json and Brandbook browser QA for this commit, not screenshots or results from earlier commits. CI screenshots include actual Inter loading checks. Browser emulation is not a physical iPhone test. No real service requests, emails or payments are sent by these tests.
-
-## News archive addition — 3 October 2026
-
-Added the 14–21 September briefing as `briefing-2026-09-21.html`, below the newer issue in Новости. Original issue and actual website publication dates are separate. Sources distinguish supplier claims, planned support and contracted units from independently measured results. Publication follows the verified PR and Pages workflow; this note alone is not deployment evidence.

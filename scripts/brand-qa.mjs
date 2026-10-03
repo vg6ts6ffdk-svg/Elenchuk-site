@@ -70,7 +70,7 @@ async function inspect(browser,width,file,engine){
     return ratio<4.5?[{text:el.textContent.slice(0,60),ratio}]:[];
    });
   });
-  assert.deepEqual(contrastFailures,[],'Readable text on light working surfaces');
+  assert.deepEqual(contrastFailures,[],'Readable text on working surfaces');
   assert.ok(metrics.logo.width>130&&metrics.logo.width<=220,'brandbook header size');
   assert.equal(errors.length,0,errors.join('; '));
   if(file==='index.html') {
