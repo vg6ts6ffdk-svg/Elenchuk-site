@@ -15,38 +15,38 @@
   },
   "roseen-icon-r.svg": {
     "source_file": "ROSEEN_R_Icon.svg",
-    "brandbook_revision": "4.4",
-    "web_sha256": "dc46a35eb8e6f63a6c11be41daac84bcfd3d3f39fc11dcb0e3211c7bc7e0131f",
-    "change": "Exact approved glyph paths on solid Graphite #16181D; no strokes, filters, shadows or gradients."
+    "brandbook_revision": "4.5",
+    "web_sha256": "9068d2a37a7df0dd18624ece00a6801a79c1b2311ef7a69e552e1eab5bf18eee",
+    "change": "Approved glyph paths unchanged; restrained blue edge light, crisp rim and dark face shading. Vector light strokes also preserve print sharpness."
   },
   "roseen-icon-ee.svg": {
     "source_file": "ROSEEN_EE_Icon.svg",
-    "brandbook_revision": "4.4",
-    "web_sha256": "0543f34d9099d9df7f59379d1c8fd71fbc2ad71f55b3f4900aec935f6043e238",
-    "change": "Exact approved glyph paths on solid Graphite #16181D; no strokes, filters, shadows or gradients."
+    "brandbook_revision": "4.5",
+    "web_sha256": "c19de7c29c6e95d11f7d75f2776e3c65485965533e76c6b79d040350c9fcc5e9",
+    "change": "Approved glyph paths unchanged; restrained blue edge light, crisp rim and dark face shading. Vector light strokes also preserve print sharpness."
   },
   "../../favicon.svg": {
     "source_file": "ROSEEN_R_Icon.svg",
-    "brandbook_revision": "4.4",
-    "web_sha256": "dc46a35eb8e6f63a6c11be41daac84bcfd3d3f39fc11dcb0e3211c7bc7e0131f",
-    "change": "Exact approved glyph paths on solid Graphite #16181D; no strokes, filters, shadows or gradients."
+    "brandbook_revision": "4.5",
+    "web_sha256": "9068d2a37a7df0dd18624ece00a6801a79c1b2311ef7a69e552e1eab5bf18eee",
+    "change": "Approved glyph paths unchanged; restrained blue edge light, crisp rim and dark face shading. Vector light strokes also preserve print sharpness."
   },
   "favicon-32.png": {
     "source_file": "../../favicon.svg",
-    "web_sha256": "aef5e2cafd60bab6beee884e46bb9681c129f082eac513512218051e1784f7ca",
-    "change": "Direct vector export at native target dimensions; no glow. iOS touch image is opaque for the system mask.",
-    "brandbook_revision": "4.4"
+    "web_sha256": "712fecdd6528ac44a938b12b00a4d9b0fc28622e374f720a5b98f8c76ae928ae",
+    "change": "Approved glyph paths unchanged; restrained blue edge light, crisp rim and dark face shading. Vector light strokes also preserve print sharpness.",
+    "brandbook_revision": "4.5"
   },
   "apple-touch-icon.png": {
     "source_file": "roseen-icon-r.svg",
-    "web_sha256": "9ac66fc4da3500247d2e548157dd292625a9353b82b4a8e853a1b53a03b4e764",
-    "change": "Direct vector export at native target dimensions; no glow. iOS touch image is opaque for the system mask.",
-    "brandbook_revision": "4.4"
+    "web_sha256": "ec05ee911477d7a6143faebe42486363e275945c63c5520a25f1f1d1e653db5b",
+    "change": "Approved glyph paths unchanged; restrained blue edge light, crisp rim and dark face shading. Vector light strokes also preserve print sharpness.",
+    "brandbook_revision": "4.5"
   },
   "roseen-icon-r-512.png": {
     "source_file": "roseen-icon-r.svg",
-    "brandbook_revision": "4.4",
-    "web_sha256": "fa5f9e6ea1bb5eb8449f43ea043c8ec26032ae90e3975b1d3424b34c71400473",
-    "change": "Direct vector export at native target dimensions; no glow. iOS touch image is opaque for the system mask."
+    "brandbook_revision": "4.5",
+    "web_sha256": "c10b45df3c7e4a97a87be610e0d8f12da19ce5105746f1f7d375cf2db1ab1dcd",
+    "change": "Approved glyph paths unchanged; restrained blue edge light, crisp rim and dark face shading. Vector light strokes also preserve print sharpness."
   }
 }
