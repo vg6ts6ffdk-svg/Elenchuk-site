@@ -71,6 +71,14 @@ async function inspect(browser,width,file,engine){
    });
   });
   assert.deepEqual(contrastFailures,[],'Readable text on working surfaces');
+  if (/^briefing-/.test(file)) {
+   const current = await page.locator('.nav a[href="news.html"]').getAttribute('aria-current');
+   assert.equal(current,'location','Article keeps News selected');
+  }
+  if (file === 'news.html') {
+   const headlineColour = await page.locator('.briefing-card h2 a').first().evaluate(el=>getComputedStyle(el).color);
+   assert.equal(headlineColour,'rgb(255, 255, 255)','Archive headlines use neutral white');
+  }
   assert.ok(metrics.logo.width>130&&metrics.logo.width<=220,'brandbook header size');
   assert.equal(errors.length,0,errors.join('; '));
   if(file==='index.html') {
