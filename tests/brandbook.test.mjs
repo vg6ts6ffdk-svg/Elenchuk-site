@@ -5,7 +5,7 @@ import { brandPage, brandScript } from '../scripts/brand-pages.mjs';
 const fixture = `<!doctype html><html><head><link rel="icon" href="logo-approved.svg"><link rel="stylesheet" href="style.css"></head><body><header class="site-header"><a class="brand" href="index.html"><img src="logo-approved.svg" alt="ROSEEN" width="1426" height="282"></a></header><main><div class="eyebrow"><i></i> ROBOTICS • SERVICE • ENGINEERING</div><form id="request-form" method="post" action="/api/requests"><input name="contact"></form><img class="hero-image parallax-image"><a class="btn magnetic">CTA</a></main><footer><img src="logo-approved.svg" alt="ROSEEN" width="1426" height="282"><div>ROSEEN · Robotics · Service · Engineering</div></footer></body></html>`;
 test('static brand layer and independent icon appear once', () => {
  const out=brandPage(fixture,'index.html');
- assert.equal((out.match(/href="brand.css"/g)||[]).length,1);
+ assert.equal((out.match(/href="brand\.css(?:\?[^"\s]+)?"/g)||[]).length,1);
  assert.match(out,/href="favicon.svg"/); assert.doesNotMatch(out,/src="logo-approved.svg"/);
  assert.match(out,/assets\/brand\/roseen-wordmark.svg/); assert.match(out,/assets\/brand\/rosin-wordmark.svg/);
 });
