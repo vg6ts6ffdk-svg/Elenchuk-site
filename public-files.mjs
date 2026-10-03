@@ -7,7 +7,7 @@ export const servicePages = [
 ];
 export const previewEnabled = storefrontEnabled();
 export const generatedPages = previewEnabled ? storePageNames() : [];
-export const briefingPages = ['news.html', 'briefings.html', 'briefing-2026-09-28.html'];
+export const briefingPages = ['news.html', 'briefings.html', 'briefing-2026-09-28.html', 'briefing-2026-09-21.html'];
 export const pages = [...servicePages, ...briefingPages, ...generatedPages];
 export const generatedFiles = [...generatedPages, ...(previewEnabled ? ['store-data.json'] : [])];
 // Explicit public files: source, backups, templates and user data stay private.
