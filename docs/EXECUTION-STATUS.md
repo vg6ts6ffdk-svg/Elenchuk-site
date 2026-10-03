@@ -1,3 +1,15 @@
+# Premium motion refinement — 3 October 2026
+
+Baseline: `875742e04f47e92ebb045e6e3550c19ed484eae3` (main and Vercel production at start). Owner requested a premium Apple-like presentation on the existing site; graphite surfaces and small blue brand accents remain.
+
+Shared motion now gives section headings and supporting copy their own reading order; cards in a desktop row follow at 70ms intervals; direction visuals fade with a separate text entrance; process cards draw a quiet neutral line. The header uses graphite glass after scrolling. Buttons have a 1.5% hover response on fine pointers and immediate touch feedback; navigation underlines and neutral card highlights use short transitions. Mobile menu links enter in a short sequence. Content starts after DOM readiness rather than waiting for every image. Reduced-motion changes cancel effects, resume pending content when re-enabled, and bfcache restores observers. Every effect is finite; no continuous scroll transforms or robot disassembly.
+
+Approved RU/EN logo geometry stays fixed; only the header's first-session opacity entry is permitted. No content is hidden by default. Shared asset URLs are versioned for mobile caches. Forms, APIs, catalogue and mail settings are unchanged.
+
+Local source check, public build and 22-page/794-reference build validation passed. Local tests: 75 passed; the SQLite order-repository suite aborts in its native addon cleanup under the workspace Node 24 runtime. CI uses the project's supported Node 22; its complete results and browser QA are release gates. Added browser checks for reading-order headings, desktop row staggering, preference changes, stationary masters, and homepage layouts at 320/390/768/1024/1440px plus mobile WebKit. Preview and production observations are recorded in the PR after those checks, not assumed here.
+
+---
+
 # Graphite and section navigation — 3 October 2026
 
 Current palette is graphite: the owner rejected the light workspace trial, and PR #26 restored dark news/store surfaces. This follow-up makes archive headlines white with blue hover/focus and builds current-section indicators into desktop/mobile navigation for news articles, store categories/products and service details. Indicators are available without JavaScript; exact-page and enclosing-section semantics remain distinct. Motion and logo masters are preserved.

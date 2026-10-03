@@ -79,9 +79,40 @@ async function capture(engine,width,height,file){
  } catch(e){report.failures.push({engine,width,height,file,error:e.message});await page.screenshot({path:path.join(dir,`FAIL-${engine}-${width}-${file}.png`),fullPage:true}).catch(()=>{});}
  await ctx.close();
 }
+async function checkPremiumMotion(engine) {
+ const ctx=await browser.newContext({viewport:{width:1440,height:1000}});
+ await ctx.addInitScript(()=>{
+  window.motionQA=[];const original=Element.prototype.animate;
+  Element.prototype.animate=function(frames,options){window.motionQA.push({tag:this.tagName,classes:this.className,frames,options});return original.call(this,frames,options);};
+ });
+ const page=await ctx.newPage();
+ try {
+  await page.goto(base+'/index.html');
+  await page.locator('#services .service-card').first().scrollIntoViewIfNeeded();
+  await page.waitForFunction(()=>window.motionQA.filter(a=>a.classes.includes('service-card')).length===4);
+  const cards=await page.evaluate(()=>window.motionQA.filter(a=>a.classes.includes('service-card')));
+  assert.deepEqual(cards.map(a=>a.options.delay).sort((a,b)=>a-b),[0,70,140,210],'desktop cards share a short row sequence');
+  await page.locator('#directions h2').scrollIntoViewIfNeeded();
+  await page.waitForFunction(()=>document.querySelector('#directions .section-head').dataset.motionVisible==='true');
+  assert.ok((await page.evaluate(()=>window.motionQA)).some(a=>a.tag==='H2'),'section headings receive their own reading-order entrance');
+  await page.emulateMedia({reducedMotion:'reduce'});
+  await page.waitForFunction(()=>document.getAnimations().length===0);
+  await page.emulateMedia({reducedMotion:'no-preference'});
+  const step=page.locator('.step').last();await step.scrollIntoViewIfNeeded();
+  await page.waitForFunction(()=>document.querySelector('.step:last-child').dataset.motionVisible==='true');
+  assert.equal(await step.evaluate(el=>getComputedStyle(el).opacity),'1','re-enabling motion resumes pending content');
+  await page.locator('h1').scrollIntoViewIfNeeded();
+  assert.equal(await page.locator('.brand img').evaluate(el=>getComputedStyle(el).transform),'none');
+  assert.equal(await page.locator('.footer-inner img').evaluate(el=>el.getAnimations().length),0,'footer remains static');
+  report.interactions.push(engine+': editorial headings, 70ms desktop row sequence, motion resumes after preference change, static logo masters');
+ } finally {await ctx.close();}
+}
 try {
  browser=await chromium.launch();
  await checkSiteMotion('chromium');
+ await checkPremiumMotion('chromium');
+ for(const [width,height] of [[320,900],[390,844],[768,1024],[1024,768],[1440,1000]]) await capture('chromium',width,height,'index.html');
+ for(const file of ['services.html','news.html']) await capture('chromium',390,844,file);
  for(const [width,height] of [[320,900],[390,844],[768,1024],[1024,768],[1440,1000],[844,390]]) for(const file of ['shop.html','shop-belts.html','cart.html','account.html']) await capture('chromium',width,height,file);
  // First-entry brand motion is session-scoped and never alters the logo geometry.
  const ctx=await browser.newContext({viewport:{width:390,height:844}});const p=await ctx.newPage();
@@ -130,7 +161,7 @@ try {
  const denied=await browser.newContext({viewport:{width:320,height:844}});await denied.addInitScript(()=>{Object.defineProperty(window,'sessionStorage',{get(){throw Error('Denied');}});Object.defineProperty(window,'localStorage',{get(){throw Error('Denied');}});window.IntersectionObserver=undefined;});const dp=await denied.newPage();await dp.goto(base+'/shop.html');assert.ok(await dp.locator('h1').isVisible());assert.equal(await dp.locator('html').getAttribute('data-motion-entry'),'static');assert.equal(await dp.evaluate(()=>getComputedStyle(document.querySelector('.brand img')).opacity),'1');await denied.close();report.interactions.push('Denied storage and absent IntersectionObserver keep content visible');
  const reduced=await browser.newContext({reducedMotion:'reduce'});const rp=await reduced.newPage();await rp.goto(base+'/shop.html');assert.equal(await rp.evaluate(()=>document.getAnimations().length),0);await reduced.close();
  const nojs=await browser.newContext({javaScriptEnabled:false,viewport:{width:390,height:844}});const np=await nojs.newPage();await np.goto(base+'/shop.html');assert.ok(await np.locator('h1').isVisible());await np.locator('.menu').click();assert.ok(await np.locator('.mobile-nav a[href="shop.html"]').isVisible());await np.locator('.mobile-nav a[href="shop.html"]').click();await np.locator('a.store-category[href="shop-belts.html"]').click();assert.match(np.url(),/shop-belts.html/);await nojs.close();report.interactions.push('Reduced-motion and JS-off category navigation');
- await browser.close();browser=await webkit.launch();await checkSiteMotion('webkit');for(const file of ['shop.html','shop-belts.html','cart.html','account.html'])await capture('webkit',390,844,file);
+ await browser.close();browser=await webkit.launch();await checkSiteMotion('webkit');await checkPremiumMotion('webkit');for(const file of ['index.html','services.html','news.html','shop.html','shop-belts.html','cart.html','account.html'])await capture('webkit',390,844,file);
 } catch(e){report.failures.push({suite:'interactions',error:e.stack});}
 finally {if(browser)await browser.close();child.kill();await once(child,'exit').catch(()=>{});fs.rmSync(temp,{recursive:true,force:true});fs.writeFileSync(path.join(dir,'report.json'),JSON.stringify(report,null,2));}
 console.log(JSON.stringify({layouts:report.checked.length,interactions:report.interactions,failures:report.failures},null,2));if(report.failures.length)process.exitCode=1;
