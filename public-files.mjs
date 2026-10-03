@@ -16,6 +16,7 @@ export const publicFiles = [...pages, 'briefings.css', 'style.css', 'brand.css',
   'assets/brand/roseen-wordmark.svg', 'assets/brand/rosin-wordmark.svg',
   'assets/brand/roseen-icon-r.svg', 'assets/brand/roseen-icon-ee.svg',
   'assets/brand/favicon-32.png', 'assets/brand/apple-touch-icon.png',
+  'assets/brand/roseen-icon-r-512.png',
   'robots.txt', 'sitemap.xml', 'CNAME',
   ...(previewEnabled ? ['store.js', 'store-core.js', 'store.css', 'store-data.json', ...storeMediaFiles()] : []),
   ...['robotics','electronics','appliances','professional'].flatMap(name =>
