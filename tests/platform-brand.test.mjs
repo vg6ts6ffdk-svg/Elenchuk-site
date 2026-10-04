@@ -14,8 +14,8 @@ test('every public shell uses the Cyrillic header and English footer master', ()
   const html=brandPage(source,file);
   const header=html.match(/<header\b[\s\S]*?<\/header>/)?.[0]||'';
   const footer=html.match(/<footer\b[\s\S]*?<\/footer>/)?.[0]||'';
-  assert.match(header,/src="assets\/brand\/rosin-wordmark\.svg"/,file+' header');
-  assert.match(footer,/src="assets\/brand\/roseen-wordmark\.svg"/,file+' footer');
+  assert.match(header,/src="\/?assets\/brand\/rosin-wordmark\.svg"/,file+' header');
+  assert.match(footer,/src="\/?assets\/brand\/roseen-wordmark\.svg"/,file+' footer');
   assert.doesNotMatch(header+footer,/<span class="brand-wordmark">|<text\b/,file+' typed logo');
   checked++;
  }

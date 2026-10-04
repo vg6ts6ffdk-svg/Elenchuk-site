@@ -6,7 +6,7 @@ export function brandPage(html, file, { storefront = false } = {}) {
   // Graphic source masters are preserved; build adds shared presentation only.
   let out = html
     .replace(/href="style\.css(?:\?[^"]*)?"/g, 'href="style.css"')
-    .replace('</head>', '<meta name="theme-color" content="#16181D">\n<link rel="preconnect" href="https://rsms.me">\n<link rel="stylesheet" href="brand.css?v=graphite-brand-20261003">\n<link rel="stylesheet" href="motion.css?v=visible-motion-20261004">\n<script src="motion.js?v=visible-motion-20261004" defer></script>\n</head>');
+    .replace('</head>', '<meta name="theme-color" content="#16181D">\n<link rel="preconnect" href="https://rsms.me">\n<link rel="stylesheet" href="brand.css?v=quiet-background-20261004">\n<link rel="stylesheet" href="motion.css?v=visible-motion-20261004">\n<script src="motion.js?v=visible-motion-20261004" defer></script>\n</head>');
   out = out.replace(/<link\b(?=[^>]*rel="(?:icon|apple-touch-icon)")[^>]*>\s*/g, '')
     .replace('</head>', brandIconLinks + '\n</head>');
   out = out.replace(/<img\b(?=[^>]*src="logo-approved\.svg")[^>]*>/g, (tag) => tag
@@ -62,6 +62,9 @@ export function brandPage(html, file, { storefront = false } = {}) {
       const state = target === file ? 'page' : target === section ? 'location' : null;
       return state ? clean.replace(/>$/, ` aria-current="${state}">`) : clean;
     }));
+  // A 404 may be served from any nested URL. Its local assets and recovery
+  // links must resolve from the site root; same-page anchors stay local.
+  if (file === '404.html') out = out.replace(/\b(src|href)="(?!https?:|mailto:|tel:|data:|#|\/)([^"]+)"/g, '$1="/$2"');
   return out.replace('<body>', `<body data-brand-release="4.0"${storefront ? ' data-storefront="preview"' : ''}>`);
 }
 export function brandScript(js) {

@@ -10,10 +10,10 @@ test('source pages use approved RU/EN masters without relying on build-time repl
     if (!html.includes('site-header')) continue;
     const header = html.match(/<header\b[\s\S]*?<\/header>/)?.[0] || '';
     const footer = html.match(/<footer\b[\s\S]*?<\/footer>/)?.[0] || '';
-    assert.match(header, /src="assets\/brand\/rosin-wordmark\.svg"/, file);
-    assert.match(footer, /src="assets\/brand\/roseen-wordmark\.svg"/, file);
+    assert.match(header, /src="\/?assets\/brand\/rosin-wordmark\.svg"/, file);
+    assert.match(footer, /src="\/?assets\/brand\/roseen-wordmark\.svg"/, file);
     assert.doesNotMatch(header + footer, /logo-approved\.svg|brand-wordmark/, file);
-    assert.match(html, /rel="icon"[^>]*href="favicon\.svg"/, file);
+    assert.match(html, /rel="icon"[^>]*href="\/?favicon\.svg"/, file);
     checked++;
   }
   assert.equal(checked, 15);
