@@ -8,7 +8,8 @@
 - `services.html` — ремонт и диагностика
 - `robotics.html` — робототехника
 - `electronics.html` — электроника
-- `appliances.html` — бытовая техника
+- `professional.html` — профессиональная техника
+- `appliances.html` — совместимый старый адрес с переходом к актуальным направлениям
 - `diagnostika.html`, `remont.html`, `servis.html`, `engineering.html` — дополнительные сервисные направления
 - `about.html` — о сервисе
 - `contacts.html` — заявка/контакты

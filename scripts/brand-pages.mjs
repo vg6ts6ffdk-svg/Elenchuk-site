@@ -52,7 +52,7 @@ export function brandPage(html, file, { storefront = false } = {}) {
   // including when JavaScript is disabled. Exact pages retain page semantics.
   const section = /^briefing-/.test(file) ? 'news.html'
     : /^(?:shop-|product-)/.test(file) ? 'shop.html'
-    : ['robotics.html','electronics.html','appliances.html','professional.html'].includes(file) ? 'directions.html'
+    : ['robotics.html','electronics.html','professional.html'].includes(file) ? 'directions.html'
     : ['diagnostika.html','remont.html','servis.html','engineering.html'].includes(file) ? 'services.html'
     : file;
   out = out.replace(/<nav\b[^>]*class="(?:nav|mobile-nav)"[^>]*>[\s\S]*?<\/nav>/g, nav =>

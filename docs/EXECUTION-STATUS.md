@@ -1,3 +1,13 @@
+# Remove household appliance service - 4 October 2026
+
+Baseline: `5a327e6ac5d13d92d3796bacb526ad56460acc7e`. The owner confirmed that ROSEEN does not service household appliances. Removed that direction from all public navigation, homepage/direction cards, service request choices, company/FAQ copy, search/social descriptions and sitemap. The active profile is robotics, electronics and professional equipment. Replaced the household service illustration with a service robot and removed the two unused image exports from the public build. Three direction cards now share one desktop row, horizontal cards on intermediate widths and the existing stacked mobile layout.
+
+The old `appliances.html` address remains a noindex redirect to `directions.html` for static hosting, with HTTP 301 on the Express host. It contains no service offer or form. Historical internal notes and existing customer request records are preserved. The current brief and README now describe the owner's confirmed scope. Existing brand QA waits for the legacy redirect; the source-branding test now expects 14 full service shells rather than the former 15.
+
+Local validation: 80/80 tests passed under supported Node 22; source check passed (31 pages / 1052 references); production public build passed (64 public files); built-site check passed (31 pages / 1390 references). A compiled-content audit covered all 31 HTML pages, catalogue data and sitemap: no household offer, menu/form option, retired illustration or sitemap URL remains. An isolated Express check confirmed HTTP 301, successful navigation to current directions and 404 responses for both retired images. Local Playwright browser download was truncated by the execution environment, so Chromium/WebKit layout, menu and form checks are required in CI before merging. Exact commit checks, browser review and live-domain observations will be recorded in the release PR; this entry does not claim publication.
+
+---
+
 # Refined blue edge light - 4 October 2026
 
 Baseline: `1f124c406fa105805615cf1df0a1909294fd7b1a`. The owner clarified that blue edge light should remain because it adds depth; the previous removal was an interpretation error. Primary R and EE now have restrained blue light, a precise rim and subtle dark face shading. The approved glyph paths remain exact; uniform sizing improves prominence while preserving padding. Layered native vector strokes represent the soft light, preserving print quality without rasterising the icon page. Web exports and brandbook 4.5 share the same artwork. Release evidence is recorded in the PR after checks and publication.

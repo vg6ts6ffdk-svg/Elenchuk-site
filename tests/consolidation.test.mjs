@@ -16,7 +16,7 @@ test('source pages use approved RU/EN masters without relying on build-time repl
     assert.match(html, /rel="icon"[^>]*href="\/?favicon\.svg"/, file);
     checked++;
   }
-  assert.equal(checked, 15);
+  assert.equal(checked, 14);
 });
 
 test('consolidated CC1 experiments and retired templates are not public assets', () => {
