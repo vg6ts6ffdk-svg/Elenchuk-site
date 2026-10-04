@@ -23,7 +23,12 @@ The current five-field service form, cached clients with category/symptom aliase
 (up to seven text fields), and Bearer admin contract are preserved.
 Uploads now enforce the current frontend limits (three files, 3 MiB total),
 extension/MIME agreement and a matching file signature. ISO-BMFF media require a
-complete, bounded ftyp box with brands matching the declared media type. Rejected inputs are
+complete, bounded ftyp box with brands matching the declared media type.
+MP4/MOV require a bounded moov/trak/mdia/hdlr video track for every brand,
+including generic ISO versions and metadata brands such as mp71. A brand alone
+cannot establish video; audio-only/header-only files fail. Future brands can
+prove their type through the same track check, without an exhaustive registry.
+Image brands remain rejected as video. Primary reference: https://mp4ra.org/registered-types/brands. Rejected inputs are
 cleaned before a database transaction or object upload. The older API-branch HTML advertised 8 files / 50 MiB; it is no longer served
 and redirects to the current public form (3 / 3 MiB). Existing attachments
 remain downloadable through the authenticated API regardless of their size.

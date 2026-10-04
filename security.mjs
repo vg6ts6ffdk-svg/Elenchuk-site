@@ -26,6 +26,25 @@ const extensions={
   'image/heic':['.heic'],'image/heif':['.heif'],'video/mp4':['.mp4'],'video/quicktime':['.mov'],
   'video/webm':['.webm'],'application/pdf':['.pdf']
 };
+// Registered brands are useful signatures, not an exhaustive video registry.
+// Unknown/future BMFF brands can prove their type with a bounded movie track.
+function hasVideoTrack(bytes,start) {
+  const children={moov:'trak',trak:'mdia',mdia:'hdlr'};
+  function scan(from,end,parent){
+    for(let at=from;at+8<=end;){
+      let size=bytes.readUInt32BE(at),header=8;
+      if(size===1){if(at+16>end)return false;const large=bytes.readBigUInt64BE(at+8);if(large>BigInt(end-at))return false;size=Number(large);header=16;}
+      else if(size===0)size=end-at;
+      if(size<header||at+size>end)return false;
+      const kind=bytes.toString('latin1',at+4,at+8),payload=at+header;
+      if(parent==='mdia'&&kind==='hdlr'&&size>=header+24&&bytes.toString('latin1',payload+8,payload+12)==='vide')return true;
+      if(kind===(parent?children[parent]:'moov')&&scan(payload,at+size,kind))return true;
+      at+=size;
+    }
+    return false;
+  }
+  return scan(start,bytes.length,'');
+}
 function bmffSignature(bytes,type) {
   if(bytes.length<16||bytes.toString('latin1',4,8)!=='ftyp')return false;
   let size=bytes.readUInt32BE(0),header=8;
@@ -33,11 +52,11 @@ function bmffSignature(bytes,type) {
   if(size<header+8||size>bytes.length||size>4096||(size-header-8)%4!==0)return false;
   const brands=[bytes.toString('latin1',header,header+4)];
   for(let at=header+8;at<size;at+=4)brands.push(bytes.toString('latin1',at,at+4));
-  const heic=['heic','heix','hevc','hevx','heim','heis'];
+  const heic=['heic','heix','hevc','hevx','heim','heis','hevm','hevs'];
+  const images=['mif1','mif2','msf1',...heic,'avif','avis','avio','avci','avcs','jpeg','jpgs','j2ki','j2is','jxsi','jxss'];
   if(type==='image/heic')return brands.some(brand=>heic.includes(brand));
-  if(type==='image/heif')return brands.some(brand=>['mif1','msf1',...heic].includes(brand));
-  if(type==='video/quicktime')return brands.includes('qt  ');
-  if(type==='video/mp4')return !brands.some(brand=>['mif1','msf1',...heic].includes(brand))&&brands.some(brand=>['isom','iso2','iso3','iso4','iso5','iso6','iso7','iso8','iso9','mp41','mp42','avc1','dash','M4V '].includes(brand));
+  if(type==='image/heif')return brands.some(brand=>['mif1','mif2','msf1',...heic].includes(brand));
+  if(type==='video/mp4'||type==='video/quicktime')return !brands.some(brand=>images.includes(brand))&&hasVideoTrack(bytes,size);
   return false;
 }
 export function fileFilter(_req,file,callback) {
