@@ -82,3 +82,28 @@ After PostgreSQL is connected, verify in this order:
 9. Confirm an unauthenticated request to `/api/requests` returns HTTP 401.
 10. Restart/redeploy the API and confirm the same requests still exist.
 11. Confirm `/server.js`, `/roseen.db`, `/uploads/*` and other server-side files are not publicly accessible.
+
+
+## Verified deployment wiring — 4 October 2026
+
+The existing Render service `roseen-api` currently deploys branch
+`site-audit-fixes-v2` of `vg6ts6ffdk-svg/Elenchuk-site`, not `main`.
+The earlier render.yaml description above is an intended configuration, not
+proof that the running service uses it. Do not change the linked branch as part
+of GitHub credential recovery.
+
+The production health response reports PostgreSQL and object-storage
+attachments. The live deployment uses the Neon Object Storage signer; this
+supersedes the PostgreSQL-only attachment description above.
+
+Automatic deploys require an authenticated Git provider connection with access
+to this repository. In Render Account Settings, manage Git Deployment
+Credentials; in service Settings, choose the corresponding Git Credentials.
+Keep the existing service, database, domain and environment variables.
+Choose On Commit, or After CI Checks Pass when checks run for the linked branch.
+Verify recovery by observing a new deploy triggered by a commit to the linked
+branch, followed by a healthy `https://api.roseen.ru/api/health` response.
+A successful manual deploy alone does not prove that automatic deploys work.
+
+References: https://render.com/docs/git-provider and
+https://render.com/docs/deploys.
