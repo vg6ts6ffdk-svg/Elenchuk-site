@@ -85,6 +85,9 @@ em { font-style: normal; color: var(--accent-light); }
 .direction-card-content h3 { margin-top: 12px; }
 .direction-card-content p { color: var(--muted); }
 .direction-card-content b { color: var(--accent-light); font-size: .88rem; }
+@media (max-width: 800px) {
+  .direction-grid { grid-template-columns: 1fr; }
+}
 @media (min-width: 801px) and (max-width: 1099px) {
   .direction-grid { grid-template-columns: 1fr; }
   .direction-card { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); }

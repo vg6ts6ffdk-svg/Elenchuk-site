@@ -103,6 +103,7 @@ let browser;
 try {
  browser=await chromium.launch();
  for(const width of [320,390,768,1440]) for(const file of publicPages) await inspect(browser,width,file,'chromium');
+ for(const width of [541,800,1024]) for(const file of ['index.html','directions.html']) await inspect(browser,width,file,'chromium');
  const context=await browser.newContext({viewport:{width:390,height:844}}); const page=await context.newPage();
  await page.goto(base+'/index.html'); await page.waitForTimeout(850);
  await page.locator('.menu').click(); await page.waitForTimeout(100);
