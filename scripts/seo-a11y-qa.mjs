@@ -40,6 +40,14 @@ try {
     if(engine==='chromium'&&width===390&&['index.html','contacts.html'].includes(file)) await page.screenshot({path:path.join(output,file.replace('.html','')+'-390.png'),fullPage:true});
    }
    await page.goto(base+'/contacts.html#request');
+   assert.equal(await page.locator('#model').isVisible(),false);
+   await page.locator('.form-options summary').press('Enter');
+   assert.equal(await page.locator('#model').isVisible(),true);
+   await page.locator('#video_link').fill('invalid optional URL');
+   await page.locator('.form-options summary').click();
+   await page.locator('#request-form [type=submit]').click();
+   assert.equal(await page.locator('#model').isVisible(),true,'invalid optional field must remain reachable');
+   await page.locator('#video_link').fill('');
    await page.evaluate(()=>{window.qaGoals=[];window.ROSEEN_TRACK=(...args)=>window.qaGoals.push(args)});
    let response={status:503,body:{error:'Isolated QA: failed save'}};
    await page.unroute('**/api/requests');await page.route('**/api/requests',r=>r.fulfill({status:response.status,contentType:'application/json',body:JSON.stringify(response.body)}));

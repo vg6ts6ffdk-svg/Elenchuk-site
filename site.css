@@ -23,6 +23,11 @@ button:focus-visible { outline:3px solid var(--accent-light); outline-offset:4px
 .request-intro { padding-bottom:24px; }
 .request-intro h1 { font-size:36px; line-height:1.17; }
 .request-intro + .request { padding-top:32px; }
+.request-intro + .request .request-grid { max-width:800px; grid-template-columns:minmax(0,1fr); }
+.form-options { margin-top:20px; border-block:1px solid var(--line); }
+.form-options > summary { padding:16px 0; color:var(--accent-light); cursor:pointer; }
+.form-options > .form-grid { padding-bottom:20px; }
+.form-options > summary:focus-visible { outline:3px solid var(--accent-light); outline-offset:4px; }
 .error-code { color:var(--muted); }
 .analytics-choice { position:fixed; inset:auto 16px 16px; z-index:200; max-width:640px; margin-inline:auto; padding:20px; border:1px solid var(--line); border-radius:8px; background:var(--panel); }
 .analytics-choice p { color:var(--muted); font-size:14px; }

@@ -51,6 +51,10 @@
     const status = form.querySelector('.form-status');
     const fileInput = form.querySelector('[name="files"]');
     const fileHelp = form.querySelector('#file-help');
+    form.addEventListener('invalid', event => {
+      const details=event.target.closest('details');
+      if(details)details.open=true;
+    },true);
     const describeFiles = () => {
       const files = [...(fileInput?.files || [])];
       const size = files.reduce((sum, file) => sum + file.size, 0);

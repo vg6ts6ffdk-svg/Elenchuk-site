@@ -119,6 +119,7 @@ try {
  await page.locator('#request-form').scrollIntoViewIfNeeded(); await page.waitForTimeout(300);
  await page.locator('#request-form [type=submit]').click(); assert.equal(count,0,'invalid form should not send');
  await page.locator('#equipment_type').selectOption({label:'Робототехника'}); await page.locator('#problem').fill('QA — пример, не реальная заявка'); await page.locator('#contact').fill('qa@example.invalid');
+ await page.locator('.form-options summary').click();
  await page.locator('#video_link').fill('http://example.invalid/video');
  await page.locator('#request-form [type=submit]').click();
  await page.waitForFunction(()=>document.querySelector('.form-status').textContent.includes('HTTPS'));

@@ -80,6 +80,7 @@ async function checkSiteMotion(engine) {
   await page.waitForTimeout(450);
   assert.equal(await page.evaluate(()=>window.motionQA.filter(a=>a.classes.includes('service-card')).length),count,'cards reveal once per visit');
   await page.goto(base+'/contacts.html#request');
+  await page.locator('.form-options summary').click();
   await page.locator('#model').focus();
   assert.equal(await page.locator('#model').evaluate(el=>el===document.activeElement),true,'form focus remains available');
   await page.emulateMedia({reducedMotion:'reduce'});
