@@ -13,7 +13,7 @@ export const generatedFiles = [...generatedPages, 'assets/app.min.js','assets/st
 // Explicit public files: source, backups, templates and user data stay private.
 export const publicFiles = [...pages, 'briefings.css', 'style.css', 'brand.css', 'motion.js', 'motion.css', 'script.js', 'api-config.js',
   'assets/app.min.js','assets/store.min.js','assets/site.min.css','assets/fonts/InterVariable.woff2','assets/fonts/OFL.txt',
-  'admin.css', 'admin.js', 'admin-catalog.js', 'logo-approved.svg', 'favicon.svg',
+  'admin.css', 'admin.js', 'admin-client.mjs', 'admin-catalog.js', 'logo-approved.svg', 'favicon.svg',
   'assets/brand/roseen-wordmark.svg', 'assets/brand/rosin-wordmark.svg',
   'assets/brand/roseen-icon-r.svg', 'assets/brand/roseen-icon-ee.svg',
   'assets/brand/favicon-32.png', 'assets/brand/apple-touch-icon.png',

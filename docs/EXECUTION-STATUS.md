@@ -6,6 +6,37 @@ Render service `roseen-api` (`srv-dagsdutbedkc7382004g`) is free, Frankfurt, run
 
 ---
 
+## Service admin compatibility — 4 October 2026
+
+Baseline frontend main: `153103b679f3aad1389715e14d17a9f8d170828d`.
+Actual Render API: `976a9a5552495ba314f3be3f6d360c7a070ebe49` on
+`site-audit-fixes-v2`; automatic commit deployment verified separately in PR #41.
+
+The frontend previously required cookie sessions, while that published API
+returns a Bearer token and does not enable credentialed CORS. The admin client
+now selects the older contract only when `/api/auth/session` returns 404.
+Other failures never silently downgrade authentication. A compatibility token
+lives only in a private closure, not localStorage/sessionStorage or the URL.
+Logout, 401 and page reload clear it. Cookie login, restoration and server logout
+remain the preferred contract. Protected downloads use the same authentication
+as request details; legacy pagination is hidden because that API returns all rows.
+
+QA: 136/136 tests passed on Node 22; source validation passed; both disabled-store
+and public-storefront builds passed, with 31 pages / 1,175 built references in
+the production configuration. The exact published Render source was exercised
+against an isolated SQLite database and local files: empty honeypot, valid
+requests with/without a PNG, admin login/list/detail/download, status update,
+byte-exact attachment download after process restart, and cleared login on
+logout. Synthetic data did not touch production.
+
+Scope is frontend compatibility. No database schema/data, backend secret,
+infrastructure, checkout or analytics configuration is changed. Legacy logout
+clears the browser token; that older API has no server-side token revocation.
+New cookie-server tests cover persistent session revocation separately.
+This isolated SQLite result does not prove a live Neon attachment workflow.
+Preview, publication and production checks are recorded in the release PR once
+they have actually completed; this note alone does not prove publication.
+
 # Service conversion, SEO and a11y - 4 October 2026
 
 Baseline `d6bd4c87dba18e7dea9a5ee21f698afd8aad708f`; branch `fix/seo-conversion-a11y-20261004`. Added build-time Service, FAQPage and BreadcrumbList, a verified-settings LocalBusiness generator (currently Organization because actual contact/location facts remain unconfirmed), compact primary navigation with secondary storefront/news links, a higher contact form, HTTPS actions and server-checked honeypot. Existing service and commerce contracts, real data and original logo masters are preserved. Store runtime is loaded only on storefront pages; source assets remain for old-page compatibility. Inter is local, critical resources are preloaded and below-fold images are lazy. Build emits one minified shared stylesheet and main script plus a store-only script; Pages now installs build dependencies.
