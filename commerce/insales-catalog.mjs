@@ -8,7 +8,7 @@ export async function loadInSalesDrafts({ mapping, allowedCategories, env = proc
   validateInSalesMapping(mapping, allowedCategories);
   if (signal.aborted) throw new InSalesError('INSALES_TIMEOUT', 'Загрузка каталога превысила время ожидания.');
   const reader = suppliedReader ?? createInSalesCatalogReader({ env, fetchImpl, signal });
-  const rows = [], seen = new Set(); let sourceBytes = 0;
+  const rows = [], seen = new Set(); let sourceBytes = 0, sourceVariants = 0;
   for (let page = 1; page <= 51; page++) {
     if (signal.aborted) throw new InSalesError('INSALES_TIMEOUT', 'Загрузка каталога превысила время ожидания.');
     const batch = await reader.listProducts({ page, perPage: 100 });
@@ -16,6 +16,8 @@ export async function loadInSalesDrafts({ mapping, allowedCategories, env = proc
     sourceBytes += Buffer.byteLength(JSON.stringify(batch), 'utf8');
     if (sourceBytes > MAX_SOURCE_BYTES) throw new InSalesError('INSALES_CATALOG_TOO_LARGE', 'Каталог превышает лимит загрузки 16 МБ.');
     for (const p of batch) {
+      sourceVariants += Array.isArray(p?.variants) ? p.variants.length : 0;
+      if (sourceVariants > 5000) throw new InSalesError('INSALES_CATALOG_TOO_LARGE', 'Каталог превышает лимит загрузки 5000 вариантов.');
       const id = String(p?.id ?? '');
       if (seen.has(id)) throw new TypeError('Repeated product during pagination; retry with a stable catalogue snapshot');
       seen.add(id); rows.push(p);

@@ -15,6 +15,13 @@ test('total source size is bounded across individually small pages',async()=>{
   let calls=0;const reader={async listProducts({page}){calls++;return Array.from({length:100},(_,i)=>({id:(page-1)*100+i+1,private_note:'x'.repeat(32768)}));}};
   await assert.rejects(loadInSalesDrafts({...options,reader}),{code:'INSALES_CATALOG_TOO_LARGE'});assert.equal(calls,6);
 });
+test('pagination stops on the total source variant count even when every variant is invalid',async()=>{
+  let calls=0;const reader={async listProducts({page}){calls++;return page===1?
+    Array.from({length:100},(_,i)=>({id:i+1,variants:Array.from({length:50},()=>({}))})):
+    [{id:101,variants:[{}]}];}};
+  await assert.rejects(loadInSalesDrafts({...options,reader}),{code:'INSALES_CATALOG_TOO_LARGE'});
+  assert.equal(calls,2);
+});
 test('an aborted import cannot contact the provider or return drafts',async()=>{
   const controller=new AbortController();controller.abort();let fetched=false;
   await assert.rejects(loadInSalesDrafts({...options,signal:controller.signal,reader:{async listProducts(){fetched=true;return [];}}}),{code:'INSALES_TIMEOUT'});

@@ -129,6 +129,16 @@ export function previewInSalesProducts(rows, { mapping = {}, allowedCategories =
   if (!record(mapping) || !Array.isArray(allowedCategories)) throw new TypeError('Invalid catalogue mapping');
   const products = [], errors = [], seenProducts = new Set(), seenIds = new Set(), seenSkus = new Set();
   const issue = (row, field, message) => errors.push({ row, field, message });
+  // Count all source variants before normalization. Invalid or hidden variants must not
+  // bypass the limit and allocate an unbounded row-error report.
+  let sourceVariants = 0;
+  for (const p of rows) {
+    sourceVariants += Array.isArray(p?.variants) ? p.variants.length : 0;
+    if (sourceVariants > 5000) {
+      issue(0, 'variants', 'Превышен лимит 5000 входящих вариантов за одну загрузку.');
+      return { ok: false, errors, catalog: null, summary: { sourceProducts: rows.length, drafts: 0, published: 0 }, commitAllowed: false, checkoutEnabled: false };
+    }
+  }
   for (let i = 0; i < rows.length; i++) {
     const p = rows[i], row = i + 1;
     if (!p || !identifier(p.id) || seenProducts.has(String(p.id))) { issue(row, 'id', 'Некорректный или повторный ID товара.'); continue; }

@@ -113,3 +113,13 @@ test('many variants cannot bypass the bounded import limit', () => {
   assert.equal(result.ok, false); assert.equal(result.catalog, null); assert.equal(result.summary.drafts, 0);
   assert.ok(result.errors.some(e => e.field === 'variants'));
 });
+test('invalid and hidden source variants cannot grow an unbounded validation report', () => {
+  const rows = Array.from({ length: 6 }, (_, i) => ({ ...fixture(), id: i + 1, variants: Array.from({ length: 1000 }, () => ({})) }));
+  for (const hidden of [false, true]) {
+    for (const p of rows) p.is_hidden = hidden;
+    const result = preview(rows);
+    assert.equal(result.ok, false); assert.equal(result.catalog, null); assert.equal(result.summary.drafts, 0);
+    assert.equal(result.errors.length, 1); assert.equal(result.errors[0].field, 'variants');
+    assert.equal(result.commitAllowed, false); assert.equal(result.checkoutEnabled, false);
+  }
+});
