@@ -11,6 +11,27 @@
 
 GitHub Pages is static hosting and does not execute Node.js/Express. The repository workflow publishes only the public frontend. Render runs the API separately.
 
+## API release hardening — 4 October 2026
+
+The API host now serves API routes only. Known public HTML addresses redirect
+with HTTP 301 to the current roseen.ru page. All other paths return HTTP 404;
+the repository, encoded source-file paths, templates, archives and backups are
+never exposed by static middleware. Responses are no-store and noindex.
+
+Foreign browser origins receive HTTP 403 before body/upload processing.
+The existing five-field service form and Bearer admin contract are preserved.
+Uploads now enforce the current frontend limits (three files, 3 MiB total),
+extension/MIME agreement and a matching file signature. Rejected inputs are
+cleaned before a database transaction or object upload. Existing attachments
+remain downloadable through the authenticated API regardless of their size.
+
+This change does not migrate a schema, rewrite records, rotate secrets, change
+storage configuration or enable checkout. Isolated tests cover encoded paths,
+redirects/404, CORS denial, malformed and oversized uploads, valid requests,
+admin retrieval, status changes and exact file bytes after process restart.
+Live publication and read-only production checks are recorded in its PR;
+isolated SQLite tests do not prove a complete live Neon write workflow.
+
 ## Storage modes
 
 The backend supports two storage modes:

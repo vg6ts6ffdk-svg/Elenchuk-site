@@ -4,7 +4,7 @@ on:
   push:
     branches: ["main", "site-audit-fixes-v2"]
   pull_request:
-    branches: ["main"]
+    branches: ["main", "site-audit-fixes-v2"]
 
 jobs:
   validate:
@@ -39,6 +39,9 @@ jobs:
           test -f server.js
           test -f admin.html
           test -f CNAME
+
+      - name: Isolated API security and persistence checks
+        run: node --test tests/*.test.mjs
 
       - name: Build production site
         env:

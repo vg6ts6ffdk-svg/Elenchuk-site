@@ -9,6 +9,7 @@ import pg from "pg";
 import path from "node:path";
 import fs from "node:fs";
 import { randomUUID } from "node:crypto";
+import { cleanFiles, fields, fileFilter, validateFiles } from "./security.mjs";
 
 const { Pool } = pg;
 const app = express();
@@ -148,24 +149,23 @@ async function initDatabase() {
 }
 
 app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
+app.use((_req, res, next) => {
+  res.set("Cache-Control", "no-store").set("X-Robots-Tag", "noindex, nofollow");
+  next();
+});
 app.use(cors({
   origin(origin, callback) {
     if (!origin) return callback(null, true);
     if (!FRONTEND_ORIGIN) return callback(new Error("FRONTEND_ORIGIN must be configured for cross-origin requests"), false);
     const allowed = FRONTEND_ORIGIN.split(",").map(value => value.trim()).filter(Boolean);
-    return callback(null, allowed.includes(origin));
+    if (!allowed.includes(origin)) return callback(Object.assign(new Error("Источник запроса не разрешён"), {status:403}), false);
+    return callback(null, true);
   },
   methods: ["GET", "POST", "PATCH", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
 app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true }));
-
-const ALLOWED_MIME_TYPES = new Set([
-  "image/jpeg", "image/png", "image/webp", "image/gif", "image/heic", "image/heif",
-  "video/mp4", "video/webm", "video/quicktime",
-  "application/pdf"
-]);
 
 const storage = usePostgres
   ? multer.memoryStorage()
@@ -179,13 +179,8 @@ const storage = usePostgres
 
 const upload = multer({
   storage,
-  limits: { files: 8, fileSize: 50 * 1024 * 1024 },
-  fileFilter: (_req, file, cb) => {
-    if (!ALLOWED_MIME_TYPES.has(file.mimetype)) {
-      return cb(new Error("Разрешены только изображения, видео и PDF"));
-    }
-    cb(null, true);
-  }
+  limits: { files: 3, fileSize: 3 * 1024 * 1024, fields: 5, fieldSize: 20000, parts: 8 },
+  fileFilter
 });
 
 function auth(req, res, next) {
@@ -278,7 +273,7 @@ app.post("/api/auth/login", async (req, res) => {
   res.json({ token });
 });
 
-app.post("/api/requests", upload.array("files", 8), async (req, res) => {
+app.post("/api/requests", upload.array("files", 3), async (req, res) => {
   // Reject direct bot submissions before opening a transaction or storing objects.
   if (req.body?.website != null &&
       (typeof req.body.website !== "string" || req.body.website.trim() !== "")) {
@@ -291,10 +286,10 @@ app.post("/api/requests", upload.array("files", 8), async (req, res) => {
     }
     return res.status(400).json({ error: "Не удалось принять заявку" });
   }
-  const { equipment_type, model, problem, contact } = req.body || {};
-  if (!equipment_type || !problem || !contact) {
-    return res.status(400).json({ error: "Заполните обязательные поля" });
-  }
+  let submitted;
+  try { submitted = fields(req.body); validateFiles(req.files); }
+  catch (error) { cleanFiles(req.files); throw error; }
+  const { equipment_type, model, problem, contact } = submitted;
 
   if (usePostgres) {
     const client = await pool.connect();
@@ -441,26 +436,30 @@ app.get("/api/files/:id", auth, async (req, res) => {
   res.download(absolutePath, file.original_name);
 });
 
-app.use((req, res, next) => {
-  const blocked = [
-    "/server.js", "/package.json", "/package-lock.json", "/.env",
-    "/README.md", "/README-BACKEND.md", "/render.yaml", "/roseen.db",
-    "/roseen.db-shm", "/roseen.db-wal"
-  ];
-  if (blocked.includes(req.path) || req.path.startsWith("/.git") || req.path.startsWith("/uploads/")) {
-    return res.status(404).end();
+// This host is the API. Public pages live on roseen.ru; never serve the
+// repository, templates, archives, backups or customer files as static content.
+const frontendPages = new Set([
+  "index.html", "directions.html", "services.html", "about.html", "faq.html",
+  "news.html", "contacts.html", "admin.html", "robotics.html", "electronics.html",
+  "professional.html", "diagnostika.html", "remont.html", "servis.html",
+  "engineering.html", "shop.html", "cart.html", "account.html"
+]);
+const retiredPages = {"appliances.html":"directions.html", "robots.html":"robotics.html", "request.html":"contacts.html#request", "briefings.html":"news.html"};
+app.use((req, res) => {
+  let pathname;
+  try { pathname = decodeURIComponent(req.path); }
+  catch { return res.status(400).end(); }
+  const page = pathname === "/" ? "index.html" : pathname.slice(1);
+  if (["GET", "HEAD"].includes(req.method) && (frontendPages.has(page) || Object.hasOwn(retiredPages, page))) {
+    const destination = retiredPages[page] || (page === "index.html" ? "" : page);
+    return res.redirect(301, "https://roseen.ru/" + destination);
   }
-  next();
+  res.status(404).end();
 });
 
-app.use(express.static(ROOT));
-
-app.get("/{*splat}", (req, res) => {
-  if (req.path.startsWith("/api/")) return res.status(404).end();
-  res.sendFile(path.join(ROOT, "index.html"));
-});
-
-app.use((err, _req, res, _next) => {
+app.use((err, req, res, _next) => {
+  cleanFiles(req.files);
+  if (err?.status === 400 || err?.status === 403) return res.status(err.status).json({error:err.message});
   if (err instanceof multer.MulterError) {
     return res.status(400).json({ error: "Слишком большой файл или превышено количество файлов" });
   }

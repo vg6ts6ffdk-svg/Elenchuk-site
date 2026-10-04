@@ -15,7 +15,7 @@ test('live branch rejects spam without files or rows; empty and absent traps rem
  const child=spawn(process.execPath,['server.js'],{env:{...process.env,NODE_ENV:'test',PORT:String(port),DATABASE_URL:'',STORAGE_SIGNER_URL:'',STORAGE_SIGNER_KEY:'',FRONTEND_ORIGIN:'',ROSEEN_DATA_DIR:directory,JWT_SECRET:'synthetic-qa-secret-only',ADMIN_EMAIL:'qa@example.test',ADMIN_PASSWORD:'synthetic-qa-password'},stdio:['ignore','pipe','pipe']});
  try {
   await new Promise((resolve,reject)=>{const timeout=setTimeout(()=>reject(Error('startup timeout')),20000);child.once('exit',()=>{clearTimeout(timeout);reject(Error('server exited'))});child.stdout.on('data',d=>{if(String(d).includes('listening on')){clearTimeout(timeout);resolve();}});});
-  const form=(trap)=>{const f=new FormData();for(const [k,v] of Object.entries({equipment_type:'Электроника',model:'QA',problem:'Isolated test',contact:'qa@example.test'}))f.set(k,v);if(trap!==undefined)f.set('website',trap);f.append('files',new Blob(['synthetic attachment'],{type:'application/pdf'}),'qa.pdf');return f;};
+  const form=(trap)=>{const f=new FormData();for(const [k,v] of Object.entries({equipment_type:'Электроника',model:'QA',problem:'Isolated test',contact:'qa@example.test'}))f.set(k,v);if(trap!==undefined)f.set('website',trap);f.append('files',new Blob(['%PDF-1.7\nsynthetic attachment'],{type:'application/pdf'}),'qa.pdf');return f;};
   const post=(f)=>fetch('http://127.0.0.1:'+port+'/api/requests',{method:'POST',body:f});
   const spam=await post(form('https://spam.example.test'));assert.equal(spam.status,400);assert.equal((await spam.json()).id,undefined);
   assert.deepEqual(fs.readdirSync(path.join(directory,'uploads')),[]);
