@@ -60,40 +60,10 @@
 </div>
 </header>
 <main id="main"><div class="service-region">Москва и Московская область · Другие регионы — по согласованию</div>
-<section class="inner-hero section">
-<div class="scan">
-</div>
-<div class="container inner-grid">
-<div class="reveal">
-<div class="eyebrow">
-<i>
-</i> 03 / REQUEST</div>
-<h1>Ремонт или подбор детали?</h1>
-<p class="lead">Опишите симптом, укажите модель и приложите фото или видео. Чем точнее исходные данные, тем быстрее можно перейти к диагностике.</p>
-<div class="trust">
-<span>Модель</span>
-<span>Симптом</span>
-<span>Код ошибки</span>
-<span>Фото / видео</span>
-</div>
-</div>
-<div class="reveal delay">
-<img class="inner-image" src="assets/robotics-1280.webp" srcset="assets/robotics-640.webp 640w, assets/robotics-1280.webp 1280w" sizes="(max-width: 800px) 100vw, 50vw" width="1280" height="853" decoding="async" alt="Заявка на сервис ROSEEN" fetchpriority="high">
-</div>
-</div>
-</section>
+<section class="inner-hero section request-intro"><div class="container"><h1 id="request-heading">Заявка на диагностику и ремонт</h1><p class="lead">Укажите оборудование, симптом и один удобный способ связи. Модель, фото и видео — по желанию.</p></div></section>
 <section id="request" class="section request">
 <div class="container request-grid">
-<div class="reveal">
-<div class="eyebrow">
-<i>
-</i> ЗАЯВКА</div>
-<h2>Начнём<br>
-<em>с фактов.</em>
-</h2>
-<p class="lead">Укажите модель, задачу и один удобный способ связи. После успешной отправки появится номер заявки — сохраните его для дальнейшего обращения.</p>
-</div>
-<form id="request-form" class="form reveal delay" method="post" action="/api/requests" enctype="multipart/form-data">
+<form aria-labelledby="request-heading" id="request-form" class="form reveal delay" method="post" action="/api/requests" enctype="multipart/form-data">
 <div class="form-grid">
 <div class="field">
 <label for="equipment_type">Направление *</label>
@@ -106,27 +76,29 @@
 </select>
 </div>
 <div class="field">
-<label for="model">Модель</label>
-<input id="model" name="model" maxlength="200" placeholder="Производитель / модель">
+<label for="contact">Контакт *</label>
+<input id="contact" name="contact" maxlength="300" autocomplete="off" required placeholder="Телефон, email или Telegram">
 </div>
 <div class="field full">
 <label for="problem">Что произошло? *</label>
 <textarea id="problem" name="problem" maxlength="5000" required placeholder="Опишите симптом, ошибку и когда проблема появилась">
 </textarea>
 </div>
+</div>
+<details class="form-options"><summary>Добавить модель, фото или видео</summary><div class="form-grid">
 <div class="field">
-<label for="contact">Контакт *</label>
-<input id="contact" name="contact" maxlength="300" autocomplete="off" required placeholder="Телефон, email или Telegram">
+<label for="model">Модель</label>
+<input id="model" name="model" maxlength="200" placeholder="Производитель / модель">
 </div>
 <div class="field">
 <label for="files">Фото / видео</label>
 <input id="files" name="files" type="file" accept=".jpg,.jpeg,.png,.webp,.gif,.heic,.heif,.pdf,.mp4,.mov,.webm" multiple aria-describedby="file-help">
 </div>
 <div class="field full"><label for="video_link">Ссылка на большое видео <span class="muted">(необязательно)</span></label><input id="video_link" name="video_link" type="url" maxlength="1000" placeholder="https://…" aria-describedby="video-help"><p id="video-help" class="form-note">Проверьте доступ к одному нужному файлу. Не передавайте пароли или ссылку на весь личный диск.</p></div>
-</div>
+</div></details>
 <div class="form-footer">
 <button class="btn btn-primary magnetic" type="submit">Отправить заявку ↗</button>
-<span class="form-note">До 3 файлов, суммарно до 3 МБ. Для большого видео используйте ссылку выше.</span>
+<span class="form-note" id="file-help">До 3 файлов, суммарно до 3 МБ. Для большого видео используйте ссылку выше.</span>
 </div>
 <p class="form-note">Укажите только данные, необходимые для ответа и диагностики. Не прикладывайте паспорт, платёжные данные или пароли.</p><div class="form-status" role="status" aria-live="polite" aria-atomic="true">
 </div>

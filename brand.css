@@ -1,6 +1,6 @@
 /* ROSEEN — brandbook 4.1 palette, approved 4.0 logo geometry.
    Shared presentation layer. Master artwork is never generated or deformed. */
-@import url('https://rsms.me/inter/inter.css');
+@font-face { font-family:Inter; font-style:normal; font-weight:100 900; font-display:swap; src:url('./assets/fonts/InterVariable.woff2') format('woff2'); }
 :root {
   --accent:#3B82F6; --accent-light:#93B8FE; --success:#4ADE80;
   --bg:#16181D; --bg2:#1C1F25; --panel:#24282F;

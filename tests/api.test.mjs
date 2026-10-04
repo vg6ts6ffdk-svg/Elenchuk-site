@@ -37,6 +37,12 @@ test('rejects foreign origins and invalid uploads without orphan files',async()=
   assert.equal((await request('/api/requests',{method:'POST',body:form(true,Buffer.from('not a PNG'))})).status,400);
   assert.deepEqual(fs.readdirSync(path.join(directory,'uploads')),[]);
 });
+test('server rejects a populated honeypot, including direct multipart requests',async()=>{
+  const data=form();data.set('website','https://spam.example.test');
+  const response=await request('/api/requests',{method:'POST',body:data});
+  assert.equal(response.status,400);assert.equal((await response.json()).id,undefined);
+  assert.deepEqual(fs.readdirSync(path.join(directory,'uploads')),[]);
+});
 test('saves request and authenticates protected session',async()=>{
   const response=await request('/api/requests',{method:'POST',body:form()});assert.equal(response.status,201);id=(await response.json()).id;assert.ok(Number.isInteger(id));
   const login=await request('/api/auth/login',json({email:'qa@example.test',password:'synthetic-test-password'}));assert.equal(login.status,200);

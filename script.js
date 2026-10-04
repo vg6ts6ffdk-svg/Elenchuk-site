@@ -1,6 +1,5 @@
 (() => {
   const all = (selector, root = document) => [...root.querySelectorAll(selector)];
-  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const menu = document.querySelector('.menu-wrap');
   const summary = menu?.querySelector('summary');
   const closeMenu = (restoreFocus = false) => {
@@ -22,7 +21,7 @@
       if (!menu.open) return;
       if (event.key === 'Escape') { event.preventDefault(); closeMenu(true); }
       if (event.key === 'Tab') {
-        const focusable = [summary, ...all('.mobile-nav a', menu)];
+        const focusable = [summary, ...all('.mobile-nav a, .mobile-nav button, .mobile-nav summary', menu)].filter(el => el.getClientRects().length);
         const first = focusable[0], last = focusable.at(-1);
         if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
         else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
@@ -38,11 +37,24 @@
   });
 
   const allowedTypes = new Set(['image/jpeg','image/png','image/webp','image/gif','image/heic','image/heif','video/mp4','video/webm','video/quicktime','application/pdf']);
+  // Preserve the service/store handoff without loading the catalogue runtime.
+  const context = new URLSearchParams(location.search);
+  if (['selection','installation'].includes(context.get('requestMode'))) {
+    const form = document.querySelector('#request-form');
+    const sku = (context.get('serviceSku') || '').slice(0,128), equipment = (context.get('equipment') || '').slice(0,180);
+    const model = form?.querySelector('[name=model]'), problem = form?.querySelector('[name=problem]');
+    if(model && !model.value.trim()) model.value=equipment;
+    if(problem && !problem.value.trim()) problem.value=[context.get('requestMode')==='installation'?'Нужна установка запчасти.':'Нужен подбор и проверка совместимости.',sku && `Артикул / запрос: ${sku}`,equipment && `Оборудование: ${equipment}`].filter(Boolean).join('\n');
+  }
   all('#request-form, #repairForm').forEach(form => {
     const submit = form.querySelector('[type="submit"]');
     const status = form.querySelector('.form-status');
     const fileInput = form.querySelector('[name="files"]');
     const fileHelp = form.querySelector('#file-help');
+    form.addEventListener('invalid', event => {
+      const details=event.target.closest('details');
+      if(details)details.open=true;
+    },true);
     const describeFiles = () => {
       const files = [...(fileInput?.files || [])];
       const size = files.reduce((sum, file) => sum + file.size, 0);
@@ -61,16 +73,18 @@
       event.preventDefault();
       if (submit.disabled) return;
       status.classList.add('show');
+      status.classList.remove('is-error','is-success');
       status.textContent = 'Проверяем заявку…';
       try {
         if (typeof window.ROSEEN_API_BASE !== 'string') throw new Error('Не загрузилась настройка сервиса. Обновите страницу.');
         const data = new FormData(form);
+        if(String(data.get('website') || '').trim()) throw new Error('Не удалось отправить форму. Обновите страницу и повторите.');
         for (const [target, source] of [['equipment_type','category'],['problem','symptom'],['model','model'],['contact','contact']]) {
           data.set(target, String(data.get(target) || data.get(source) || '').trim());
           if (source !== target) data.delete(source);
         }
         if (!data.get('equipment_type') || !data.get('problem') || !data.get('contact')) throw new Error('Заполните направление, описание неисправности и контакт.');
-        const video = String(data.get('video_link') || '').trim();
+        const video = String(form.querySelector('#video_link')?.value || data.get('video_link') || '').trim();
         data.delete('video_link');
         if (video) {
           let url;
@@ -96,13 +110,18 @@
         const timeout = setTimeout(() => controller.abort(), 120000);
         let response;
         try {
-          response = await fetch(window.ROSEEN_API_BASE.replace(/\/$/, '') + '/api/requests', { method: 'POST', body: data, signal: controller.signal });
+          const endpoint=new URL(window.ROSEEN_API_BASE.replace(/\/$/, '') + '/api/requests',location.origin);
+          if(endpoint.protocol!=='https:' && !(['localhost','127.0.0.1','[::1]'].includes(endpoint.hostname) && endpoint.origin===location.origin)) throw new Error('Сервис заявок должен использовать HTTPS. Данные остались в форме.');
+          response = await fetch(endpoint.href, { method: 'POST', body: data, signal: controller.signal });
         } finally { clearTimeout(timeout); }
         const result = await response.json().catch(() => null);
         if (!response.ok || !Number.isInteger(result?.id)) throw new Error(result?.error || 'Сервис не подтвердил получение заявки. Данные сохранены в форме.');
         status.textContent = `Заявка №${result.id} принята. Сохраните номер — мы свяжемся по указанному контакту.`;
+        status.classList.add('is-success');
+        try { window.ROSEEN_TRACK?.('request_sent',{form_id:form.id}); } catch { /* Optional analytics cannot break a saved request. */ }
         form.reset();
       } catch (error) {
+        status.classList.add('is-error');
         status.textContent = error.name === 'AbortError'
           ? 'Ответ сервиса не получен вовремя. Заявка могла быть принята; сохраните данные и не отправляйте её многократно.'
           : error instanceof TypeError ? 'Нет соединения с сервисом. Проверьте интернет; данные остались в форме.' : error.message;
