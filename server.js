@@ -163,11 +163,13 @@ if (process.env.TRUST_PROXY_HOPS) {
   if(!Number.isInteger(hops)||hops<0||hops>3) throw new Error('TRUST_PROXY_HOPS must be 0..3');
   app.set('trust proxy',hops);
 }
-app.use(helmet({ ...(Number(settings.analytics.metrikaId)>0?{xFrameOptions:false}:{}), contentSecurityPolicy: { directives: {
-  ...analyticsPolicy(settings.analytics), scriptSrcAttr: ["'none'"],
+const securityHeaders = privatePage => helmet({ ...(Number.isSafeInteger(Number(settings.analytics.metrikaId))&&Number(settings.analytics.metrikaId)>0&&settings.analytics.webvisor===true&&!privatePage?{xFrameOptions:false}:{}), contentSecurityPolicy: { directives: {
+  ...analyticsPolicy(settings.analytics,{privatePage}), scriptSrcAttr: ["'none'"],
   formAction: ["'self'",'https://api.roseen.ru'],
   upgradeInsecureRequests: isProduction ? [] : null
-}}}));
+}}});
+const publicHeaders=securityHeaders(false),privateHeaders=securityHeaders(true);
+app.use((req,res,next)=>(req.path==='/admin.html'||req.path.startsWith('/api/')?privateHeaders:publicHeaders)(req,res,next));
 app.use('/api', (req,res,next) => {
   res.set('Cache-Control','no-store');
   const origin=req.headers.origin;

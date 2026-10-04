@@ -38,6 +38,7 @@ test('public pages have compact menus, correct bundles, breadcrumbs and private 
   const home=sitePage(brandPage(source('index.html'),'index.html'),'index.html');
   assert.match(home,/imagesrcset=/);assert.match(home,/href="faq.html">Все вопросы/);
   assert.match(home,/AI-иллюстрация: уборочный робот со снятыми панелями/);
+  assert.match(home,/<img[^>]*src="assets\/brand\/roseen-wordmark.svg[^>]*loading="eager"/);
   assert.doesNotMatch(home,/Выполненные работы/);
   assert.throws(()=>sitePage(source('index.html'),'index.html',{config:{...settings,cases:[{title:'unverified'}]}}));
   const missing=sitePage(brandPage(source('404.html'),'404.html',{storefront:true}),'404.html',{storefront:true});
@@ -73,4 +74,8 @@ test('provider CSP remains restrictive and only expands when IDs are supplied',(
   assert.ok(policy.scriptSrc.includes('https://mc.yandex.ru'));
   assert.ok(policy.scriptSrc.includes('https://www.googletagmanager.com'));
   assert.doesNotMatch(JSON.stringify(policy),/unsafe-inline|unsafe-eval/);
+  assert.deepEqual(policy.frameAncestors,["'self'"]);
+  const recorded=analyticsPolicy({metrikaId:123,webvisor:true});assert.ok(recorded.frameAncestors.includes('https://metrika.yandex.ru'));
+  assert.deepEqual(analyticsPolicy({metrikaId:123,webvisor:true},{privatePage:true}).frameAncestors,["'self'"]);
+  assert.deepEqual(analyticsPolicy({metrikaId:123,webvisor:false}).frameAncestors,["'self'"]);
 });

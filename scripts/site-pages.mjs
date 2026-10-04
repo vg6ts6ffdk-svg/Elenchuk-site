@@ -90,8 +90,8 @@ export function sitePage(html,file,{storefront=false,config=settings}={}) {
       head+=`<link rel="preload" as="image" href="${src}"${srcset?` imagesrcset="${srcset}" imagesizes="${sizes}"`:''} fetchpriority="high">\n`;
     }
     if(/src="assets\/robotics-(?:1280|640)\.webp"/.test(tag)) tag=tag.replace(/alt="[^"]*"/,'alt="AI-иллюстрация: уборочный робот со снятыми панелями в мастерской"');
-    const headerLogo=tag.includes('rosin-wordmark.svg');
-    if(!headerLogo) tag=tag.replace(/\s(?:loading|fetchpriority)="[^"]*"/g,'').replace(/>$/,critical?' loading="eager" fetchpriority="high">':' loading="lazy">');
+    const brandLogo=tag.includes('rosin-wordmark.svg')||tag.includes('roseen-wordmark.svg');
+    if(!brandLogo) tag=tag.replace(/\s(?:loading|fetchpriority)="[^"]*"/g,'').replace(/>$/,critical?' loading="eager" fetchpriority="high">':' loading="lazy">');
     return tag;
   });
   out=out.replace(/<form\b(?=[^>]*(?:id="request-form"|id="repairForm"))[^>]*>/g,tag=>tag.replace(/action="[^"]*"/,`action="${settings.url.replace('://roseen.ru','://api.roseen.ru')}/api/requests"`).replace(/class="([^"]*)"/,'class="$1 ym-hide-content"')+'<div class="honeypot" aria-hidden="true"><label for="website">Оставьте это поле пустым</label><input id="website" name="website" type="text" tabindex="-1" autocomplete="off"></div>');
