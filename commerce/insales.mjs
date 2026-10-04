@@ -17,6 +17,13 @@ export class InSalesError extends Error {
   }
 }
 const badResponse = () => new InSalesError('INSALES_RESPONSE_INVALID', 'inSales вернул некорректные данные каталога.');
+const timestamp = value => typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?(?:Z|[+-]\d{2}:?\d{2})$/.test(value) && Number.isFinite(Date.parse(value));
+
+/** Provider cursor: updated_at orders rows; id disambiguates bulk updates at the same time. */
+export function inSalesProductCursor(product) {
+  if (!record(product) || !identifier(product.id) || !timestamp(product.updated_at)) throw badResponse();
+  return { updatedSince: product.updated_at, fromId: String(product.id) };
+}
 
 export function inSalesStatus(env = process.env) {
   return { provider: 'insales', configured: ['INSALES_SHOP_HOST', 'INSALES_API_KEY', 'INSALES_API_PASSWORD'].every(key => clean(env[key]).length > 0), readOnly: true, checkoutEnabled: false };
@@ -72,9 +79,14 @@ export function createInSalesCatalogReader({ env = process.env, fetchImpl = glob
     finally { reader.releaseLock(); }
   }
   return Object.freeze({
-    async listProducts({ page = 1, perPage = 50 } = {}) {
+    async listProducts({ page = 1, perPage = 50, updatedSince, fromId } = {}) {
       if (!Number.isInteger(page) || page < 1 || page > 10000 || !Number.isInteger(perPage) || perPage < 1 || perPage > 100) throw new TypeError('Invalid catalogue pagination');
-      const rows = await get('/admin/products.json', { page, per_page: perPage });
+      if ((updatedSince !== undefined && (!timestamp(updatedSince) || page !== 1)) ||
+          (fromId !== undefined && (!identifier(fromId) || updatedSince === undefined))) throw new TypeError('Invalid inSales catalogue cursor');
+      const params = { page, per_page: perPage };
+      if (updatedSince !== undefined) params.updated_since = updatedSince;
+      if (fromId !== undefined) params.from_id = String(fromId);
+      const rows = await get('/admin/products.json', params);
       if (!Array.isArray(rows) || rows.length > perPage || rows.some(p => !record(p) || !identifier(p.id))) throw badResponse();
       return rows;
     },
@@ -147,7 +159,9 @@ export function previewInSalesProducts(rows, { mapping = {}, allowedCategories =
     if (p.bundle === true) { issue(row, 'bundle', 'Комплект требует отдельной проверки состава и остатков.'); continue; }
     // currency_code belongs to the product's base price. price_in_site_currency is deliberately
     // ignored until the site's currency is independently verified; never relabel USD as RUB.
-    if (p.currency_code !== 'RUB') { issue(row, 'currency', 'Цена товара должна быть подтверждена в RUB.'); continue; }
+    // inSales uses the legacy RUR code for the Russian ruble. Normalize that alias only;
+    // base prices in other currencies must never be relabelled as RUB.
+    if (!['RUB', 'RUR'].includes(p.currency_code)) { issue(row, 'currency', 'Цена товара должна быть подтверждена в RUB.'); continue; }
     const category = own(mapping.categories, String(p.category_id)) ? clean(mapping.categories[String(p.category_id)]) : '';
     const manufacturer = own(mapping.manufacturers, String(p.id)) ? clean(mapping.manufacturers[String(p.id)]) : '';
     const unit = own(mapping.units, p.unit) ? clean(mapping.units[p.unit]) : '';

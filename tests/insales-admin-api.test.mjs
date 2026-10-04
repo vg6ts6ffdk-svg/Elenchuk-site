@@ -5,7 +5,7 @@ import { createStoreAdminRouter } from '../storefront/admin-api.mjs';
 
 const env = { INSALES_SHOP_HOST:'synthetic-only.myinsales.ru',INSALES_API_KEY:'test-only-key',INSALES_API_PASSWORD:'test-only-secret' };
 const mapping = { categories:{5:'belts'},manufacturers:{7:'Synthetic manufacturer'},units:{pce:'шт.'} };
-const fixture = () => ({ id:7,category_id:5,title:'Synthetic test part',unit:'pce',currency_code:'RUB',available:true,
+const fixture = () => ({ id:7,updated_at:'2026-10-01T00:00:00.000Z',category_id:5,title:'Synthetic test part',unit:'pce',currency_code:'RUB',available:true,
   cost_price:'PRIVATE-COST',description:'PRIVATE-NOTES',variants:[{id:11,product_id:7,sku:'TEST-ONLY-11',price:'100.01',quantity:2,available:true}] });
 const json = data => new Response(JSON.stringify(data),{headers:{'content-type':'application/json'}});
 async function run(options,fn) {
@@ -51,7 +51,7 @@ test('empty or malformed provider responses are distinguished instead of accepti
   });
   await run({fetchImpl:async()=>json([])},async base=>assert.equal((await (await post(base,'/insales/connection-check')).json()).connected,true));
 });
-test('admin preview produces drafts and excludes private source fields without authorizing publication',()=>run({fetchImpl:async()=>json([fixture()])},async base=>{
+test('admin preview produces drafts and excludes private source fields without authorizing publication',()=>run({fetchImpl:async url=>json(url.searchParams.has('from_id')?[]:[fixture()])},async base=>{
   const response=await post(base,'/insales/import-preview',{mapping});assert.equal(response.status,200);const result=await response.json();
   assert.equal(result.summary.drafts,1);assert.equal(result.summary.published,0);assert.equal(result.preview[0].state,'draft');
   assert.equal(result.preview[0].priceMinor,10001);assert.equal(result.preview[0].stock,2);assert.equal(result.commitAllowed,false);assert.equal(result.checkoutEnabled,false);
@@ -65,14 +65,14 @@ test('bad mapping or browser-provided source settings are rejected before contac
     }
   });assert.equal(calls,0);
 });
-test('invalid product rows never yield a partial preview',()=>run({fetchImpl:async()=>{const p=fixture();p.currency_code='USD';return json([p]);}},async base=>{
+test('invalid product rows never yield a partial preview',()=>run({fetchImpl:async url=>{const p=fixture();p.currency_code='USD';return json(url.searchParams.has('from_id')?[]:[p]);}},async base=>{
   const response=await post(base,'/insales/import-preview',{mapping});assert.equal(response.status,422);const result=await response.json();
   assert.equal(result.ok,false);assert.deepEqual(result.preview,[]);assert.equal(result.summary.drafts,0);assert.ok(result.errorsCount>0);assert.equal(result.commitAllowed,false);
 }));
 test('large valid imports report the full count while limiting the admin response to 100 rows',async()=>{
   const products=Array.from({length:101},(_,i)=>{const p=fixture();p.id=i+1;p.variants[0].id=i+1;p.variants[0].product_id=p.id;p.variants[0].sku='TEST-ONLY-'+p.id;return p;});
   const fullMapping={...mapping,manufacturers:Object.fromEntries(products.map(p=>[p.id,'Synthetic manufacturer']))};
-  await run({fetchImpl:async url=>{const page=Number(url.searchParams.get('page'));return json(products.slice((page-1)*100,page*100));}},async base=>{
+  await run({fetchImpl:async url=>{assert.equal(url.searchParams.get('page'),'1');const from=Number(url.searchParams.get('from_id')??0);return json(products.filter(p=>p.id>from).slice(0,100));}},async base=>{
     const response=await post(base,'/insales/import-preview',{mapping:fullMapping});assert.equal(response.status,200);const result=await response.json();
     assert.equal(result.summary.drafts,101);assert.equal(result.preview.length,100);assert.equal(result.previewTruncated,true);assert.equal(result.commitAllowed,false);
   });

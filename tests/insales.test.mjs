@@ -4,7 +4,7 @@ import { createInSalesCatalogReader, inSalesStatus, previewInSalesProducts, rubl
 const env = { INSALES_SHOP_HOST: 'synthetic-test.myinsales.ru', INSALES_API_KEY: 'test-only-key', INSALES_API_PASSWORD: 'test-only-secret' };
 const json = value => new Response(JSON.stringify(value), { headers: { 'content-type': 'application/json' } });
 const mapping = { categories: { 5: 'belts' }, manufacturers: { 7: 'Synthetic test manufacturer' }, units: { pce: 'шт.' } };
-const fixture = () => ({ id: 7, category_id: 5, title: 'Synthetic fixture only', unit: 'pce', currency_code: 'RUB', available: true,
+const fixture = () => ({ id: 7, updated_at: '2026-10-01T00:00:00.000+03:00', category_id: 5, title: 'Synthetic fixture only', unit: 'pce', currency_code: 'RUB', available: true,
   variants: [{ id: 11, product_id: 7, sku: 'TEST-ONLY-11', title: 'Test variant', available: true, price: '100.01', price_in_site_currency: '999.99', quantity: '2.0' }] });
 const preview = rows => previewInSalesProducts(rows, { mapping, allowedCategories: ['belts'] });
 
@@ -37,6 +37,18 @@ test('product lookup rejects path injection and wrong product identity', async (
   await assert.rejects(reader.getProduct(Number.MAX_SAFE_INTEGER + 1), TypeError);
   await assert.rejects(reader.getProduct(8), { code: 'INSALES_RESPONSE_INVALID' });
   assert.equal((await reader.getProduct(7)).id, 7);
+});
+test('cursor reads escape the timestamp and preserve a large string ID without offset pages', async () => {
+  const updatedSince = '2026-10-01T00:00:00.000+03:00', fromId = '9007199254740993'; let calls = 0;
+  const reader = createInSalesCatalogReader({ env, fetchImpl: async (url, options) => {
+    calls++; assert.equal(url.searchParams.get('page'), '1'); assert.equal(url.searchParams.get('updated_since'), updatedSince);
+    assert.equal(url.searchParams.get('from_id'), fromId); assert.match(url.href, /%2B03%3A00/); assert.equal(options.method, 'GET'); return json([]);
+  } });
+  assert.deepEqual(await reader.listProducts({ updatedSince, fromId }), []);
+  for (const query of [{ fromId }, { updatedSince: 'invalid', fromId }, { updatedSince, fromId: Number.MAX_SAFE_INTEGER + 1 }, { page: 2, updatedSince }]) {
+    await assert.rejects(reader.listProducts(query), TypeError);
+  }
+  assert.equal(calls, 1);
 });
 test('transport/auth/rate-limit errors do not leak source bodies or credentials', async () => {
   for (const status of [401, 403, 429, 500]) {
@@ -73,6 +85,17 @@ test('variants keep identity, base RUB prices and stock, but imports never publi
   assert.equal(p.verifiedAt, null); assert.deepEqual(p.compatibility, []); assert.deepEqual(p.oem, []);
   assert.equal(result.commitAllowed, false); assert.equal(result.checkoutEnabled, false);
   assert.doesNotMatch(JSON.stringify(result), /999\.99|cost_price|test-only-secret/);
+});
+test('provider ruble aliases normalize to RUB while foreign base currencies remain rejected', () => {
+  for (const currency of ['RUB', 'RUR']) {
+    const p = fixture(); p.currency_code = currency;
+    const result = preview([p]); assert.equal(result.ok, true); assert.equal(result.catalog.currency, 'RUB');
+    assert.equal(result.catalog.products[0].priceMinor, 10001); assert.equal(result.catalog.products[0].state, 'draft');
+  }
+  for (const currency of ['USD', 'EUR', 'LVL', null, 'rur']) {
+    const p = fixture(); p.currency_code = currency; p.site_currency_code = 'RUR';
+    assert.equal(preview([p]).ok, false); assert.equal(preview([p]).catalog, null);
+  }
 });
 test('unknown quantity and explicit zero stay distinct; availability alone cannot prove stock', () => {
   const p = fixture(); p.variants[0].quantity = null;
