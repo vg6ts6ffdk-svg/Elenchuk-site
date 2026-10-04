@@ -73,7 +73,7 @@ async function inspect(browser,width,file,engine){
   });
   assert.deepEqual(contrastFailures,[],'Readable text on working surfaces');
   if (/^briefing-/.test(file)) {
-   const current = await page.locator('.nav a[href="news.html"]').getAttribute('aria-current');
+   const current = await page.locator('.footer-nav a[href="news.html"]').getAttribute('aria-current');
    assert.equal(current,'location','Article keeps News selected');
   }
   if (file === 'news.html') {

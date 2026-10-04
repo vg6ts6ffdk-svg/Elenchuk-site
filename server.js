@@ -11,6 +11,8 @@ import { randomUUID } from "node:crypto";
 import { fileURLToPath } from 'node:url';
 import { publicFiles } from './public-files.mjs';
 import { cleanFiles, fields, fileFilter, validateFiles, rateLimit } from './security.mjs';
+import { settings } from './scripts/site-pages.mjs';
+import { analyticsPolicy } from './scripts/analytics-policy.mjs';
 
 import { createStoreRouter } from './storefront/api.mjs';
 import { createStoreAdminRouter } from './storefront/admin-api.mjs';
@@ -161,9 +163,9 @@ if (process.env.TRUST_PROXY_HOPS) {
   if(!Number.isInteger(hops)||hops<0||hops>3) throw new Error('TRUST_PROXY_HOPS must be 0..3');
   app.set('trust proxy',hops);
 }
-app.use(helmet({ contentSecurityPolicy: { directives: {
-  scriptSrc: ["'self'"], scriptSrcAttr: ["'none'"],
-  connectSrc: ["'self'",'https://api.roseen.ru'], formAction: ["'self'",'https://api.roseen.ru'],
+app.use(helmet({ ...(Number(settings.analytics.metrikaId)>0?{xFrameOptions:false}:{}), contentSecurityPolicy: { directives: {
+  ...analyticsPolicy(settings.analytics), scriptSrcAttr: ["'none'"],
+  formAction: ["'self'",'https://api.roseen.ru'],
   upgradeInsecureRequests: isProduction ? [] : null
 }}}));
 app.use('/api', (req,res,next) => {
@@ -224,7 +226,7 @@ const storage = usePostgres
 
 const upload = multer({
   storage,
-  limits: { files: 3, fileSize: 3 * 1024 * 1024, fields:4, fieldSize:20*1024, parts:7 },
+  limits: { files: 3, fileSize: 3 * 1024 * 1024, fields:5, fieldSize:20*1024, parts:8 },
   fileFilter
 });
 
@@ -512,6 +514,9 @@ app.use((req, res, next) => {
 // Preserve old bookmarks without advertising a retired service direction.
 // Static Pages uses the noindex HTML redirect at the same legacy URL.
 app.get('/appliances.html', (_req, res) => res.redirect(301, '/directions.html'));
+app.get('/briefings.html', (_req, res) => res.redirect(301, '/news.html'));
+app.get('/robots.html', (_req, res) => res.redirect(301, '/robotics.html'));
+app.get('/request.html', (_req, res) => res.redirect(301, '/contacts.html#request'));
 
 app.get("/{*splat}", (req, res) => {
   const name=req.path==='/'?'index.html':req.path.slice(1);

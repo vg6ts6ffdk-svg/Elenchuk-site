@@ -36,6 +36,9 @@ jobs:
         with:
           node-version: 22
 
+      - name: Install build dependencies
+        run: npm ci
+
       - name: Build public site
         env:
           ROSEEN_API_BASE: ${{ vars.ROSEEN_API_BASE }}

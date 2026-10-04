@@ -179,4 +179,3 @@ footer { border-top: 1px solid var(--line); padding: 36px 0; }
   *,*::before,*::after { animation: none !important; transition: none !important; }
   .reveal-ready { opacity: 1; transform: none; }
 }
-\n/* 2026-09-23 visual pass: graphite is the base; corporate blue is an accent, not a fill. */\n.dark { background: linear-gradient(180deg,#0e1117 0%,#0b0e13 100%); }\n.service-card,.step,.fault-card,.feature-copy,.direction-card,.process-banner,.final-panel { box-shadow: inset 0 1px 0 #ffffff05; }\n.direction-card img,.hero-image,.inner-image,.feature-image { filter: saturate(.82) contrast(1.03); }\n.btn-primary { box-shadow: 0 10px 30px #3b82f619; }\n

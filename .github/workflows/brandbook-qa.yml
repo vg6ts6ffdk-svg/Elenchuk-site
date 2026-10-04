@@ -22,10 +22,14 @@ jobs:
       - run: npm run check && npm test && npm run build && node scripts/check-site.mjs dist
       - name: Browser tools (QA only; not runtime dependencies)
         run: |
-          npm install --no-save --package-lock=false --ignore-scripts playwright@1.63.0
+          npm install --no-save --package-lock=false --ignore-scripts playwright@1.63.0 axe-core@4.11.0
           npx playwright install --with-deps chromium webkit
       - name: Brandbook, mobile, keyboard and form checks
         run: node scripts/brand-qa.mjs
+      - name: SEO, accessible navigation and confirmed lead goals
+        env:
+          ROSEEN_STOREFRONT_PUBLIC: '1'
+        run: npm run build && node scripts/check-site.mjs dist && node scripts/seo-a11y-qa.mjs
       - name: Publish review artifacts, not private source files
         if: always()
         uses: actions/upload-artifact@v4
@@ -33,5 +37,6 @@ jobs:
           name: brandbook-browser-review
           path: |
             qa/brandbook/
+            qa/seo-a11y/
             dist/
           retention-days: 7

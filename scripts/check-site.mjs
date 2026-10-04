@@ -15,6 +15,8 @@ for(const [file,html] of docs) {
   if (/\{\{[^}]+\}\}/.test(html)) errors.push(file + ': template placeholder');
   const allIds = [...html.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]);
   if(new Set(allIds).size !== allIds.length) errors.push(file + ': duplicate IDs');
+  for(const m of html.matchAll(/\baria-describedby="([^"]+)"/g)) for(const id of m[1].split(/\s+/)) if(!ids.get(file).has(id)) errors.push(file+': missing accessible description #'+id);
+  for(const m of html.matchAll(/<img\b[^>]*>/g)) if(!/\balt="[^"]*"/.test(m[0])) errors.push(file+': image missing alt');
   for(const match of html.matchAll(/\b(?:src|href|action)="([^"]+)"/g)) {
     const value = match[1];
     if(match[0].startsWith('action=') && value === '/api/requests') continue;
@@ -32,17 +34,29 @@ for(const [file,html] of docs) {
     }
   }
   if(/<form\b/.test(html)) {
-    if(!/<script[^>]+src="api-config\.js(?:\?[^"]*)?"[^>]*>/.test(html)) errors.push(file + ': API configuration missing');
-    if(html.indexOf('api-config.js') > html.indexOf(file === 'admin.html' ? 'admin.js' : 'script.js')) errors.push(file + ': wrong config script order');
+    const bundled=/<script[^>]+src="\/?assets\/app\.min\.js(?:\?[^"]*)?"[^>]*>/.test(html);
+    if(!bundled && !/<script[^>]+src="api-config\.js(?:\?[^"]*)?"[^>]*>/.test(html)) errors.push(file + ': API configuration missing');
+    if(!bundled && html.indexOf('api-config.js') > html.indexOf(file === 'admin.html' ? 'admin.js' : 'script.js')) errors.push(file + ': wrong config script order');
     for(const match of html.matchAll(/<label\s+for="([^"]+)"/g)) if(!ids.get(file).has(match[1])) errors.push(file + ': label target missing');
     if(file!=='admin.html' && !/<form[^>]*method="post"/.test(html) && !/<form[^>]*data-catalog-search[^>]*method="get"/.test(html)) errors.push(file + ': form must POST');
   }
   if(/\bon(?:click|submit|error)\s*=/.test(html)) errors.push(file + ': inline JS handler');
-  if(/<script(?![^>]*src=)[^>]*>\s*[^<\s]/.test(html)) errors.push(file + ': inline script');
+  if(/<script(?![^>]*(?:src=|type="application\/ld\+json"))[^>]*>\s*[^<\s]/.test(html)) errors.push(file + ': inline executable script');
+  for(const m of html.matchAll(/<script\b[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)) {
+    try { const data=JSON.parse(m[1]); if(data['@context']!=='https://schema.org') errors.push(file+': incorrect Schema.org context'); }
+    catch { errors.push(file+': invalid JSON-LD'); }
+  }
 }
 for(const file of ['script.js','motion.js','api-config.js','admin.js', ...(previewEnabled?['store.js','store-core.js']:[]), ...(target===root?['server.js']:[])]) {
   const check=spawnSync(process.execPath,['--check',path.join(target,file)],{encoding:'utf8'});
   if(check.status!==0) errors.push(check.stderr);
+}
+if(target!==root) {
+  const css=fs.readFileSync(path.join(target,'assets/site.min.css'),'utf8');
+  for(const m of css.matchAll(/url\(["']?([^"')]+)["']?\)/g)) if(!/^(?:https?:|data:)/.test(m[1])) {
+    const file=path.resolve(target,'assets',m[1]);
+    if(!file.startsWith(target+path.sep)||!fs.existsSync(file)) errors.push('Bundled CSS references missing asset: '+m[1]);
+  }
 }
 if(target!==root) for(const forbidden of ['server.js','page-template.html','.env','.env.example','package.json','data','style.css.bak']) {
   if(fs.existsSync(path.join(target,forbidden))) errors.push('Private file published: '+forbidden);

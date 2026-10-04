@@ -17,18 +17,6 @@ function save() {
 }
 badge();
 addEventListener('storage', event => { if (event.key === CART_KEY || event.key === null) { cart = readCart(storage); badge(); if (data && $('cart-lines')) renderCart(); } });
-// Context goes into existing visible fields, never a new API contract or hidden PII.
-const context = new URLSearchParams(location.search);
-if (['selection', 'installation'].includes(context.get('requestMode'))) {
-  const form = document.querySelector('#request-form');
-  const sku = (context.get('serviceSku') || '').slice(0, 128);
-  const equipment = (context.get('equipment') || '').slice(0, 180);
-  if (form) {
-    const model = form.querySelector('[name=model]'), problem = form.querySelector('[name=problem]');
-    if (model && !model.value.trim()) model.value = equipment;
-    if (problem && !problem.value.trim()) problem.value = [context.get('requestMode') === 'installation' ? 'Нужна установка запчасти.' : 'Нужен подбор и проверка совместимости.', sku && `Артикул / запрос: ${sku}`, equipment && `Оборудование: ${equipment}`].filter(Boolean).join('\n');
-  }
-}
 function productCard(p) {
   const article = node('article', '', 'product-card'), a = link('', p.url, 'product-link');
   if (p.image) { const img = document.createElement('img'); img.src = p.image; img.alt = p.name; img.width = 640; img.height = 480; img.loading = 'lazy'; a.append(img); }

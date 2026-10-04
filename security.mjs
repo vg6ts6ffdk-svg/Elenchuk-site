@@ -6,6 +6,7 @@ export function cleanFiles(files) {
   for (const file of files || []) if (file.path) { try { fs.unlinkSync(file.path); } catch { /* multer may already remove it */ } }
 }
 export function fields(body = {}) {
+  if(body.website != null && (typeof body.website !== 'string' || body.website.trim())) throw invalid('Не удалось проверить форму. Обновите страницу и повторите.');
   const limits={equipment_type:120,model:200,problem:5000,contact:300};
   const output={};
   for (const [key,max] of Object.entries(limits)) {
