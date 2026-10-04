@@ -27,9 +27,10 @@ async function inspect(browser,width,file,engine){
  await page.route('**/api/requests',r=>r.fulfill({status:503,contentType:'application/json',body:'{"error":"QA: no real requests"}'}));
  try {
   const response=await page.goto(base+'/'+file,{waitUntil:'domcontentloaded'}); assert.equal(response.status(),200);
-  // The legacy archive redirects to News. Wait for that navigation before
-  // inspecting fonts/layout, and verify its destination rather than racing it.
-  if(file==='briefings.html') await page.waitForURL(base+'/news.html',{waitUntil:'domcontentloaded'});
+  // Legacy addresses redirect to their current sections. Verify the destination
+  // before inspecting its fonts/layout rather than racing that navigation.
+  const legacyDestinations={'briefings.html':'news.html','appliances.html':'directions.html'};
+  if(legacyDestinations[file]) await page.waitForURL(base+'/'+legacyDestinations[file],{waitUntil:'domcontentloaded'});
   await page.evaluate(()=>Promise.race([document.fonts.ready,new Promise(r=>setTimeout(r,5000))]));
   await page.waitForTimeout(800);
   // Visit each image before checking lazy assets. Rapid smooth-scroll jumps
