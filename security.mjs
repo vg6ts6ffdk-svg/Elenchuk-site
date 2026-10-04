@@ -32,7 +32,7 @@ function hasVideoTrack(bytes,start) {
       else if(size===0)size=end-at;
       if(size<header||at+size>end)return false;
       const kind=bytes.toString('latin1',at+4,at+8),payload=at+header;
-      if(parent==='mdia'&&kind==='hdlr'&&size>=header+12&&bytes.toString('latin1',payload+8,payload+12)==='vide')return true;
+      if(parent==='mdia'&&kind==='hdlr'&&size>=header+24&&bytes.toString('latin1',payload+8,payload+12)==='vide')return true;
       if(kind===(parent?children[parent]:'moov')&&scan(payload,at+size,kind))return true;
       at+=size;
     }
@@ -51,8 +51,7 @@ function bmffSignature(bytes,type) {
   const images=['mif1','mif2','msf1',...heic,'avif','avis','avio','avci','avcs','jpeg','jpgs','j2ki','j2is','jxsi','jxss'];
   if(type==='image/heic')return brands.some(brand=>heic.includes(brand));
   if(type==='image/heif')return brands.some(brand=>['mif1','mif2','msf1',...heic].includes(brand));
-  if(type==='video/quicktime')return brands.includes('qt  ')||(!brands.some(brand=>images.includes(brand))&&hasVideoTrack(bytes,size));
-  if(type==='video/mp4')return !brands.some(brand=>images.includes(brand))&&(brands.some(brand=>['isom','iso2','iso3','iso4','iso5','iso6','iso7','iso8','iso9','isoa','isob','isoc','mp41','mp42','mp71','avc1','dash','M4V ','MSNV'].includes(brand))||hasVideoTrack(bytes,size));
+  if(type==='video/mp4'||type==='video/quicktime')return !brands.some(brand=>images.includes(brand))&&hasVideoTrack(bytes,size);
   return false;
 }
 export function fileFilter(_req,file,callback) {

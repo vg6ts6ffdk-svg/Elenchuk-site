@@ -12,8 +12,8 @@ sends no form values or credentials and cannot turn a failed save into success.
 The admin shows an explicit access-check message while startup is pending.
 ISO-BMFF attachment checks now require a complete bounded ftyp box with media
 brands matching the declared type, with a regression for truncated/mislabeled
-payloads. Registered mp71/MSNV/new ISO brands remain compatible; unknown
-video brands can prove their type through a bounded movie/video-handler track.
+payloads. MP4/MOV with mp71/MSNV/new ISO or unknown brands remain compatible only with a
+bounded movie/video-handler track; metadata/audio-only/header-only files fail.
 The MP4RA registry is the primary reference; brands are not an exhaustive list.
 
 A separate Service browser E2E workflow exercises the built public form and
@@ -26,7 +26,7 @@ logout. Chromium/WebKit at 390/1440 px produce eight flows. This describes the
 check; exact-head results and inspected screenshots are recorded in the PR
 only after CI completes.
 
-Local Node 22 checks: 138/138 tests; source check; production build with the
+Local Node 22 checks: 139/139 tests; source check; production build with the
 read-only storefront; 31 built pages / 1,175 local references. Backend hardening
 is tracked in PR #43 on the separate Render deployment branch: repository files
 are denied, known HTML redirects to roseen.ru, and invalid inputs are rejected
