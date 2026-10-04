@@ -67,10 +67,13 @@ export function sitePage(html,file,{storefront=false,config=settings}={}) {
   const extra=secondary.map(([href,name])=>`<a href="${href}"${href===file?' aria-current="page"':((/^briefing-/.test(file)&&href==='news.html')||(/^(shop-|product-)/.test(file)&&href==='shop.html'))?' aria-current="location"':''}>${name}</a>`).join('');
   out=out.replace(/<nav\b[^>]*class="nav"[^>]*>[\s\S]*?<\/nav>/,`<nav class="nav" aria-label="Основная навигация">${links}</nav>`);
   out=out.replace(/<nav\b[^>]*class="mobile-nav"[^>]*>[\s\S]*?<\/nav>/,`<nav id="mobile-menu" class="mobile-nav" aria-label="Мобильная навигация">${links}<a href="contacts.html#request">Оставить заявку ↗</a><div class="mobile-secondary" role="group" aria-label="Другие разделы">${extra}</div></nav>`);
-  out=out.replace(/(<p class="illustration-note">)/,`<nav class="container footer-nav" aria-label="Другие разделы">${extra}</nav>$1`);
+  const secondaryNav=`<nav class="container footer-nav" aria-label="Другие разделы">${extra}</nav>`;
+  out=out.includes('<p class="illustration-note">')
+    ?out.replace('<p class="illustration-note">',secondaryNav+'<p class="illustration-note">')
+    :out.replace('</footer>',secondaryNav+'</footer>');
   out=out.replace(/<link\b[^>]*rel="preconnect"[^>]*>\s*/g,'');
-  out=out.replace(/<link\b[^>]*href="(?:style|brand|motion|store|briefings)\.css(?:\?[^"]*)?"[^>]*>\s*/g,'');
-  out=out.replace(/<script\b[^>]*src="(?:api-config|script|motion|store)\.js(?:\?[^"]*)?"[^>]*>[\s\S]*?<\/script>\s*/g,'');
+  out=out.replace(/<link\b[^>]*href="\/?(?:style|brand|motion|store|briefings)\.css(?:\?[^"]*)?"[^>]*>\s*/g,'');
+  out=out.replace(/<script\b[^>]*src="\/?(?:api-config|script|motion|store)\.js(?:\?[^"]*)?"[^>]*>[\s\S]*?<\/script>\s*/g,'');
   let head='<link rel="stylesheet" href="assets/site.min.css">\n<link rel="preload" href="assets/fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin>\n<script src="assets/app.min.js" defer></script>\n';
   if(/class="[^"]*\bstore-main\b/.test(out)) head+='<script src="assets/store.min.js" defer></script>\n';
   const path=crumbs(out,file);
@@ -93,10 +96,12 @@ export function sitePage(html,file,{storefront=false,config=settings}={}) {
   });
   out=out.replace(/<form\b(?=[^>]*(?:id="request-form"|id="repairForm"))[^>]*>/g,tag=>tag.replace(/action="[^"]*"/,`action="${settings.url.replace('://roseen.ru','://api.roseen.ru')}/api/requests"`).replace(/class="([^"]*)"/,'class="$1 ym-hide-content"')+'<div class="honeypot" aria-hidden="true"><label for="website">Оставьте это поле пустым</label><input id="website" name="website" type="text" tabindex="-1" autocomplete="off"></div>');
   if(out.includes('id="request-form"')) {
+    out=out.replace(/(<input\b(?=[^>]*id="video_link")[^>]*?)\sname="video_link"/,'$1');
     out=out.replace(/(<span class="form-note">)(До 3 файлов)/,'<span class="form-note" id="file-help">$2');
     out=out.replace(/class="form-status"/, 'class="form-status" tabindex="-1"');
     out=out.replace(/<textarea\b(?=[^>]*(?:name="problem"|name="symptom"))[^>]*>/g,tag=>tag.replace(/>$/,' data-private="true" class="ym-disable-keys">'));
-    out=out.replace(/<input\b(?=[^>]*name="(?:contact|model|video_link)")[^>]*>/g,tag=>tag.replace(/>$/,' data-private="true" class="ym-disable-keys">'));
+    out=out.replace(/<input\b(?=[^>]*(?:name="(?:contact|model)"|id="video_link"))[^>]*>/g,tag=>tag.replace(/>$/,' data-private="true" class="ym-disable-keys">'));
+    out=out.replace(/(<noscript>\s*<p>)(JavaScript отключён\.)/,'$1$2 Ссылку на видео добавьте в описание проблемы.');
   }
   if(file==='index.html') out=out.replace(/(<section id="faq"[\s\S]*?)(<\/div>\s*<\/div>\s*<\/section>)/,'$1<p class="faq-more"><a href="faq.html">Все вопросы и ответы ↗</a></p>$2');
   if(config.cases?.length && file==='index.html') {

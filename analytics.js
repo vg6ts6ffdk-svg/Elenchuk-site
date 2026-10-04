@@ -7,7 +7,7 @@ import { analytics as configured } from './scripts/analytics-settings.mjs';
   if(!hasMetrika&&!hasGa4) return;
   const preference='roseen.analytics-consent.v1';
   let consent=false,started=false;
-  const cleanUrl=value=>{try{const u=new URL(value,location.origin);return u.origin+u.pathname;}catch{return ''}};
+  const cleanUrl=value=>{if(!value)return '';try{const u=new URL(value,location.origin);return u.origin+u.pathname;}catch{return ''}};
   const inject=src=>{const el=document.createElement('script');el.src=src;el.async=true;document.head.append(el);};
   const saved=()=>{try{return localStorage.getItem(preference);}catch{return null;}};
   function start() {
@@ -24,7 +24,7 @@ import { analytics as configured } from './scripts/analytics-settings.mjs';
       window.gtag=window.gtag||function(){window.dataLayer.push(arguments)};
       window.gtag('js',new Date());
       window.gtag('consent','default',{analytics_storage:'granted',ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied'});
-      window.gtag('config',ga4Id,{send_page_view:false,allow_google_signals:false,allow_ad_personalization_signals:false});
+      window.gtag('config',ga4Id,{send_page_view:false,page_location:cleanUrl(location.href),page_referrer:cleanUrl(document.referrer),allow_google_signals:false,allow_ad_personalization_signals:false});
       window.gtag('event','page_view',{page_location:cleanUrl(location.href),page_referrer:cleanUrl(document.referrer)});
       inject('https://www.googletagmanager.com/gtag/js?id='+encodeURIComponent(ga4Id));
     }

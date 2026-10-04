@@ -80,7 +80,7 @@
           if (source !== target) data.delete(source);
         }
         if (!data.get('equipment_type') || !data.get('problem') || !data.get('contact')) throw new Error('Заполните направление, описание неисправности и контакт.');
-        const video = String(data.get('video_link') || '').trim();
+        const video = String(form.querySelector('#video_link')?.value || data.get('video_link') || '').trim();
         data.delete('video_link');
         if (video) {
           let url;

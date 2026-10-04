@@ -21,14 +21,15 @@ try {
   browser=await driver.launch();
   for(const width of [390,1440]) {
    const context=await browser.newContext({viewport:{width,height:900},reducedMotion:'reduce'}),page=await context.newPage();
-   for(const file of ['index.html','services.html','faq.html','contacts.html','news.html','shop.html','cart.html','account.html']) {
+   for(const file of ['index.html','services.html','directions.html','about.html','faq.html','contacts.html','news.html','briefing-2026-09-28.html','shop.html','cart.html','account.html','404.html']) {
     const errors=[];page.on('pageerror',e=>errors.push(e.message));
     await page.route('**/api/requests',r=>r.fulfill({status:503,contentType:'application/json',body:'{"error":"Isolated QA only"}'}));
     await page.goto(base+'/'+file);await page.evaluate(()=>document.fonts.ready);
     await page.addScriptTag({path:require.resolve('axe-core/axe.min.js')});
     const result=await page.evaluate(()=>window.axe.run(document,{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21aa','wcag22aa']}}));
-    report.checks.push({engine,width,file,violations:result.violations.map(v=>({id:v.id,impact:v.impact,targets:v.nodes.map(n=>n.target)}))});
-    assert.equal(result.violations.length,0,engine+'/'+width+'/'+file+' accessibility: '+JSON.stringify(result.violations.map(v=>({id:v.id,targets:v.nodes.map(n=>n.target)}))));
+    const violations=result.violations.map(v=>({id:v.id,impact:v.impact,nodes:v.nodes.map(n=>({target:n.target,summary:n.failureSummary}))}));
+    report.checks.push({engine,width,file,violations});
+    if(violations.length)report.failures.push({engine,width,file,violations});
     assert.equal(errors.length,0,file+' runtime errors');
     const state=await page.evaluate(()=>({width:innerWidth,scroll:document.documentElement.scrollWidth,background:getComputedStyle(document.body).backgroundColor,nav:document.querySelectorAll('.nav > a').length,broken:[...document.images].filter(i=>i.loading!=='lazy'&&(!i.complete||!i.naturalWidth)).map(i=>i.src)}));
     assert.ok(state.scroll<=state.width+1,file+' horizontal overflow');assert.equal(state.nav,5);assert.equal(state.background,'rgb(22, 24, 29)');assert.deepEqual(state.broken,[]);
@@ -52,8 +53,17 @@ try {
    assert.ok(!requests.some(u=>u.includes('store.min.js')||u.includes('store-data.json')||u.includes('mc.yandex')||u.includes('googletagmanager')));
    await context.close();
   }
-  await browser.close();browser=null;
+  const native=await browser.newContext({javaScriptEnabled:false,viewport:{width:390,height:900}});
+  let nativeBody='';
+  await native.route('**/api/requests',r=>{nativeBody=r.request().postData()||'';return r.fulfill({status:201,contentType:'application/json',body:'{"id":99002}'})});
+  const nativePage=await native.newPage();await nativePage.goto(base+'/contacts.html#request');
+  await nativePage.locator('#equipment_type').selectOption({label:'Электроника'});await nativePage.locator('#problem').fill('Native isolated QA');await nativePage.locator('#contact').fill('qa@example.test');
+  await Promise.all([nativePage.waitForURL('https://api.roseen.ru/api/requests'),nativePage.locator('#request-form [type=submit]').click()]);
+  assert.match(nativeBody,/Native isolated QA/);assert.match(nativeBody,/name="website"/);assert.doesNotMatch(nativeBody,/name="video_link"/);
+  assert.equal((nativeBody.match(/Content-Disposition: form-data; name="(?!files")/gi)||[]).length,5);
+  report.checks.push({engine,file:'contacts.html',javaScript:false,nativeFields:5,realRequests:false});
+  await native.close();await browser.close();browser=null;
  }
 } catch(error) {report.failures.push(error.stack);process.exitCode=1;}
-finally {if(browser)await browser.close();server.close();fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2));}
+finally {if(browser)await browser.close();server.close();if(report.failures.length)process.exitCode=1;fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2));}
 console.log(JSON.stringify({checks:report.checks.length,failures:report.failures,realRequests:false},null,2));

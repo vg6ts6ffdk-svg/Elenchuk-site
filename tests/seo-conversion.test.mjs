@@ -31,6 +31,7 @@ test('public pages have compact menus, correct bundles, breadcrumbs and private 
   assert.match(html,/action="https:\/\/api.roseen.ru\/api\/requests"/);
   assert.match(html,/name="website"/);assert.match(html,/class="form reveal delay ym-hide-content"/);
   assert.match(html,/id="file-help"/);assert.match(html,/aria-label="Хлебные крошки"/);
+  assert.doesNotMatch(html,/<input\b[^>]*name="video_link"/);assert.match(html,/Ссылку на видео добавьте в описание проблемы/);
   assert.match(html,/assets\/app.min.js/);assert.doesNotMatch(html,/src="(?:script|motion|store|api-config)\.js/);
   assert.match(html,/assets\/site.min.css/);assert.doesNotMatch(html,/href="(?:style|brand|motion|store)\.css/);
   assert.doesNotMatch(html,/assets\/store.min.js/);
@@ -39,6 +40,12 @@ test('public pages have compact menus, correct bundles, breadcrumbs and private 
   assert.match(home,/AI-иллюстрация: уборочный робот со снятыми панелями/);
   assert.doesNotMatch(home,/Выполненные работы/);
   assert.throws(()=>sitePage(source('index.html'),'index.html',{config:{...settings,cases:[{title:'unverified'}]}}));
+  const missing=sitePage(brandPage(source('404.html'),'404.html',{storefront:true}),'404.html',{storefront:true});
+  assert.equal((missing.match(/rel="stylesheet"/g)||[]).length,1);
+  assert.doesNotMatch(missing,/(?:src|href)="\/(?:style|brand|motion|store|briefings|script|api-config)\.(?:css|js)/);
+  assert.match(missing,/href="\/assets\/site.min.css"/);
+  const article=sitePage(brandPage(source('briefing-2026-09-28.html'),'briefing-2026-09-28.html'),'briefing-2026-09-28.html');
+  assert.match(article,/<nav class="container footer-nav"[^>]*>[\s\S]*?href="news.html" aria-current="location"/);
 });
 function analytics(consent='granted',config={metrikaId:123,ga4Id:'G-TEST',webvisor:true}) {
   const handlers={},scripts=[],items=[];
@@ -52,6 +59,8 @@ test('analytics is off without IDs or consent; permitted goals contain no PII',(
   assert.equal(analytics('denied').scripts.length,0);
   assert.equal(analytics('granted',{metrikaId:null,ga4Id:null}).scripts.length,0);
   const {sandbox,scripts,handlers}=analytics();assert.equal(scripts.length,2);
+  const gaConfig=sandbox.dataLayer.find(args=>args[0]==='config')[2];
+  assert.equal(gaConfig.page_location,'https://roseen.ru/contacts.html');assert.equal(gaConfig.page_referrer,'https://example.test/search');
   sandbox.ROSEEN_TRACK('request_sent',{form_id:'request-form',contact:'PRIVATE',problem:'PRIVATE',id:123456});
   handlers.click({target:{closest(){return {getAttribute(){return 'tel:+12025550123'}}}}});
   const calls=JSON.stringify([...sandbox.ym.a,...sandbox.dataLayer]);
