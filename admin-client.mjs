@@ -1,7 +1,7 @@
 // Cookie sessions remain preferred. The deployed older API returns a Bearer
 // token; keep that token only in this closure until logout, expiry or reload.
-export function createAdminClient(base, fetchImpl = globalThis.fetch) {
-  const endpoint = new URL(base);
+export function createAdminClient(base, fetchImpl = globalThis.fetch, pageOrigin = globalThis.location?.origin) {
+  const endpoint = new URL(base, pageOrigin);
   if (endpoint.protocol !== 'https:' && !(['localhost', '127.0.0.1', '[::1]'].includes(endpoint.hostname) && endpoint.protocol === 'http:')) {
     throw new Error('Админ-панель требует HTTPS API.');
   }

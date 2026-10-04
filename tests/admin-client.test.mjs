@@ -3,6 +3,24 @@ import assert from 'node:assert/strict';
 import {createAdminClient} from '../admin-client.mjs';
 const reply=(status,data)=>new Response(data==null?null:JSON.stringify(data),{status,headers:{'Content-Type':'application/json'}});
 
+test('empty API configuration resolves to the page origin on Vercel and localhost',async()=>{
+  for(const pageOrigin of ['https://preview.example.vercel.app','http://localhost:3000']){
+    const calls=[];
+    const client=createAdminClient('',async(url,options)=>{
+      calls.push(url);
+      if(url.endsWith('/api/auth/session'))return reply(401,{});
+      if(url.endsWith('/api/auth/login'))return reply(200,{ok:true});
+      assert.equal(options.credentials,'include');
+      return reply(200,[]);
+    },pageOrigin);
+    assert.equal(await client.restoreSession(),false);
+    await client.login('qa@example.test','synthetic-password');
+    assert.deepEqual(await (await client.request('/api/requests')).json(),[]);
+    assert.ok(calls.every(url=>new URL(url).origin===pageOrigin));
+  }
+  assert.throws(()=>createAdminClient('',undefined,'http://preview.example.test'),/HTTPS/);
+});
+
 test('deployed Bearer API supports login, request list and protected download without credentialed CORS',async()=>{
   const calls=[];
   const client=createAdminClient('https://api.example.test',async(url,options)=>{

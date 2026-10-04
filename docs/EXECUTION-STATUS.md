@@ -21,7 +21,7 @@ Logout, 401 and page reload clear it. Cookie login, restoration and server logou
 remain the preferred contract. Protected downloads use the same authentication
 as request details; legacy pagination is hidden because that API returns all rows.
 
-QA: 135/135 tests passed on Node 22; source validation passed; both disabled-store
+QA: 136/136 tests passed on Node 22; source validation passed; both disabled-store
 and public-storefront builds passed, with 31 pages / 1,175 built references in
 the production configuration. The exact published Render source was exercised
 against an isolated SQLite database and local files: empty honeypot, valid
