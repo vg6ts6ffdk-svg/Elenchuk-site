@@ -279,6 +279,18 @@ app.post("/api/auth/login", async (req, res) => {
 });
 
 app.post("/api/requests", upload.array("files", 8), async (req, res) => {
+  // Reject direct bot submissions before opening a transaction or storing objects.
+  if (req.body?.website != null &&
+      (typeof req.body.website !== "string" || req.body.website.trim() !== "")) {
+    for (const file of (req.files || [])) {
+      if (file.path) {
+        try { fs.unlinkSync(file.path); } catch (error) {
+          if (error.code !== "ENOENT") throw error;
+        }
+      }
+    }
+    return res.status(400).json({ error: "Не удалось принять заявку" });
+  }
   const { equipment_type, model, problem, contact } = req.body || {};
   if (!equipment_type || !problem || !contact) {
     return res.status(400).json({ error: "Заполните обязательные поля" });
