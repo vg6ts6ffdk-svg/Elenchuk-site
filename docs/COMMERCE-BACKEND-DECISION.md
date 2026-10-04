@@ -1,6 +1,10 @@
-# ADR — commerce backend candidates (20 September 2026)
+# ADR — inSales для магазина ROSEEN
 
-Status: recommendation prepared; provider is NOT connected and no account/paid plan is created.
+Решение владельца от 4 октября 2026: использовать **inSales** для запуска в России с ценами в рублях, сохранив существующий сайт ROSEEN. Подключение Shopify к ChatGPT удалено по запросу; аккаунт, подписка и данные магазина Shopify не удалялись.
+
+Статус: серверный коннектор чтения каталога и загрузка черновиков реализованы. Аккаунт inSales, реальный каталог, доставка, оплата и фискализация ещё не подключены. Ни платный тариф, ни новый аккаунт не оформлялись. Инструкция подключения: `docs/INSALES-SETUP.md`.
+
+Ниже — исходное сравнение от 20 сентября 2026. Оно объясняет выбор и не подтверждает подключение провайдеров.
 
 ## Fastest safe path
 Keep the existing ROSEEN frontend/Express API and use a provider as the source of truth instead of rebuilding inventory/order administration from scratch.
