@@ -1,3 +1,4 @@
+import { createAdminClient } from './admin-client.mjs';
 (() => {
   'use strict';
   const byId = id => document.getElementById(id);
@@ -5,13 +6,16 @@
   const loginPanel = byId('login-panel'), app = byId('app');
   const statuses = {new:'Новая',diagnostics:'Диагностика',approval:'Согласование',repair:'В ремонте',ready:'Готово',closed:'Закрыта'};
   let before = null, selected = null;
-  // Old versions stored a bearer token in localStorage. No token is stored in JS now.
+  let client;
+  const adminClient = () => client ||= createAdminClient(window.ROSEEN_API_BASE);
+  // Remove persisted tokens left by older versions. Compatibility tokens only
+  // live in the client's private memory and never enter browser storage.
   try { localStorage.removeItem('roseen_token'); } catch { /* Storage may be disabled. */ }
   function message(text) { notice.textContent = text; }
-  function signedOut() { app.hidden = true; loginPanel.hidden = false; detail.hidden = true; list.replaceChildren(); selected = null; }
+  function signedOut() { client?.clearSession(); app.hidden = true; loginPanel.hidden = false; detail.hidden = true; list.replaceChildren(); selected = null; }
   async function api(path, options = {}) {
     if (typeof window.ROSEEN_API_BASE !== 'string') throw new Error('Настройка API не загрузилась. Обновите страницу.');
-    const response = await fetch(window.ROSEEN_API_BASE + path, { ...options, credentials:'include' });
+    const response = await adminClient().request(path, options);
     const data = await response.json().catch(() => null);
     if (response.status === 401) { signedOut(); throw new Error('Войдите в админ-панель.'); }
     if (!response.ok) throw new Error(data?.error || 'Сервис не ответил. Повторите позже.');
@@ -41,12 +45,12 @@
     }
     if (!list.children.length) list.append(element('p','Заявок пока нет.'));
     before = rows.at(-1)?.id || null;
-    byId('more').hidden = rows.length < 50;
+    byId('more').hidden = adminClient().isLegacy() || rows.length < 50;
   }
   async function download(id,name,button) {
     button.disabled = true;
     try {
-      const response = await fetch(window.ROSEEN_API_BASE + '/api/files/' + id, {credentials:'include'});
+      const response = await adminClient().request('/api/files/' + id);
       if (response.status === 401) { signedOut(); throw new Error('Сессия истекла. Войдите снова.'); }
       if (!response.ok) throw new Error('Не удалось скачать файл.');
       const blob = await response.blob();
@@ -100,7 +104,7 @@
     event.preventDefault();
     const button=event.currentTarget.querySelector('button'); button.disabled=true;
     try {
-      await api('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:byId('email').value,password:byId('password').value})});
+      await adminClient().login(byId('email').value,byId('password').value);
       byId('password').value=''; loginPanel.hidden=true; app.hidden=false; message('Вход выполнен.'); await load();
     } catch(error) { message(error.message); } finally { button.disabled=false; }
   });
@@ -114,7 +118,10 @@
     try { await load(true); } catch(error) { message(error.message); } finally { event.target.disabled=false; }
   });
   byId('logout').addEventListener('click',async()=>{
-    try { await api('/api/auth/logout',{method:'POST'}); signedOut(); message('Вы вышли.'); } catch(error) { message(error.message); }
+    try { await adminClient().logout(); signedOut(); message('Вы вышли.'); } catch(error) { message(error.message); }
   });
-  api('/api/auth/session').then(async()=>{loginPanel.hidden=true;app.hidden=false;await load();}).catch(error=>{signedOut();message(error.message);});
+  Promise.resolve().then(()=>adminClient().restoreSession()).then(async active=>{
+    if (!active) { signedOut(); message('Войдите в админ-панель.'); return; }
+    loginPanel.hidden=true; app.hidden=false; await load();
+  }).catch(error=>{signedOut();message(error.message);});
 })();
