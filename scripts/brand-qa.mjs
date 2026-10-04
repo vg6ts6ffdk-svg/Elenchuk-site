@@ -27,9 +27,10 @@ async function inspect(browser,width,file,engine){
  await page.route('**/api/requests',r=>r.fulfill({status:503,contentType:'application/json',body:'{"error":"QA: no real requests"}'}));
  try {
   const response=await page.goto(base+'/'+file,{waitUntil:'domcontentloaded'}); assert.equal(response.status(),200);
-  // The legacy archive redirects to News. Wait for that navigation before
-  // inspecting fonts/layout, and verify its destination rather than racing it.
-  if(file==='briefings.html') await page.waitForURL(base+'/news.html',{waitUntil:'domcontentloaded'});
+  // Legacy addresses redirect to their current sections. Verify the destination
+  // before inspecting its fonts/layout rather than racing that navigation.
+  const legacyDestinations={'briefings.html':'news.html','appliances.html':'directions.html'};
+  if(legacyDestinations[file]) await page.waitForURL(base+'/'+legacyDestinations[file],{waitUntil:'domcontentloaded'});
   await page.evaluate(()=>Promise.race([document.fonts.ready,new Promise(r=>setTimeout(r,5000))]));
   await page.waitForTimeout(800);
   // Visit each image before checking lazy assets. Rapid smooth-scroll jumps
@@ -102,6 +103,7 @@ let browser;
 try {
  browser=await chromium.launch();
  for(const width of [320,390,768,1440]) for(const file of publicPages) await inspect(browser,width,file,'chromium');
+ for(const width of [541,800,1024]) for(const file of ['index.html','directions.html']) await inspect(browser,width,file,'chromium');
  const context=await browser.newContext({viewport:{width:390,height:844}}); const page=await context.newPage();
  await page.goto(base+'/index.html'); await page.waitForTimeout(850);
  await page.locator('.menu').click(); await page.waitForTimeout(100);

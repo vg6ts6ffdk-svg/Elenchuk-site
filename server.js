@@ -509,6 +509,10 @@ app.use((req, res, next) => {
   next();
 });
 
+// Preserve old bookmarks without advertising a retired service direction.
+// Static Pages uses the noindex HTML redirect at the same legacy URL.
+app.get('/appliances.html', (_req, res) => res.redirect(301, '/directions.html'));
+
 app.get("/{*splat}", (req, res) => {
   const name=req.path==='/'?'index.html':req.path.slice(1);
   const base=fs.existsSync(path.join(ROOT,'dist/index.html'))?path.join(ROOT,'dist'):ROOT;

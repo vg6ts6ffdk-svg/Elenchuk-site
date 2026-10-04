@@ -76,7 +76,7 @@ em { font-style: normal; color: var(--accent-light); }
 .service-card a { margin-top: auto; padding: 8px 0; font-weight: 700; color: var(--accent-light); }
 .service-card p,.step p,.fault-card p { color: var(--muted); font-size: .92rem; }
 .num,.fault-card span { display: block; color: var(--accent-light); font-size: .75rem; margin-bottom: 20px; }
-.direction-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 24px; }
+.direction-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 24px; }
 .direction-card { overflow: hidden; border: 1px solid var(--line); border-radius: 20px; background: var(--panel); transition: border-color .25s,transform .25s; }
 .direction-card:hover { border-color: var(--accent); transform: translateY(-4px); }
 .direction-card img { width: 100%; aspect-ratio: 16/10; object-fit: cover; }
@@ -85,6 +85,11 @@ em { font-style: normal; color: var(--accent-light); }
 .direction-card-content h3 { margin-top: 12px; }
 .direction-card-content p { color: var(--muted); }
 .direction-card-content b { color: var(--accent-light); font-size: .88rem; }
+@media (min-width: 801px) and (max-width: 1099px) {
+  .direction-grid { grid-template-columns: 1fr; }
+  .direction-card { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .direction-card img { height: 100%; min-height: 0; aspect-ratio: auto; }
+}
 .split { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: stretch; }
 .feature-image { width: 100%; height: 100%; min-height: 420px; object-fit: cover; }
 .feature-copy { padding: 40px; border: 1px solid var(--line); border-radius: 24px; background: var(--panel); }
@@ -146,6 +151,9 @@ footer { border-top: 1px solid var(--line); padding: 36px 0; }
   .section { padding: 70px 0; }
   .hero,.inner-hero { padding-top: calc(var(--header) + 42px); }
   .hero-grid,.inner-grid,.split,.request-grid { grid-template-columns: 1fr; gap: 32px; }
+  .direction-grid,.numbers-grid { grid-template-columns: 1fr; }
+  .numbers-grid { gap: 8px; }
+  .number { padding: 16px 0; border-left: 0; border-bottom: 1px solid var(--line); }
   .hero-image,.inner-image { height: 400px; }
   .feature-image { min-height: 350px; max-height: 450px; }
   .final-panel { flex-direction: column; align-items: flex-start; padding: 32px; }
