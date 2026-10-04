@@ -160,3 +160,16 @@ Added the 14–21 September briefing as `briefing-2026-09-21.html`, below the ne
 ## News editorial rule — 3 October 2026
 
 Removed the regional-applicability and practical-check sections from both published briefings at the owner’s request. Future website issues omit these blocks; the publication guide and existing weekly automation carry the rule. News facts, source links and article URLs are preserved.
+# Quiet photographic background and 404 — 4 October 2026
+
+Baseline: `9846db7c8f8d6b2607bb5e3437cc506da71b699d`, fetched current main. Branch: `fix/roseen-404-subtle-background-20261004`.
+
+The owner's human/robot hand reference was restyled as a graphite AI illustration without watermarks. The 1536×1024 WebP weighs 54,480 bytes. Public page backgrounds show it at 5.5% opacity (3.5% on small screens), with a static mask and no fixed positioning or added animation. The 404 illustration is deliberately clearer and separated from its heading and recovery buttons. Graphical RU/EN logo masters are unchanged.
+
+The 404 links and assets use root paths so unknown nested URLs do not break the page. Same-page skip navigation remains local. The public allowlist, cache hashing and link validator include the new asset and root paths; the 404 is marked noindex.
+
+Local source validation, public builds and built-link validation passed: 22 service/news pages, plus the production public-storefront build (31 pages / 1,474 references). The 14 branding/source/master-geometry regression checks passed. Full local `npm test` was attempted but native SQLite loading failed in this workspace; rebuilding its native dependency also failed during header extraction. Local browser installation was attempted, but the browser download returned a truncated archive. Complete tests and browser acceptance are therefore verified through the PR's CI, with visual artifacts and release evidence attached to that exact commit. This entry does not claim those external checks have passed before their results arrive.
+
+Scope is decorative presentation and recovery navigation. Service APIs, forms, catalogue data, checkout gates, mail, DNS and permissions are unchanged.
+
+---

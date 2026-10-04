@@ -173,3 +173,56 @@ img { height:auto; }
 .form-status { border-color:var(--line); }
 
 .skip-link { color:var(--bg); }
+
+/* A quiet, static photographic layer. No fixed background, parallax or motion. */
+main:not(.error-main) { position:relative; isolation:isolate; }
+main:not(.error-main)::before {
+  content:"";
+  position:absolute;
+  z-index:-1;
+  pointer-events:none;
+  inset:140px 0 auto;
+  height:clamp(400px,55vw,720px);
+  background:url('assets/human-robot-connection.webp') center / cover no-repeat;
+  opacity:.055;
+  mask-image:linear-gradient(to bottom,transparent,black 25%,black 65%,transparent);
+  -webkit-mask-image:linear-gradient(to bottom,transparent,black 25%,black 65%,transparent);
+}
+.error-hero { padding:calc(var(--header) + 40px) 0 48px; }
+.error-content { text-align:center; max-width:1100px; }
+.error-code {
+  color:rgba(195,199,207,.18);
+  font-size:clamp(104px,10vw,140px);
+  font-weight:600;
+  letter-spacing:-.07em;
+  line-height:1;
+  margin:0 0 20px;
+}
+.error-content h1 { font-size:clamp(32px,4vw,48px); }
+.error-content .lead { margin:0 auto; max-width:34em; }
+.error-content .actions { justify-content:center; margin:28px 0 0; }
+.error-art { margin:16px 0 0; }
+.error-art img {
+  width:100%;
+  aspect-ratio:3 / 1;
+  max-height:250px;
+  object-fit:cover;
+  object-position:center 55%;
+  opacity:.58;
+  mask-image:linear-gradient(to bottom,transparent,black 20%,black 80%,transparent);
+  -webkit-mask-image:linear-gradient(to bottom,transparent,black 20%,black 80%,transparent);
+}
+.error-art figcaption { color:var(--muted); font-size:11px; margin-top:6px; }
+@media (max-width:540px) {
+  main:not(.error-main)::before { top:100px; height:400px; opacity:.035; }
+  .error-hero { padding:calc(var(--header) + 36px) 0 40px; }
+  .error-code { margin-bottom:16px; }
+  .error-content .lead br { display:none; }
+  .error-content .actions { gap:10px; }
+  .error-content .actions .btn { flex:1 1 auto; }
+  .error-art img { aspect-ratio:1.9 / 1; opacity:.5; }
+}
+@media print {
+  main:not(.error-main)::before,.error-art { display:none; }
+  .error-code { color:#454A53; }
+}

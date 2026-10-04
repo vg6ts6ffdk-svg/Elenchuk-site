@@ -28,7 +28,7 @@ for (const file of publicFiles) {
 }
 for (const file of publicFiles.filter(file => file.endsWith('.html'))) {
   const html = fs.readFileSync(path.join(dist, file), 'utf8').replace(/(src|href)="([^"?#]+\.(?:js|css|svg|png|jpg|webp))"/g,
-    (match, attr, name) => hashes.has(name) ? `${attr}="${name}?v=${hashes.get(name)}"` : match);
+    (match, attr, name) => hashes.has(name.replace(/^\//,'')) ? `${attr}="${name}?v=${hashes.get(name.replace(/^\//,''))}"` : match);
   fs.writeFileSync(path.join(dist, file), html);
 }
 fs.writeFileSync(path.join(dist, '.nojekyll'), '');

@@ -20,7 +20,7 @@ for(const [file,html] of docs) {
     if(match[0].startsWith('action=') && value === '/api/requests') continue;
     if (/^(https?:|mailto:|tel:|data:)/.test(value)) continue;
     const [pathname,fragment] = value.split('#');
-    const name = pathname.split('?')[0] || file;
+    const name = pathname === '/' ? 'index.html' : pathname.split('?')[0].replace(/^\//,'') || file;
     references++;
     if(!publicFiles.includes(name) || !exists(name)) errors.push(file + ': missing public file ' + name);
     else if(fragment && docs.has(name) && !ids.get(name).has(fragment)) errors.push(file + ': missing #' + fragment + ' in ' + name);
