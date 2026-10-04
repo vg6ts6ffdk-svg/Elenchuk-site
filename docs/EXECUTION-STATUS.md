@@ -12,7 +12,9 @@ sends no form values or credentials and cannot turn a failed save into success.
 The admin shows an explicit access-check message while startup is pending.
 ISO-BMFF attachment checks now require a complete bounded ftyp box with media
 brands matching the declared type, with a regression for truncated/mislabeled
-payloads.
+payloads. Registered mp71/MSNV/new ISO brands remain compatible; unknown
+video brands can prove their type through a bounded movie/video-handler track.
+The MP4RA registry is the primary reference; brands are not an exhaustive list.
 
 A separate Service browser E2E workflow exercises the built public form and
 admin against both cookie and the exact pinned Render/Bearer server source.
@@ -24,7 +26,7 @@ logout. Chromium/WebKit at 390/1440 px produce eight flows. This describes the
 check; exact-head results and inspected screenshots are recorded in the PR
 only after CI completes.
 
-Local Node 22 checks: 137/137 tests; source check; production build with the
+Local Node 22 checks: 138/138 tests; source check; production build with the
 read-only storefront; 31 built pages / 1,175 local references. Backend hardening
 is tracked in PR #43 on the separate Render deployment branch: repository files
 are denied, known HTML redirects to roseen.ru, and invalid inputs are rejected
@@ -38,7 +40,20 @@ Metrica counter or invented ID has been created. Company requisites/geo and
 cases remain excluded; Organization is the truthful schema fallback. Checkout
 remains gated by unverified seller/catalog/provider data. Isolated browser QA
 and health do not prove a real employee login or a live Neon write/upload.
-Preview, release and read-only production evidence follow in the final PR.
+First candidate 581bdf9 passed all CI: 8 Service flows, 38 Platform layouts / 19
+interaction groups, SEO/a11y and Brandbook checks. Its reviewed merge tree equals
+that head. Review then found an overly narrow MP4 brand list; this corrected
+candidate repeats the exact-head checks before release. PR #43 is live on
+Render at merge 225403f (automatic deploy dep-db1b5fgjo6nc73adqnng): read-only
+production health/postgres/object-storage, private/encoded/unknown 404,
+auth-required 401, known HTML 301 and foreign Origin 403 all passed. The MP4
+compatibility follow-up is PR #45. No production POST was used.
+
+Vercel Preview metadata is READY for the first candidate. Direct protected
+Preview access through a temporary authentication-bypass URL was separately
+rejected by automatic approval review; that protected UI remains unverified.
+Isolated browser checks and public-domain QA continue without bypassing it.
+Release and final read-only production evidence are recorded in PR #44.
 
 ---
 
