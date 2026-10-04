@@ -5,8 +5,8 @@
 - Frontend: GitHub Pages → `https://roseen.ru`
 - API: Render Web Service → `https://api.roseen.ru`
 - Backend: Express 5 + Node.js 20+
-- Persistent data: Render PostgreSQL
-- Files: stored as protected binary data in PostgreSQL
+- Persistent data: external Neon PostgreSQL in the existing production service
+- Files: Neon Object Storage via its signer; uploads are protected by API authorization
 - Admin: `https://roseen.ru/admin.html`
 
 GitHub Pages is static hosting and does not execute Node.js/Express. The repository workflow publishes only the public frontend. Render runs the API separately.
@@ -20,7 +20,11 @@ The backend supports two storage modes:
 
 `GET /api/health` reports which backend is active in the `database` field.
 
-## Production deployment on Render
+## Intended Blueprint deployment on Render
+
+The following Blueprint describes an alternative setup. The existing service uses
+external Neon PostgreSQL and `site-audit-fixes-v2`; credential recovery does not
+provision the paid database below or switch the branch.
 
 The repository contains `render.yaml` describing the intended production setup:
 
@@ -57,7 +61,7 @@ Add/verify `api.roseen.ru` as the custom domain of the Render API service. At th
 ### Render API
 
 - `NODE_ENV=production`
-- `DATABASE_URL=<Render PostgreSQL internal connection string>`
+- `DATABASE_URL=<existing production PostgreSQL connection string>`
 - `FRONTEND_ORIGIN=https://roseen.ru,https://www.roseen.ru,https://vg6ts6ffdk-svg.github.io`
 - `ADMIN_EMAIL=admin@roseen.ru`
 - `JWT_SECRET=<secret>`
@@ -107,3 +111,16 @@ A successful manual deploy alone does not prove that automatic deploys work.
 
 References: https://render.com/docs/git-provider and
 https://render.com/docs/deploys.
+
+## GitHub connection restored — 4 October 2026
+
+Render Account Settings now lists GitHub `vg6ts6ffdk-svg` under Git Deployment
+Credentials. The service source is selected through Git Provider using
+`Elenchuk-site`, branch `site-audit-fixes-v2`, Node runtime, `npm install` and
+`npm start`. Auto-Deploy remains On Commit; root directory and build filters
+are empty. Database, secrets and custom domain remain on the existing service.
+
+This documentation update verifies the restored commit webhook. Confirm its
+merge SHA in a Render deployment with an automatic commit trigger, then check
+`GET /api/health`. A source-setting redeploy is a separate operation and does
+not replace that verification.
