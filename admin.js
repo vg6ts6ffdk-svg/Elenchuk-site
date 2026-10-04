@@ -120,6 +120,7 @@ import { createAdminClient } from './admin-client.mjs';
   byId('logout').addEventListener('click',async()=>{
     try { await adminClient().logout(); signedOut(); message('Вы вышли.'); } catch(error) { message(error.message); }
   });
+  message('Проверяем доступ к админ-панели…');
   Promise.resolve().then(()=>adminClient().restoreSession()).then(async active=>{
     if (!active) { signedOut(); message('Войдите в админ-панель.'); return; }
     loginPanel.hidden=true; app.hidden=false; await load();

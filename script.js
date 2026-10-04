@@ -37,6 +37,20 @@
   });
 
   const allowedTypes = new Set(['image/jpeg','image/png','image/webp','image/gif','image/heic','image/heif','video/mp4','video/webm','video/quicktime','application/pdf']);
+  let serviceWarmStarted = false;
+  function warmService() {
+    if (serviceWarmStarted || typeof window.ROSEEN_API_BASE !== 'string') return;
+    let endpoint;
+    try { endpoint = new URL(window.ROSEEN_API_BASE.replace(/\/$/, '') + '/api/health', location.origin); } catch { return; }
+    if (endpoint.protocol !== 'https:' && !(['localhost','127.0.0.1','[::1]'].includes(endpoint.hostname) && endpoint.origin === location.origin)) return;
+    serviceWarmStarted = true;
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 60000);
+    // Start the service while the visitor fills the form. No form data or
+    // credentials are sent; this optional GET never changes a request result.
+    fetch(endpoint.href, {credentials:'omit', cache:'no-store', referrerPolicy:'no-referrer', signal:controller.signal})
+      .catch(() => {}).finally(() => clearTimeout(timeout));
+  }
   // Preserve the service/store handoff without loading the catalogue runtime.
   const context = new URLSearchParams(location.search);
   if (['selection','installation'].includes(context.get('requestMode'))) {
@@ -47,6 +61,8 @@
     if(problem && !problem.value.trim()) problem.value=[context.get('requestMode')==='installation'?'Нужна установка запчасти.':'Нужен подбор и проверка совместимости.',sku && `Артикул / запрос: ${sku}`,equipment && `Оборудование: ${equipment}`].filter(Boolean).join('\n');
   }
   all('#request-form, #repairForm').forEach(form => {
+    form.addEventListener('focusin', warmService, {once:true});
+    form.addEventListener('pointerdown', warmService, {once:true});
     const submit = form.querySelector('[type="submit"]');
     const status = form.querySelector('.form-status');
     const fileInput = form.querySelector('[name="files"]');

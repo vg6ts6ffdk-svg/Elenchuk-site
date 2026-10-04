@@ -1,3 +1,62 @@
+# Final technical scope — 4 October 2026
+
+The owner instructed completion without company requisites or cases. These are
+excluded, not fabricated. The current approved Graphite palette and RU/EN logo
+masters are retained. Service frontend baseline is released main
+`1f058357eca75616d2143db4a7594c54ac8bc23c` (PR #42). Earlier dated entries below
+are historical observations, not the current release state.
+
+This patch starts one anonymous health GET when a visitor interacts with the
+request form, so the existing free API can start while the form is filled. It
+sends no form values or credentials and cannot turn a failed save into success.
+The admin shows an explicit access-check message while startup is pending.
+ISO-BMFF attachment checks now require a complete bounded ftyp box with media
+brands matching the declared type, with a regression for truncated/mislabeled
+payloads. MP4/MOV with mp71/MSNV/new ISO or unknown brands remain compatible only with a
+bounded movie/video-handler track; metadata/audio-only/header-only files fail.
+The MP4RA registry is the primary reference; brands are not an exhaustive list.
+
+A separate Service browser E2E workflow exercises the built public form and
+admin against both cookie and the exact pinned Render/Bearer server source.
+All data, credentials, SQLite records and private attachments are synthetic and
+isolated; external browser requests are blocked. It covers no-file and PNG
+submissions, a transport failure retaining inputs, duplicate-submit prevention,
+login/details/status/download, byte preservation after API restart, reload and
+logout. Chromium/WebKit at 390/1440 px produce eight flows. This describes the
+check; exact-head results and inspected screenshots are recorded in the PR
+only after CI completes.
+
+Local Node 22 checks: 139/139 tests; source check; production build with the
+read-only storefront; 31 built pages / 1,175 local references. Backend hardening
+is tracked in PR #43 on the separate Render deployment branch: repository files
+are denied, known HTML redirects to roseen.ru, and invalid inputs are rejected
+before storage. No migration, production test record, DNS, secret or tariff
+change is part of this work.
+
+Analytics hooks exist, but the owner has no counters. Automatic approval review
+rejected creation of a new Google Analytics account because account creation
+and acceptance of external terms require explicit approval. No GA4 account,
+Metrica counter or invented ID has been created. Company requisites/geo and
+cases remain excluded; Organization is the truthful schema fallback. Checkout
+remains gated by unverified seller/catalog/provider data. Isolated browser QA
+and health do not prove a real employee login or a live Neon write/upload.
+First candidate 581bdf9 passed all CI: 8 Service flows, 38 Platform layouts / 19
+interaction groups, SEO/a11y and Brandbook checks. Its reviewed merge tree equals
+that head. Review then found an overly narrow MP4 brand list; this corrected
+candidate repeats the exact-head checks before release. PR #43 is live on
+Render at merge 225403f (automatic deploy dep-db1b5fgjo6nc73adqnng): read-only
+production health/postgres/object-storage, private/encoded/unknown 404,
+auth-required 401, known HTML 301 and foreign Origin 403 all passed. The MP4
+compatibility follow-up is PR #45. No production POST was used.
+
+Vercel Preview metadata is READY for the first candidate. Direct protected
+Preview access through a temporary authentication-bypass URL was separately
+rejected by automatic approval review; that protected UI remains unverified.
+Isolated browser checks and public-domain QA continue without bypassing it.
+Release and final read-only production evidence are recorded in PR #44.
+
+---
+
 # Release integration and Render diagnosis - 4 October 2026
 
 Owner instructed to proceed and explicitly selected Roman's Render workspace. Integrated current main `0af401e1d47272f178021e3a85a85aa210b25928` (inSales PR #38) into SEO PR #37 without removing catalogue changes; only the execution-log conflict required manual resolution, retaining both entries. Joint local checks: 129/129 tests, source check and production build passed. Current-head browser checks must pass again before release.
