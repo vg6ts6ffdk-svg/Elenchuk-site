@@ -61,7 +61,7 @@ test('foreign origins, malformed fields, signatures and excess uploads fail with
 });
 
 test('valid frontend fields, Bearer admin and exact attachment persistence survive restart',async()=>{
-  const sent=await request('/api/requests',{method:'POST',headers:{Origin:'https://roseen.ru'},body:form()});assert.equal(sent.status,201);assert.equal(sent.headers.get('access-control-allow-origin'),'https://roseen.ru');const id=(await sent.json()).id;
+  const sent=await request('/api/requests',{method:'POST',headers:{Origin:'https://roseen.ru'},body:(()=>{const data=form();data.set('category','Электроника');data.set('symptom','Isolated test only');return data;})()});assert.equal(sent.status,201);assert.equal(sent.headers.get('access-control-allow-origin'),'https://roseen.ru');const id=(await sent.json()).id;
   assert.equal((await request('/api/requests')).status,401);assert.equal((await request('/api/files/1')).status,401);
   const login=await request('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:'qa@example.test',password:'synthetic-qa-password'})});assert.equal(login.status,200);
   const token=(await login.json()).token;const headers={Authorization:'Bearer '+token};

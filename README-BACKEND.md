@@ -19,10 +19,13 @@ the repository, encoded source-file paths, templates, archives and backups are
 never exposed by static middleware. Responses are no-store and noindex.
 
 Foreign browser origins receive HTTP 403 before body/upload processing.
-The existing five-field service form and Bearer admin contract are preserved.
+The current five-field service form, cached clients with category/symptom aliases
+(up to seven text fields), and Bearer admin contract are preserved.
 Uploads now enforce the current frontend limits (three files, 3 MiB total),
-extension/MIME agreement and a matching file signature. Rejected inputs are
-cleaned before a database transaction or object upload. Existing attachments
+extension/MIME agreement and a matching file signature. ISO-BMFF media require a
+complete, bounded ftyp box with brands matching the declared media type. Rejected inputs are
+cleaned before a database transaction or object upload. The older API-branch HTML advertised 8 files / 50 MiB; it is no longer served
+and redirects to the current public form (3 / 3 MiB). Existing attachments
 remain downloadable through the authenticated API regardless of their size.
 
 This change does not migrate a schema, rewrite records, rotate secrets, change

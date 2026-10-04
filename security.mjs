@@ -8,6 +8,11 @@ export function cleanFiles(files) {
 export function fields(body = {}) {
   if(body.website != null && (typeof body.website !== 'string' || body.website.trim())) throw invalid('Не удалось проверить форму. Обновите страницу и повторите.');
   const limits={equipment_type:120,model:200,problem:5000,contact:300};
+  const aliases={category:120,symptom:5000};
+  for(const key of Object.keys(body)) {
+    if(!Object.hasOwn(limits,key)&&!Object.hasOwn(aliases,key)&&key!=='website') throw invalid('Неизвестное поле формы.');
+    if(Object.hasOwn(aliases,key)&&(typeof body[key]!=='string'||body[key].length>aliases[key])) throw invalid('Проверьте поле: '+key);
+  }
   const output={};
   for (const [key,max] of Object.entries(limits)) {
     const raw=body[key] ?? '';
@@ -21,6 +26,20 @@ const extensions={
   'image/heic':['.heic'],'image/heif':['.heif'],'video/mp4':['.mp4'],'video/quicktime':['.mov'],
   'video/webm':['.webm'],'application/pdf':['.pdf']
 };
+function bmffSignature(bytes,type) {
+  if(bytes.length<16||bytes.toString('latin1',4,8)!=='ftyp')return false;
+  let size=bytes.readUInt32BE(0),header=8;
+  if(size===1){if(bytes.length<24)return false;const large=bytes.readBigUInt64BE(8);if(large>4096n)return false;size=Number(large);header=16;}
+  if(size<header+8||size>bytes.length||size>4096||(size-header-8)%4!==0)return false;
+  const brands=[bytes.toString('latin1',header,header+4)];
+  for(let at=header+8;at<size;at+=4)brands.push(bytes.toString('latin1',at,at+4));
+  const heic=['heic','heix','hevc','hevx','heim','heis'];
+  if(type==='image/heic')return brands.some(brand=>heic.includes(brand));
+  if(type==='image/heif')return brands.some(brand=>['mif1','msf1',...heic].includes(brand));
+  if(type==='video/quicktime')return brands.includes('qt  ');
+  if(type==='video/mp4')return !brands.some(brand=>['mif1','msf1',...heic].includes(brand))&&brands.some(brand=>['isom','iso2','iso3','iso4','iso5','iso6','iso7','iso8','iso9','mp41','mp42','avc1','dash','M4V '].includes(brand));
+  return false;
+}
 export function fileFilter(_req,file,callback) {
   callback(extensions[file.mimetype]?.includes(path.extname(file.originalname).toLowerCase()) ? null : invalid('Формат файла не поддерживается'), true);
 }
@@ -36,7 +55,7 @@ export function validateFiles(files=[]) {
       : type==='image/webp' ? ascii.startsWith('RIFF') && ascii.slice(8,12)==='WEBP'
       : type==='application/pdf' ? ascii.startsWith('%PDF-')
       : type==='video/webm' ? hex.startsWith('1a45dfa3') && ascii.includes('webm')
-      : ['video/mp4','video/quicktime','image/heic','image/heif'].includes(type) && ascii.slice(4,8)==='ftyp';
+      : bmffSignature(bytes,type);
     if(!valid) throw invalid('Содержимое файла не соответствует формату.');
   }
 }

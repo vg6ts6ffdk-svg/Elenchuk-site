@@ -179,7 +179,7 @@ const storage = usePostgres
 
 const upload = multer({
   storage,
-  limits: { files: 3, fileSize: 3 * 1024 * 1024, fields: 5, fieldSize: 20000, parts: 8 },
+  limits: { files: 3, fileSize: 3 * 1024 * 1024, fields: 7, fieldSize: 20000, parts: 10 },
   fileFilter
 });
 
