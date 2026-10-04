@@ -1,0 +1,48 @@
+name: Service browser E2E
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+permissions:
+  contents: read
+concurrency:
+  group: service-qa-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  service:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      # Exact reviewed legacy API source, not a floating deployment branch.
+      ROSEEN_LEGACY_QA_SHA: 03e3103ddac23ba45a4ce573d9644de7bb07d69e
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - name: Build production frontend
+        env:
+          ROSEEN_STOREFRONT_PUBLIC: '1'
+        run: npm run build && node scripts/check-site.mjs dist
+      - name: Isolated browser tools
+        run: |
+          npm install --no-save --package-lock=false --ignore-scripts playwright@1.63.0
+          npx playwright install --with-deps chromium webkit
+      - name: Fetch pinned API into private QA workspace
+        run: |
+          git fetch --no-tags --depth=1 origin "$ROSEEN_LEGACY_QA_SHA"
+          mkdir -p "$RUNNER_TEMP/roseen-legacy-qa"
+          git archive "$ROSEEN_LEGACY_QA_SHA" | tar -x -C "$RUNNER_TEMP/roseen-legacy-qa"
+          ln -s "$GITHUB_WORKSPACE/node_modules" "$RUNNER_TEMP/roseen-legacy-qa/node_modules"
+      - name: Real form, admin, upload, restart and logout
+        env:
+          ROSEEN_LEGACY_QA_DIR: ${{ runner.temp }}/roseen-legacy-qa
+        run: node scripts/service-admin-qa.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: service-browser-review
+          path: qa/service/
+          retention-days: 7
