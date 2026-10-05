@@ -65,7 +65,7 @@ export function brandPage(html, file, { storefront = false } = {}) {
   // A 404 may be served from any nested URL. Its local assets and recovery
   // links must resolve from the site root; same-page anchors stay local.
   if (file === '404.html') out = out.replace(/\b(src|href)="(?!https?:|mailto:|tel:|data:|#|\/)([^"]+)"/g, '$1="/$2"');
-  return out.replace('<body>', `<body data-brand-release="4.0"${storefront ? ' data-storefront="preview"' : ''}>`);
+  return out.replace('<body>', `<body data-brand-release="5.0"${storefront ? ' data-storefront="preview"' : ''}>`);
 }
 export function brandScript(js) {
   return js.replace(/  document\.body\.classList\.add\('brand-ready'\);[\s\S]*?(?=  const current =)/,'');

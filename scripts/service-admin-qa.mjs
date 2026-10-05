@@ -21,7 +21,7 @@ let browser;
 
 async function flow(engine,width,contract){
   const directory=fs.mkdtempSync(path.join(os.tmpdir(),'roseen-browser-service-'));
-  let apiBase,child,context,posts=0,healthChecks=0,rejectNext=false,fileId;
+  let apiBase,child,context,posts=0,healthChecks=0,rejectNext=false,fileId,releaseRequest;
   const frontend=http.createServer((req,res)=>{
     const pathname=new URL(req.url,'http://localhost').pathname;
     if(pathname.startsWith('/api/')){
@@ -33,8 +33,9 @@ async function flow(engine,width,contract){
       const fileMatch=pathname.match(/^\/api\/files\/(\d+)$/);if(fileMatch)fileId=Number(fileMatch[1]);
       const upstream=http.request(apiBase+req.url,{method:req.method,headers:req.headers},response=>{res.writeHead(response.statusCode,response.headers);response.pipe(res);});
       upstream.on('error',()=>{if(!res.headersSent)res.writeHead(503);res.end();});
-      // A short transport delay makes the duplicate-submit check deterministic.
-      if(req.method==='POST'&&pathname==='/api/requests')setTimeout(()=>req.pipe(upstream),250);else req.pipe(upstream);
+      // Hold the save until the browser has exercised a second submit. A timed
+      // delay can expire during WebKit scheduling, after success resets fields.
+      if(req.method==='POST'&&pathname==='/api/requests')releaseRequest=()=>req.pipe(upstream);else req.pipe(upstream);
       return;
     }
     let file;
@@ -71,17 +72,25 @@ async function flow(engine,width,contract){
     await anonymous.close();
     await page.goto(base+'/contacts.html#request');
     const form=page.locator('#request-form'),submit=form.locator('[type=submit]'),status=form.locator('.form-status');
+    async function submitWhilePending(expectedPosts){
+      await submit.click();await expect(submit).toBeDisabled();
+      await expect.poll(()=>typeof releaseRequest).toBe('function');
+      // Simulate a delayed client without allowing the fixture to finish saving.
+      await page.waitForTimeout(400);await form.dispatchEvent('submit');
+      assert.equal(posts,expectedPosts,'duplicate submit must not reach the API');
+      const release=releaseRequest;releaseRequest=undefined;release();
+      await expect(status).toHaveClass(/is-success/);
+    }
     await page.locator('#equipment_type').selectOption({label:'Электроника'});
     await page.locator('#problem').fill('Synthetic QA without file');await page.locator('#contact').fill('qa@example.test');
-    await submit.click();await expect(submit).toBeDisabled();await form.dispatchEvent('submit');
-    await expect(status).toHaveClass(/is-success/);await expect(status).toContainText('Заявка №');assert.equal(posts,1);
+    await submitWhilePending(1);await expect(status).toContainText('Заявка №');assert.equal(posts,1);
     await page.locator('#equipment_type').selectOption({label:'Электроника'});
     await page.locator('#problem').fill('Synthetic QA with file');await page.locator('#contact').fill('qa@example.test');
     await page.locator('.form-options summary').click();
     await page.locator('[name=files]').setInputFiles({name:'synthetic.png',mimeType:'image/png',buffer:png});
     rejectNext=true;await submit.click();await expect(status).toHaveClass(/is-error/);
     assert.equal(await page.locator('#problem').inputValue(),'Synthetic QA with file');assert.equal(await page.locator('[name=files]').evaluate(input=>input.files.length),1);
-    await submit.click();await expect(submit).toBeDisabled();await form.dispatchEvent('submit');await expect(status).toHaveClass(/is-success/);assert.equal(posts,3);assert.equal(healthChecks,1);
+    await submitWhilePending(3);assert.equal(posts,3);assert.equal(healthChecks,1);
     await page.goto(base+'/admin.html');await expect(page.locator('#login-panel')).toBeVisible();
     async function login(){await page.locator('#email').fill('qa@example.test');await page.locator('#password').fill('synthetic-browser-password');await page.getByRole('button',{name:'Войти',exact:true}).click();await expect(page.locator('.request-card')).toHaveCount(2);}
     await login();await page.locator('.request-card').filter({hasText:'Synthetic QA with file'}).click();

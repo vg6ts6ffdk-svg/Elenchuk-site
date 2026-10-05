@@ -6,7 +6,9 @@
   let observer;
   const mobile = matchMedia('(max-width: 1100px), (pointer: coarse)').matches;
   const rise = [{ opacity: 0, transform: `translateY(${mobile ? 12 : 16}px)` }, { opacity: 1, transform: 'none' }];
-  const duration = mobile ? 320 : 350;
+  // Owner's 5 October refinement: a readable fade, rather than a fast flash.
+  const duration = 600;
+  const tokenDuration = 350;
   const fade = [{ opacity: 0 }, { opacity: 1 }];
   const seen = new WeakSet();
   const pending = new Set();
@@ -17,7 +19,7 @@
     try {
       // Phones keep their layout still. Brand tokens may use their short
       // sequence; scrolling content starts immediately inside the viewport.
-      const a = el.animate(mobile ? fade : keyframes, { ...options, ...(mobile ? { duration: el.matches('.brand img') ? 600 : 350, delay: el.matches('.brand-token') ? (options.delay || 0) : 0 } : {}), easing: 'cubic-bezier(.16,1,.3,1)', fill: 'backwards' });
+      const a = el.animate(mobile ? fade : keyframes, { ...options, ...(mobile ? { delay: el.matches('.brand-token') ? (options.delay || 0) : 0 } : {}), easing: 'cubic-bezier(.25,.1,.25,1)', fill: 'backwards' });
       animations.add(a);
       a.addEventListener('finish', () => animations.delete(a), { once: true });
       a.addEventListener('cancel', () => animations.delete(a), { once: true });
@@ -37,8 +39,8 @@
     animations.forEach(a => a.cancel()); animations.clear();
     if (includeLogo) play(document.querySelector('.brand img'), [{ opacity: 0 }, { opacity: 1 }], { duration: 600 });
     document.querySelectorAll('.brand-token').forEach((el, i) => {
-      play(el, rise, { duration, delay: i * 180 });
-      if (!mobile) play(el.querySelector('b'), [{ color: '#93B8FF' }, { color: '#3B82F6' }], { duration, delay: i * 180 });
+      play(el, rise, { duration: tokenDuration, delay: i * 180 });
+      if (!mobile) play(el.querySelector('b'), [{ color: '#93B8FF' }, { color: '#3B82F6' }], { duration: tokenDuration, delay: i * 180 });
     });
     // A short opening composition, then the page remains still. Animate only
     // elements already on screen; lower content keeps its scroll reveal.
@@ -46,14 +48,14 @@
       ['.hero-copy h1', 100],
       ['.hero-copy .lead', 200],
       ['.hero-copy .actions', 300],
-      ['.hero-copy .trust', 400],
+      ['.hero-copy .trust', 300],
     ];
     entry.forEach(([selector, delay]) => {
       const el = document.querySelector(selector);
       if (el && el.getBoundingClientRect().top < innerHeight) play(el, rise, { duration, delay });
     });
     document.querySelectorAll('.hero-art .hero-image, .hero-art .hero-card').forEach((el, i) => {
-      if (el.getBoundingClientRect().top < innerHeight) play(el, [{ opacity: 0 }, { opacity: 1 }], { duration, delay: 140 + i * 180 });
+      if (el.getBoundingClientRect().top < innerHeight) play(el, [{ opacity: 0 }, { opacity: 1 }], { duration, delay: 100 + i * 180 });
     });
   }
   if (replay) {
@@ -92,7 +94,7 @@
     seen.add(el); pending.delete(el); observer?.unobserve(el);
     el.dataset.motionVisible = 'true';
     if (mobile) {
-      play(el, fade, { duration: 350 });
+      play(el, fade, { duration });
       return;
     }
     // Editorial blocks have a reading order, rather than moving every paragraph
