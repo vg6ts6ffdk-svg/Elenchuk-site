@@ -309,3 +309,7 @@ Local source validation, public builds and built-link validation passed: 22 serv
 Scope is decorative presentation and recovery navigation. Service APIs, forms, catalogue data, checkout gates, mail, DNS and permissions are unchanged.
 
 ---
+
+## Weekly news — 5 October 2026
+
+Added the 28 September–5 October issue, archive card, public allowlist and sitemap entry. The article separates partner content, an internal pilot, a manufacturer deployment claim and a research preprint. No regional-applicability or practical-check blocks are published. Release status must be verified through the PR checks and Pages deployment.
