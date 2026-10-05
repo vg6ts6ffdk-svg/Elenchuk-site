@@ -45,4 +45,4 @@ for (const file of publicFiles.filter(file => file.endsWith('.html'))) {
   fs.writeFileSync(path.join(dist, file), html);
 }
 fs.writeFileSync(path.join(dist, '.nojekyll'), '');
-console.log(`Built ${publicFiles.length} public files in dist. Brandbook: 4.0. API: ${url.origin}. Storefront: ${previewEnabled ? 'preview / checkout closed' : 'disabled'}`);
+console.log(`Built ${publicFiles.length} public files in dist. Brandbook: 5.0 (owner refinements). API: ${url.origin}. Storefront: ${previewEnabled ? 'preview / checkout closed' : 'disabled'}`);

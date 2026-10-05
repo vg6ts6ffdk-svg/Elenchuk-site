@@ -15,7 +15,7 @@ jobs:
     timeout-minutes: 10
     env:
       # Exact reviewed legacy API source, not a floating deployment branch.
-      ROSEEN_LEGACY_QA_SHA: 8a10080333dd29285fa037b99e6ef318d5707d19
+      ROSEEN_LEGACY_QA_SHA: 65fbae4ac4c28e68df9a9eda0b5bf8961783d1a2
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

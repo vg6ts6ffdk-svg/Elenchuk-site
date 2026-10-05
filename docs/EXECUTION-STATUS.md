@@ -1,3 +1,33 @@
+# Slower motion and deterministic Service QA — 5 October 2026
+
+Baseline main: `faa3911e72ce3ccaf4cc6efa88bf29dc9e5399b0` (released PR #44).
+Owner asked to continue and reported content animations were too fast on mobile
+and desktop. Content now uses a gradual 600ms fade, with no touch translation or
+content delays. Header-logo opacity remains 600ms, footer stays static, brand
+tokens retain their short 350ms / 180ms sequence, and reduced motion disables
+effects. Logo files and geometry are untouched. The timing overrides the older
+350ms content rule in brandbook 5.0; AGENTS and the master prompt now record the
+latest source, exclusions and refinement.
+
+PR #46's WebKit Service test failed after a duplicate synthetic submit found an
+already-reset form. The 250ms fixture delay allowed save/reset to race browser
+scheduling. QA now explicitly holds each save until the duplicate has been
+attempted, including a 400ms slow-client interval. It keeps the actual form,
+real isolated API persistence, uploads/restart/auth checks and exact POST counts;
+no production code validation or assertions are weakened. The pinned Bearer QA
+source is the freshly confirmed Render live commit `65fbae4`.
+
+Local Node 22 unit/integration suite: 139 passed, 0 failed. Local Playwright
+installation was attempted but Chromium archives were truncated; browser
+acceptance therefore requires the exact-head CI and its reviewed artifacts.
+Source/build/link checks and subsequent release evidence are recorded in the
+PR only after they run. No production request/order, customer message, DNS,
+mail, paid plan, secret or account was changed. Checkout and analytics remain
+honestly gated by their existing external dependencies. The news PR is separate;
+this patch does not publish that article or change its editorial permission.
+
+---
+
 # Final technical scope — 4 October 2026
 
 The owner instructed completion without company requisites or cases. These are
