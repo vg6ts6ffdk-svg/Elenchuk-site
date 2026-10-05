@@ -37,13 +37,14 @@ async function checkVisibleTouchMotion(engine) {
    if(!a)return {started:false};
    a.currentTime=120;
    document.dispatchEvent(new Event('touchmove'));
-   const during={started:true,state:a.playState,opacity:Number(getComputedStyle(el).opacity),transform:getComputedStyle(el).transform,top:el.getBoundingClientRect().top};
+   const during={started:true,state:a.playState,opacity:Number(getComputedStyle(el).opacity),duration:a.effect.getTiming().duration,transform:getComputedStyle(el).transform,top:el.getBoundingClientRect().top};
    await a.finished;
    return {...during,finalOpacity:getComputedStyle(el).opacity};
   });
   assert.equal(result.started,true,'visible card has a real animation');
   assert.equal(result.state,'running','a swipe must not cancel the visible opacity effect');
-  assert.ok(result.opacity>0 && result.opacity<1,'fade is perceptible while inside the viewport');
+  assert.equal(result.duration,600,"content uses the slower duration for the owner's refinement");
+  assert.ok(result.opacity>0 && result.opacity<.6,'early fade must remain gradual, not nearly complete at 120ms');
   assert.ok(result.top<844 && result.top>0);
   assert.equal(result.transform,'none','touch reveal never moves layout');
   assert.equal(result.finalOpacity,'1');
@@ -172,6 +173,7 @@ async function checkPremiumMotion(engine) {
   await page.locator('#services .service-card').first().scrollIntoViewIfNeeded();
   await page.waitForFunction(()=>window.motionQA.filter(a=>a.classes.includes('service-card')).length===4);
   const cards=await page.evaluate(()=>window.motionQA.filter(a=>a.classes.includes('service-card')));
+  assert.ok(cards.every(a=>a.options.duration===600),'desktop cards have the same slower fade');
   assert.deepEqual(cards.map(a=>a.options.delay).sort((a,b)=>a-b),[0,70,140,210],'desktop cards share a short row sequence');
   await page.locator('#directions h2').scrollIntoViewIfNeeded();
   await page.waitForFunction(()=>document.querySelector('#directions .section-head').dataset.motionVisible==='true');

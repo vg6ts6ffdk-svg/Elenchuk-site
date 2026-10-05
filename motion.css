@@ -32,7 +32,7 @@
 .btn:active { filter:brightness(.94); }
 .step { position:relative; }
 .step::before { content:""; position:absolute; top:0; left:28px; right:28px; height:1px; background:#C3C7CF; }
-.step[data-motion-visible]::before { animation:processLine .35s cubic-bezier(.16,1,.3,1) both; }
+.step[data-motion-visible]::before { animation:processLine .6s cubic-bezier(.25,.1,.25,1) both; }
 @keyframes processLine { from { transform:scaleX(0); transform-origin:left; opacity:0; } to { transform:scaleX(1); transform-origin:left; opacity:1; } }
 .feature-item strong { transition:color .25s; }
 .feature-item:hover strong { color:var(--text); }
