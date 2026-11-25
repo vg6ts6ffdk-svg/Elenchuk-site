@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>ROSEEN — Заявки сервиса</title>
-<link rel="stylesheet" href="style.css?v=20260920">
+<title>Заявки сервиса — РОСИН</title>
+<link rel="stylesheet" href="brand.css">
 <link rel="stylesheet" href="admin.css">
 <script src="api-config.js" defer></script>
 <script src="admin.js" type="module"></script>
@@ -14,37 +14,71 @@
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="assets/brand/apple-touch-icon.png">
 </head>
-<body>
-<main class="admin-wrap">
-<a href="index.html">← На сайт ROSEEN</a>
-<h1>Заявки сервиса</h1>
-<p id="notice" role="status" aria-live="polite"></p>
-<section id="login-panel" class="admin-panel" hidden>
-<h2>Вход сотрудника</h2>
-<form id="login-form">
-<div class="field"><label for="email">Email</label><input id="email" name="email" type="email" required autocomplete="username" maxlength="254"></div>
-<div class="field"><label for="password">Пароль</label><input id="password" name="password" type="password" required autocomplete="current-password"></div>
-<button class="btn btn-primary" type="submit">Войти</button>
-</form>
-</section>
-<section id="app" hidden>
-<div class="admin-toolbar"><button id="refresh" class="btn btn-ghost" type="button">Обновить список</button><button id="logout" class="btn btn-ghost" type="button">Выйти</button></div>
-<div class="admin-columns">
-<section aria-label="Список заявок"><div id="list" class="admin-list"></div><button id="more" class="btn btn-ghost" type="button" hidden>Показать ещё</button></section>
-<section id="detail" class="admin-panel" aria-label="Карточка заявки" hidden></section>
-</div>
-<section id="catalog-admin" class="admin-panel catalog-admin" hidden aria-labelledby="catalog-admin-title">
-<h2 id="catalog-admin-title">Каталог магазина · предпросмотр импорта</h2>
-<p>CSV проверяется, но не записывается и не публикуется. Все импортированные позиции остаются черновиками.</p>
-<form id="catalog-import-form">
-<div class="field"><label for="catalog-file">CSV-файл</label><input id="catalog-file" type="file" accept=".csv,text/csv,text/plain" required></div>
-<button class="btn btn-primary" type="submit">Проверить файл</button>
-</form>
-<p class="form-note">Колонки: id, sku, name, category, manufacturer, unit, priceMinor, stock, availability, oem. Цена — в копейках. Допустимы запятая или точка с запятой.</p>
-<div id="catalog-import-result" role="status" aria-live="polite"></div>
-</section>
-</section>
-<noscript><p>Для защищённой админ-панели требуется JavaScript.</p></noscript>
+<body class="admin-page">
+<header class="admin-header">
+  <div class="admin-wrap admin-header-inner">
+    <a class="admin-brand" href="index.html" aria-label="РОСИН, главная страница">
+      <img src="assets/brand/rosin-wordmark.svg" alt="РОСИН" width="1561" height="200">
+    </a>
+    <a class="admin-site-link" href="index.html">На сайт</a>
+  </div>
+</header>
+<main class="admin-wrap admin-main">
+  <h1>Заявки сервиса</h1>
+  <p id="notice" class="admin-notice" role="status" aria-live="polite"></p>
+  <section id="login-panel" class="admin-panel" aria-labelledby="login-title" hidden>
+    <h2 id="login-title">Вход сотрудника</h2>
+    <form id="login-form" method="post">
+      <div class="field"><label for="email">Электронная почта</label><input id="email" name="email" type="email" required autocomplete="username" maxlength="254"></div>
+      <div class="field"><label for="password">Пароль</label><input id="password" name="password" type="password" required autocomplete="current-password"></div>
+      <button class="btn btn-primary" type="submit">Войти</button>
+    </form>
+  </section>
+  <section id="app" aria-label="Рабочее место сотрудника" hidden>
+    <div class="admin-toolbar">
+      <div class="admin-filters" role="search" aria-label="Поиск и фильтрация заявок">
+        <div class="field">
+          <label for="request-search">Поиск по заявкам</label>
+          <input id="request-search" type="search" placeholder="Номер, модель, контакт" maxlength="120" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="status-filter">Статус</label>
+          <select id="status-filter"><option value="">Все статусы</option></select>
+        </div>
+      </div>
+      <div class="admin-actions">
+        <button id="refresh" class="btn btn-ghost" type="button">Обновить список</button>
+        <button id="logout" class="btn btn-ghost" type="button">Выйти</button>
+      </div>
+    </div>
+    <div class="admin-columns">
+      <section class="admin-queue" aria-labelledby="list-title">
+        <div class="admin-list-heading">
+          <h2 id="list-title">Список заявок</h2>
+          <span id="list-count" role="status"></span>
+        </div>
+        <div id="list" class="admin-list"></div>
+        <button id="more" class="btn btn-ghost" type="button" hidden>Показать ещё</button>
+      </section>
+      <section id="detail" class="admin-panel admin-detail" aria-label="Карточка заявки">
+        <p class="admin-empty">Выберите заявку из списка.</p>
+      </section>
+    </div>
+    <section id="catalog-admin" class="admin-panel catalog-admin" hidden aria-labelledby="catalog-admin-title">
+      <h2 id="catalog-admin-title">Предпросмотр импорта каталога</h2>
+      <p>Проверка CSV подготавливает черновики. Публикация товаров запускается отдельно.</p>
+      <form id="catalog-import-form">
+        <div class="field"><label for="catalog-file">CSV-файл</label><input id="catalog-file" type="file" accept=".csv,text/csv,text/plain" required></div>
+        <button class="btn btn-primary" type="submit">Проверить файл</button>
+      </form>
+      <p class="form-note">Колонки: id, sku, name, category, manufacturer, unit, priceMinor, stock, availability, oem. Цена — в копейках. Допустимы запятая или точка с запятой.</p>
+      <div id="catalog-import-result" role="status" aria-live="polite"></div>
+    </section>
+  </section>
+  <noscript><p>Для защищённой панели требуется JavaScript.</p></noscript>
 </main>
+<footer class="admin-footer">
+  <div class="admin-wrap"><img src="assets/brand/roseen-wordmark.svg" alt="ROSEEN" width="1844" height="200" loading="lazy"></div>
+</footer>
 </body>
 </html>

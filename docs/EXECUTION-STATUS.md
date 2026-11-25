@@ -349,3 +349,11 @@ Scope is decorative presentation and recovery navigation. Service APIs, forms, c
 ## Weekly news — 5 October 2026
 
 Added the 28 September–5 October issue, archive card, public allowlist and sitemap entry. The article separates partner content, an internal pilot, a manufacturer deployment claim and a research preprint. No regional-applicability or practical-check blocks are published. Release status must be verified through the PR checks and Pages deployment.
+
+## Service workspace and Vercel API follow-up — 25 November 2026
+
+Baseline: `7513c35a354219a98bfffa705cded7f6a5461e04`. The staff workspace uses the approved graphite palette, Inter and the original logo assets. The request list supports search across ID, equipment, model, contact and description, plus a status filter. The current API can load more pages while keeping the filter active. The deployed bearer API returns the full list. Saving a status updates the active list, including its filter, without losing the open request.
+
+The Vercel production runtime can forward the service form, staff routes and health check to the existing Render API when local service configuration is incomplete. Only those routes are forwarded. Vercel Preview uses its own environment, and the Pages build continues to use the configured API origin. No data migration is required.
+
+The pull request records automated and browser checks. Verify the deployed SHA and both production endpoints after release. Use isolated data for Preview and browser test submissions.
