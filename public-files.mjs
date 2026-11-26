@@ -20,5 +20,5 @@ export const publicFiles = [...pages, 'briefings.css', 'style.css', 'brand.css',
   'assets/brand/roseen-icon-r-512.png', 'assets/human-robot-connection.webp',
   'robots.txt', 'sitemap.xml', 'CNAME',
   ...(previewEnabled ? ['store.js', 'store-core.js', 'store.css', 'store-data.json', ...storeMediaFiles()] : []),
-  ...['robotics','electronics','professional'].flatMap(name =>
+  ...['robotics','electronics','professional','robot-bay','board-test','pump-service'].flatMap(name =>
     [640,1280].map(size => 'assets/' + name + '-' + size + '.webp'))];

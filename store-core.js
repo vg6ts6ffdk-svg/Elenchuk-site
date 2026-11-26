@@ -68,9 +68,10 @@ export function selectProducts(products, state) {
 export function formatPrice(value) {
   return value === null ? 'Цена по запросу' : new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB', minimumFractionDigits: value % 100 ? 2 : 0 }).format(value / 100);
 }
-export function serviceLink({ sku = '', equipment = '', mode = 'selection' } = {}) {
+export function serviceLink({ sku = '', equipment = '', partType = '', mode = 'selection' } = {}) {
   const p = new URLSearchParams({ requestMode: mode === 'installation' ? 'installation' : 'selection' });
   if (sku) p.set('serviceSku', String(sku).slice(0, 128));
+  if (partType) p.set('partType', String(partType).slice(0, 100));
   if (equipment) p.set('equipment', String(equipment).slice(0, 180));
   return `contacts.html?${p}#request`;
 }

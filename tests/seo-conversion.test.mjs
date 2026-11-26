@@ -48,6 +48,19 @@ test('public pages have compact menus, correct bundles, breadcrumbs and private 
   const article=sitePage(brandPage(source('briefing-2026-09-28.html'),'briefing-2026-09-28.html'),'briefing-2026-09-28.html');
   assert.match(article,/<nav class="container footer-nav"[^>]*>[\s\S]*?href="news.html" aria-current="location"/);
 });
+test('equipment pages open the matching editable form and the homepage features a published note',()=>{
+  for (const [file, label] of [['robotics.html','Робототехника'],['electronics.html','Электроника'],['professional.html','Профессиональная техника']]) {
+    const html=sitePage(brandPage(source(file),file),file);
+    assert.match(html, /class="service-terms"/);
+    assert.match(html, /id="request"/);
+    assert.doesNotMatch(html, /href="contacts.html#request"/);
+    assert.ok(html.includes('<option selected>'+label+'</option>'));
+  }
+  const home=sitePage(brandPage(source('index.html'),'index.html'),'index.html');
+  const featured=home.match(/<article class="news-feature">[\s\S]*?<\/article>/)[0];
+  const dates=[...source('news.html').matchAll(/<time datetime="([\d-]+)">/g)].map(m=>m[1]).sort();
+  assert.ok(featured.includes('briefing-'+dates.at(-1)+'.html'));
+});
 function analytics(consent='granted',config={metrikaId:123,ga4Id:'G-TEST',webvisor:true}) {
   const handlers={},scripts=[],items=[];
   const element=()=>({children:[],setAttribute(){},append(...children){this.children.push(...children)},addEventListener(){},remove(){},focus(){},querySelector(){return element()}});
@@ -64,8 +77,10 @@ test('analytics is off without IDs or consent; permitted goals contain no PII',(
   assert.equal(gaConfig.page_location,'https://roseen.ru/contacts.html');assert.equal(gaConfig.page_referrer,'https://example.test/search');
   sandbox.ROSEEN_TRACK('request_sent',{form_id:'request-form',contact:'PRIVATE',problem:'PRIVATE',id:123456});
   handlers.click({target:{closest(){return {getAttribute(){return 'tel:+12025550123'}}}}});
+  sandbox.location.pathname='/robotics.html';
+  handlers.click({target:{closest(){return {getAttribute(){return '#request'}}}}});
   const calls=JSON.stringify([...sandbox.ym.a,...sandbox.dataLayer]);
-  assert.match(calls,/generate_lead/);assert.match(calls,/phone_click/);assert.doesNotMatch(calls,/PRIVATE|12025550123|123456/);
+  assert.match(calls,/direction_request/);assert.match(calls,/generate_lead/);assert.match(calls,/phone_click/);assert.doesNotMatch(calls,/PRIVATE|12025550123|123456/);
   assert.match(calls,/https:\/\/roseen.ru\/contacts.html/);
 });
 test('provider CSP remains restrictive and only expands when IDs are supplied',()=>{

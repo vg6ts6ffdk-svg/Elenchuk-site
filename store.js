@@ -32,6 +32,16 @@ function updateCatalog() {
   const defaultCategory = $('catalog')?.dataset.category || '';
   if (!params.has('category') && defaultCategory) params.set('category', defaultCategory);
   const state = parseSearch(params);
+  const hasProducts = data.products.some(product => !defaultCategory || product.category === defaultCategory);
+  $('catalog').hidden = !hasProducts;
+  $('parts-browse-hero').hidden = !hasProducts;
+  $('parts-selection').hidden = hasProducts;
+  if (!hasProducts) {
+    document.querySelector('[data-parts-request]').href = serviceLink({
+      sku: state.q, equipment: equipmentText(state), partType: $('catalog').dataset.partType
+    });
+    return;
+  }
   for (const field of form.elements) if (field.name) field.value = params.get(field.name) ?? (field.name === 'sort' ? 'name' : '');
   if (state.equipmentBrand || state.model || state.revision || state.availability || state.manufacturer || params.has('min') || params.has('max')) form.querySelector('details').open = true;
   const result = selectProducts(data.products, state), results = $('catalog-results');
@@ -39,8 +49,7 @@ function updateCatalog() {
   results.replaceChildren(...result.products.map(productCard));
   if (!result.total) {
     const panel = node('div', '', 'store-empty');
-    const hasCatalog = data.products.length > 0;
-    panel.append(node('span', '↗', 'store-empty-mark'), node('h2', hasCatalog ? 'Подходящие товары не найдены.' : 'Подберём деталь по вашей задаче.'), node('p', hasCatalog ? 'Измените фильтры или передайте запрос инженеру. Отсутствие результата не означает, что деталь не существует.' : 'Каталог PUDU CC1 готовится к публикации. Укажите модель, артикул или приложите фото детали к заявке. Цена и возможность поставки требуют подтверждения.'), link('Запросить подбор ↗', serviceLink({ sku: state.q, equipment: equipmentText(state) }), 'btn btn-primary'));
+    panel.append(node('h2', 'Подходящие товары не найдены.'), node('p', 'Измените фильтры или передайте запрос инженеру.'), link('Запросить подбор', serviceLink({ sku: state.q, equipment: equipmentText(state), partType: $('catalog').dataset.partType }), 'btn btn-primary'));
     results.append(panel);
   }
   const pagination = $('catalog-pagination'); pagination.replaceChildren();

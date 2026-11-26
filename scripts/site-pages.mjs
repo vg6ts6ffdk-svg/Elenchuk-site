@@ -57,6 +57,22 @@ export function structuredData(html,file,config=settings) {
   if(path.length) graph.push({'@type':'BreadcrumbList',itemListElement:path.map(([name,page],i)=>({'@type':'ListItem',position:i+1,name,item:url(page)}))});
   return {'@context':'https://schema.org','@graph':graph};
 }
+// The archive contains only published articles. A later draft in the repository
+// must never displace the latest published entry on the homepage.
+function latestBriefing() {
+  const archive = fs.readFileSync(new URL('../news.html', import.meta.url), 'utf8');
+  const cards = [...archive.matchAll(/<article class="briefing-card">([\s\S]*?)<\/article>/g)];
+  const entries = cards.map(([, card]) => {
+    const date = card.match(/<time datetime="(\d{4}-\d{2}-\d{2})">([^<]+)<\/time>/);
+    const title = card.match(/<h2><a href="(briefing-[\d-]+\.html)">([^<]+)<\/a><\/h2>\s*<p>([^<]+)<\/p>/);
+    if (!date || !title) throw new Error('Incomplete published briefing in news.html');
+    return { date: date[1], label: date[2], href: title[1], title: title[2], summary: title[3] };
+  });
+  const [latest] = entries.sort((a, b) => b.date.localeCompare(a.date));
+  if (!latest) return '';
+  return `<article class="news-feature"><div><time class="eyebrow" datetime="${latest.date}">${latest.label}</time><h3><a href="${latest.href}">${latest.title}</a></h3><p>${latest.summary}</p></div><a class="btn btn-ghost" href="${latest.href}">Читать заметку</a></article>`;
+}
+
 export function sitePage(html,file,{storefront=false,config=settings}={}) {
   if(!html.includes('site-header')) return html;
   let out=html;
@@ -67,6 +83,15 @@ export function sitePage(html,file,{storefront=false,config=settings}={}) {
   const extra=secondary.map(([href,name])=>`<a href="${href}"${href===file?' aria-current="page"':((/^briefing-/.test(file)&&href==='news.html')||(/^(shop-|product-)/.test(file)&&href==='shop.html'))?' aria-current="location"':''}>${name}</a>`).join('');
   out=out.replace(/<nav\b[^>]*class="nav"[^>]*>[\s\S]*?<\/nav>/,`<nav class="nav" aria-label="Основная навигация">${links}</nav>`);
   out=out.replace(/<nav\b[^>]*class="mobile-nav"[^>]*>[\s\S]*?<\/nav>/,`<nav id="mobile-menu" class="mobile-nav" aria-label="Мобильная навигация">${links}<a href="contacts.html#request">Оставить заявку ↗</a><div class="mobile-secondary" role="group" aria-label="Другие разделы">${extra}</div></nav>`);
+  const direction = ['robotics.html', 'electronics.html', 'professional.html'].includes(file);
+  if (direction) out = out.replaceAll('href="contacts.html#request"', 'href="#request"');
+  if (direction || services.some(([page]) => page === file) || file === 'services.html') {
+    const terms = '<p class="service-terms">Стоимость диагностики зависит от модели и симптома. Объём и цену работ согласуем с вами заранее. Для передачи техники или выезда укажите город в заявке.</p>';
+    out = out.replace(/(<section class="inner-hero[^>]*>[\s\S]*?<div class="actions">[\s\S]*?<\/div>)/, '$1' + terms);
+  }
+  if (file === 'index.html' && out.includes('<!-- latest published briefing -->')) {
+    out = out.replace('<!-- latest published briefing -->', latestBriefing());
+  }
   const secondaryNav=`<nav class="container footer-nav" aria-label="Другие разделы">${extra}</nav>`;
   out=out.includes('<p class="illustration-note">')
     ?out.replace('<p class="illustration-note">',secondaryNav+'<p class="illustration-note">')

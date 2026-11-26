@@ -234,12 +234,15 @@ try {
  await p.locator('.motion-replay').click();
  assert.ok((await p.evaluate(()=>window.motionQA)).some(a=>a.classes==='reveal-letter'),'mobile replay reveals individual letters after the first visit');
  await p.goto(base+'/shop.html');assert.equal(await p.locator('html').getAttribute('data-motion-entry'),'static');
- await p.locator('#q').fill('TEST-OEM');await p.locator('.query-row button').click();assert.equal(new URL(p.url()).searchParams.get('q'),'TEST-OEM');await p.goBack();assert.equal(await p.locator('#q').inputValue(),'');report.interactions.push('URL query and browser Back; motion first entry and later navigation');
+ assert.ok(await p.locator('#catalog-search').isHidden(),'empty catalogue starts with selection, including without JavaScript');
+ await p.locator('[data-parts-request]').click();await p.waitForURL('**/contacts.html?requestMode=selection#request');
+ assert.match(await p.locator('#problem').inputValue(),/подбор/);
  // Isolated synthetic data is intercepted only in this test context, not a deployed file.
  await p.route('**/store-data.json',r=>r.fulfill({contentType:'application/json',body:JSON.stringify(testData)}));
  const syntheticHtml=brandPage(renderStoreFiles(testData).get('product-TEST-0.html'),'product-TEST-0.html',{storefront:true});
  await p.route('**/product-TEST-0.html',r=>r.fulfill({contentType:'text/html',body:syntheticHtml}));
  await p.goto(base+'/shop.html');await p.waitForFunction(()=>document.querySelectorAll('.product-card').length===12);
+ await p.locator('#q').fill('TEST-OEM');await p.locator('.query-row button').click();assert.equal(new URL(p.url()).searchParams.get('q'),'TEST-OEM');await p.goBack();assert.equal(await p.locator('#q').inputValue(),'');report.interactions.push('URL query and browser Back; motion first entry and later navigation');
  await p.locator('#q').fill('TEST-OEM-0');await p.locator('.query-row button').click();assert.equal(await p.locator('.product-card').count(),1);
  await p.locator('.product-card h3').click();await p.locator('[data-add-cart]').click();await p.waitForFunction(()=>document.querySelector('#product-status').textContent.includes('добавлен'));
  assert.deepEqual(await p.evaluate(()=>JSON.parse(localStorage.getItem('roseen.cart.v1'))),[{id:'TEST-0',quantity:1}]);

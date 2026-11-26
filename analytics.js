@@ -31,7 +31,7 @@ import { analytics as configured } from './scripts/analytics-settings.mjs';
   }
   // Only fixed fields: no contacts, request content, request IDs or target URLs.
   window.ROSEEN_TRACK=(event,fields={})=>{
-    if(!consent||!started||!['request_sent','phone_click','messenger_click'].includes(event)) return;
+    if(!consent||!started||!['request_sent','direction_request','phone_click','messenger_click'].includes(event)) return;
     const payload={page_path:location.pathname};
     if(['request-form','repairForm'].includes(fields.form_id)) payload.form_id=fields.form_id;
     if(['telegram','whatsapp','viber','max'].includes(fields.messenger)) payload.messenger=fields.messenger;
@@ -63,6 +63,9 @@ import { analytics as configured } from './scripts/analytics-settings.mjs';
   function trackLink(event) {
     const a=event.target.closest?.('a[href]');if(!a)return;
     const raw=a.getAttribute('href');
+    if (raw === '#request' && /^\/(robotics|electronics|professional)\.html$/.test(location.pathname)) {
+      return window.ROSEEN_TRACK('direction_request');
+    }
     if(/^tel:/i.test(raw)) return window.ROSEEN_TRACK('phone_click');
     let u;try{u=new URL(a.href);}catch{return;}
     const host=u.hostname.replace(/^www\./,'');

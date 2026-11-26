@@ -34,3 +34,5 @@ button:focus-visible { outline:3px solid var(--accent-light); outline-offset:4px
 .analytics-choice p { color:var(--muted); font-size:14px; }
 .analytics-choice .actions { margin:12px 0 0; }
 .analytics-settings { border:0; background:none; color:var(--accent-light); text-decoration:underline; min-height:44px; padding:8px 0; }
+
+.service-terms { max-width: 52ch; margin: 12px 0 0; color: var(--muted); font-size: 14px; line-height: 1.55; }

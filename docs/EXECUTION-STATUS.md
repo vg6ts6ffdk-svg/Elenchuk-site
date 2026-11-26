@@ -367,3 +367,7 @@ over 780 ms after the owner’s timing review. Workshop illustrations on service
 pages share a cool graphite/silver grade. Section titles use the same treatment once on entering the viewport.
 The complete headings remain readable with reduced motion and without JavaScript.
 The draft pull request records preview and browser verification.
+
+## Service and parts enquiry journey — 26 November 2026
+
+The three equipment pages now open their local editable, preselected form. Direction and service pages explain price approval and equipment handover beside the first call to action. Dedicated images distinguish the three equipment groups. Empty catalogues and categories lead to a parts enquiry. Published products restore browsing and filters. The home page takes its latest engineering note from the published archive. Configured analytics count direction-to-form clicks and confirmed submissions with consent. The review build uses the existing draft pull request and guest preview.
