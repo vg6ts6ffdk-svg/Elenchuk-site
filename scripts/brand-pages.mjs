@@ -27,6 +27,7 @@ export function brandPage(html, file, { storefront = false } = {}) {
   out = out.replace(/(<img\b[^>]*class="[^"]*(?:hero-image|inner-image|feature-image)[^"]*"[^>]*>)/g,
     '$1<p class="visual-caption">AI-иллюстрация направления · не фотография выполненной работы</p>');
   if (file === 'index.html') {
+    out = out.replace(/(<img class="hero-image"[^>]*><p class="visual-caption">)[^<]+/, '$1AI-иллюстрация мастерской');
     out = out.replace(/<section class="numbers">[\s\S]*?<\/section>/,
       '<section class="numbers" aria-label="Принципы сервиса"><div class="container numbers-grid"><div class="number"><strong>Причина.</strong><span>Сначала диагностика</span></div><div class="number"><strong>Решение.</strong><span>Согласованный объём работ</span></div><div class="number"><strong>Результат.</strong><span>Проверка после ремонта</span></div></div></section>');
   }

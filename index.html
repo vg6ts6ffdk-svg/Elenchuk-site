@@ -59,72 +59,57 @@
 </details>
 </div>
 </header>
-<main id="main"><div class="service-region">Москва и Московская область · Другие регионы — по согласованию</div>
-<section class="hero section">
-<div class="scan">
+<main id="main" class="home">
+<section class="hero home-hero" aria-labelledby="home-title">
+<div class="hero-art home-scene">
+<img class="hero-image" src="assets/robotics-1280.webp" srcset="assets/robotics-640.webp 640w, assets/robotics-1280.webp 1280w" sizes="(max-width: 800px) 100vw, 72vw" width="1280" height="853" decoding="async" alt="Уборочный робот в мастерской" fetchpriority="high">
 </div>
-<div class="container hero-grid">
+<div class="container home-intro">
 <div class="hero-copy">
-<div class="eyebrow">
-<i>
-</i> РОБОТЫ · СЕРВИС · ИНЖИНИРИНГ</div>
-<h1>Диагностика и ремонт<br><em>сложной техники.</em></h1>
-<p class="lead">Диагностика, ремонт и обслуживание робототехники, электроники и профессионального оборудования. Сначала находим причину — затем устраняем её и проверяем результат.</p>
+<div class="eyebrow"><i></i> РОБОТЫ · СЕРВИС · ИНЖИНИРИНГ</div>
+<h1 id="home-title" data-letter-reveal>Ремонт роботов<br>и сложной техники</h1>
+<p class="lead">Находим причину сбоя, восстанавливаем оборудование и проверяем его под нагрузкой.</p>
 <div class="actions">
-<a class="btn btn-primary magnetic" href="#request">Оставить заявку ↗</a>
-<a class="btn btn-ghost" href="#directions">Наши направления</a>
-</div>
-<div class="trust">
-<span>Диагностика</span>
-<span>Ремонт</span>
-<span>Обслуживание</span>
-<span>Инженерия</span>
-</div>
+<a class="btn btn-primary" href="#request">Оставить заявку</a>
 <button class="motion-replay" type="button" hidden>↻ Повторить анимацию</button>
 </div>
-<div class="hero-art">
-<div class="hero-glow">
-</div>
-<div class="media-wrap" >
-<img class="hero-image parallax-image" src="assets/robotics-1280.webp" srcset="assets/robotics-640.webp 640w, assets/robotics-1280.webp 1280w" sizes="(max-width: 800px) 100vw, 50vw" width="1280" height="853" decoding="async" alt="Робототехника в сервисной мастерской" fetchpriority="high">
-</div>
-<div class="hero-card">
-<b>ROSEEN / SERVICE</b>Сложная техника должна работать стабильно.</div>
+<p class="home-area">Москва и Московская область · Другие регионы по согласованию</p>
 </div>
 </div>
 </section>
+<nav class="home-shortcuts" aria-label="Выберите своё оборудование">
+<div class="container home-shortcut-list">
+<a href="robotics.html">Робототехника</a>
+<a href="electronics.html">Электроника</a>
+<a href="professional.html">Профессиональная техника</a>
+</div>
+</nav>
 <section id="services" class="section dark">
 <div class="container">
 <div class="section-head reveal">
 <div class="eyebrow">
 <i>
 </i> ЧТО ДЕЛАЕМ</div>
-<h2>Не меняем детали<br>
-<em>вслепую.</em>
-</h2>
-<p>Разбираемся в симптоме, проверяем узлы и предлагаем решение на основании диагностики.</p>
+<h2 data-letter-reveal>От диагностики до ремонта</h2>
+<p>Проверяем питание, электронику и механику. По результатам согласуем с вами объём работ.</p>
 </div>
 <div class="service-grid">
 <article class="service-card reveal">
-<span class="num">01</span>
 <h3>Диагностика</h3>
 <p>Питание, датчики, приводы, механика, электроника и программные ошибки.</p>
 <a href="diagnostika.html">Подробнее ↗</a>
 </article>
 <article class="service-card reveal delay">
-<span class="num">02</span>
 <h3>Ремонт</h3>
 <p>Восстановление узлов, компонентов и соединений с последующим тестированием.</p>
 <a href="remont.html">Подробнее ↗</a>
 </article>
 <article class="service-card reveal">
-<span class="num">03</span>
 <h3>Обслуживание</h3>
 <p>Очистка, профилактика, настройка, контроль состояния и подготовка к работе.</p>
 <a href="servis.html">Подробнее ↗</a>
 </article>
 <article class="service-card reveal delay">
-<span class="num">04</span>
 <h3>Инженерная помощь</h3>
 <p>Сложные, повторяющиеся и нестандартные неисправности.</p>
 <a href="engineering.html">Подробнее ↗</a>
@@ -138,10 +123,7 @@
 <div class="eyebrow">
 <i>
 </i> НАПРАВЛЕНИЯ</div>
-<h2>Выберите<br>
-<em>технику.</em>
-</h2>
-<p>Сервисные роботы, электроника и профессиональное оборудование.</p>
+<h2 data-letter-reveal>С какой техникой вы работаете?</h2>
 </div>
 <div class="direction-grid">
 <a class="direction-card reveal" href="robotics.html">
@@ -174,7 +156,7 @@
 <div class="eyebrow">
 <i>
 </i> НАШ ПОДХОД</div>
-<h2>Инженерный<br>
+<h2 data-letter-reveal>Инженерный<br>
 <em>подход к ремонту.</em>
 </h2>
 <p class="muted">Мы не просто меняем деталь. Мы ищем первопричину, проверяем её и только затем возвращаем технику в работу.</p>
@@ -210,7 +192,7 @@
 <div class="eyebrow">
 <i>
 </i> КАК ЭТО РАБОТАЕТ</div>
-<h2>Простой путь к<br>
+<h2 data-letter-reveal>Простой путь к<br>
 <em>исправной технике.</em>
 </h2>
 </div>
@@ -316,7 +298,7 @@
 <div class="eyebrow">
 <i>
 </i> FAQ</div>
-<h2>Частые<br>
+<h2 data-letter-reveal>Частые<br>
 <em>вопросы.</em>
 </h2>
 </div>

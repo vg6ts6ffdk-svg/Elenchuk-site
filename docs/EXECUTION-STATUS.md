@@ -357,3 +357,12 @@ Baseline: `7513c35a354219a98bfffa705cded7f6a5461e04`. The staff workspace uses t
 The Vercel production runtime can forward the service form, staff routes and health check to the existing Render API when local service configuration is incomplete. Only those routes are forwarded. Vercel Preview uses its own environment, and the Pages build continues to use the configured API origin. No data migration is required.
 
 The pull request records automated and browser checks. Verify the deployed SHA and both production endpoints after release. Use isolated data for Preview and browser test submissions.
+
+
+## ROSEEN 2.0 public homepage preview — 26 November 2026
+
+The homepage now opens on a full-width workshop image with direct equipment links.
+The first visit and replay reveal individual headline letters in interleaved order
+over 600 ms. Section titles use the same treatment once on entering the viewport.
+The complete headings remain readable with reduced motion and without JavaScript.
+The draft pull request records preview and browser verification.
