@@ -53,8 +53,8 @@
     // Interleave the letters across the whole heading. Their positions and
     // the line breaks stay fixed from the first letter to the last.
     letters.forEach((letter, index) => {
-      const delay = ((index * 7) % 13) * 25;
-      play(letter, fade, { duration: duration - 300, delay });
+      const delay = ((index * 7) % 13) * 32;
+      play(letter, fade, { duration: 396, delay });
     });
   }
   function play(el, keyframes, options) {

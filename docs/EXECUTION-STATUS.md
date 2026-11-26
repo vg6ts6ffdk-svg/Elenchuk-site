@@ -363,6 +363,7 @@ The pull request records automated and browser checks. Verify the deployed SHA a
 
 The homepage now opens on a full-width workshop image with direct equipment links.
 The first visit and replay reveal individual headline letters in interleaved order
-over 600 ms. Section titles use the same treatment once on entering the viewport.
+over 780 ms after the owner’s timing review. Workshop illustrations on service
+pages share a cool graphite/silver grade. Section titles use the same treatment once on entering the viewport.
 The complete headings remain readable with reduced motion and without JavaScript.
 The draft pull request records preview and browser verification.

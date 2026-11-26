@@ -216,8 +216,9 @@ try {
  const letters=entry.filter(a=>a.classes==='reveal-letter');
  assert.equal(letters.length,await p.locator('h1 .reveal-letter').count());
  assert.ok(letters.length>10 && new Set(letters.map(a=>a.options.delay)).size>5,'letters appear in staggered groups');
- assert.ok(letters.every(a=>a.frames.every(f=>!f.transform) && a.options.delay + a.options.duration<=600),'letters stay in place and finish within 600 ms');
+ assert.ok(letters.every(a=>a.frames.every(f=>!f.transform) && a.options.delay + a.options.duration<=780),'letters stay in place and finish within 780 ms');
  assert.ok(await p.getByRole('heading',{level:1,name:'Ремонт роботов и сложной техники'}).isVisible());
+ assert.equal(Math.max(...letters.map(a=>a.options.delay+a.options.duration)),780,'full heading reveal uses the approved slower tempo');
  const tokens=entry.filter(a=>a.classes==='brand-token');
  assert.equal(tokens.length,3);assert.deepEqual(tokens.map(a=>a.options.delay),[0,180,360]);
  assert.ok(entry.every(a=>a.options.duration+(a.options.delay||0)<=900),'entry exceeds the short motion budget');
