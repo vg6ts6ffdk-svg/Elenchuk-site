@@ -92,16 +92,49 @@ async function flow(engine,width,contract){
     assert.equal(await page.locator('#problem').inputValue(),'Synthetic QA with file');assert.equal(await page.locator('[name=files]').evaluate(input=>input.files.length),1);
     await submitWhilePending(3);assert.equal(posts,3);assert.equal(healthChecks,1);
     await page.goto(base+'/admin.html');await expect(page.locator('#login-panel')).toBeVisible();
+    if(engine==='chromium'&&contract==='cookie'&&width===1440)await page.screenshot({path:path.join(output,'login-1440.png'),fullPage:true});
     async function login(){await page.locator('#email').fill('qa@example.test');await page.locator('#password').fill('synthetic-browser-password');await page.getByRole('button',{name:'Войти',exact:true}).click();await expect(page.locator('.request-card')).toHaveCount(2);}
-    await login();await page.locator('.request-card').filter({hasText:'Synthetic QA with file'}).click();
+    await login();
+    const search=page.getByRole('searchbox',{name:'Поиск по заявкам'}),filter=page.locator('#status-filter');
+    await search.fill('WITHOUT');
+    await expect(page.locator('.request-card')).toHaveCount(1);
+    await filter.selectOption('closed');
+    await expect(page.locator('.request-card')).toHaveCount(0);
+    await expect(page.locator('#list')).toContainText('По этим условиям заявок нет');
+    await filter.selectOption('new');
+    await expect(page.locator('.request-card')).toHaveCount(1);
+    await filter.selectOption('');
+    await search.clear();
+    await expect(page.locator('.request-card')).toHaveCount(2);
+    const selectedCard=page.locator('.request-card').filter({hasText:'Synthetic QA with file'});
+    const id=await selectedCard.getAttribute('data-id');
+    await selectedCard.click();
     await expect(page.locator('#detail')).toBeVisible();await expect(page.locator('#detail')).toContainText('synthetic.png');
+    await expect(selectedCard).toHaveAttribute('aria-pressed','true');
+    await expect(page.locator('#detail h2')).toBeFocused();
+    assert.equal(await page.evaluate(async()=>{await document.fonts.ready;return [...document.fonts].some(face=>face.family==='Inter'&&face.status==='loaded')&&getComputedStyle(document.body).fontFamily.startsWith('Inter');}),true);
+    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=document.documentElement.clientWidth+1),true);
+    const returnToList=page.getByRole('button',{name:'К списку заявок',includeHidden:true});
+    if(width===390){
+      await returnToList.click();
+      await expect(page.locator('#detail')).toBeHidden();
+      await expect(selectedCard).toBeFocused();
+      await selectedCard.click();
+    }else await expect(returnToList).toBeHidden();
     await page.locator('#request-status').selectOption('ready');await page.locator('#request-comment').fill('Synthetic QA completed');await page.getByRole('button',{name:'Сохранить',exact:true}).click();
     await expect(page.locator('#notice')).toContainText('обновлена');await expect(page.locator('#request-status')).toHaveValue('ready');
-    async function download(){const [file]=await Promise.all([page.waitForEvent('download'),page.getByRole('button',{name:'Скачать',exact:true}).click()]);assert.deepEqual(fs.readFileSync(await file.path()),png);}
+    await filter.selectOption('ready');
+    await expect(page.locator('.request-card')).toHaveCount(1);
+    await expect(selectedCard).toContainText('Готова');
+    await search.fill('№'+id);
+    await expect(selectedCard).toHaveCount(1);
+    await filter.selectOption('');
+    await search.clear();
+    async function download(){const [file]=await Promise.all([page.waitForEvent('download'),page.getByRole('button',{name:'Скачать файл synthetic.png',exact:true}).click()]);assert.deepEqual(fs.readFileSync(await file.path()),png);}
     await download();
     await stop();await start();await page.getByRole('button',{name:'Обновить список',exact:true}).click();await expect(page.locator('.request-card')).toHaveCount(2);
     await page.locator('.request-card').filter({hasText:'Synthetic QA with file'}).click();await expect(page.locator('#request-status')).toHaveValue('ready');await download();
-    if(engine==='chromium'&&width===390)await page.screenshot({path:path.join(output,contract+'-admin-390.png'),fullPage:true});
+    if(engine==='chromium')await page.screenshot({path:path.join(output,contract+'-admin-'+width+'.png'),fullPage:true});
     await page.reload();
     if(contract==='bearer'){await expect(page.locator('#login-panel')).toBeVisible();await expect(page.locator('#app')).toBeHidden();await login();}
     else await expect(page.locator('.request-card')).toHaveCount(2);
@@ -109,13 +142,13 @@ async function flow(engine,width,contract){
     await page.getByRole('button',{name:'Выйти',exact:true}).click();await expect(page.locator('#login-panel')).toBeVisible();await expect(page.locator('#app')).toBeHidden();
     assert.equal((await context.request.get(base+'/api/requests')).status(),401);assert.equal((await context.request.get(base+'/api/files/'+fileId)).status(),401);
     assert.deepEqual(errors,[]);
-    report.flows.push({engine,width,contract,savedRequests:2,duplicatePosts:0,oneHealthWarmup:true,errorPreservesFieldsAndFile:true,statusAndFileSurviveRestart:true,byteExactDownload:true,logoutAndAnonymousDenied:true});
+    report.flows.push({engine,width,contract,savedRequests:2,duplicatePosts:0,oneHealthWarmup:true,errorPreservesFieldsAndFile:true,statusAndFileSurviveRestart:true,byteExactDownload:true,searchStatusAndSelectedCard:true,interAndResponsiveLayout:true,logoutAndAnonymousDenied:true});
   }finally{if(context)await context.close();await stop();await new Promise(resolve=>frontend.close(resolve));fs.rmSync(directory,{recursive:true,force:true});}
 }
 
 try{
   for(const [engine,driver] of [['chromium',chromium],['webkit',webkit]]){
-    browser=await driver.launch();
+    browser=await driver.launch({executablePath:engine==='chromium'?process.env.ROSEEN_CHROMIUM_PATH:undefined});
     for(const contract of ['cookie','bearer'])for(const width of [390,1440])await flow(engine,width,contract);
     await browser.close();browser=null;
   }

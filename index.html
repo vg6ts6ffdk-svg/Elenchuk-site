@@ -59,72 +59,57 @@
 </details>
 </div>
 </header>
-<main id="main"><div class="service-region">Москва и Московская область · Другие регионы — по согласованию</div>
-<section class="hero section">
-<div class="scan">
+<main id="main" class="home">
+<section class="hero home-hero" aria-labelledby="home-title">
+<div class="hero-art home-scene">
+<img class="hero-image" src="assets/robotics-1280.webp" srcset="assets/robotics-640.webp 640w, assets/robotics-1280.webp 1280w" sizes="(max-width: 800px) 100vw, 72vw" width="1280" height="853" decoding="async" alt="Уборочный робот в мастерской" fetchpriority="high">
 </div>
-<div class="container hero-grid">
+<div class="container home-intro">
 <div class="hero-copy">
-<div class="eyebrow">
-<i>
-</i> РОБОТЫ · СЕРВИС · ИНЖИНИРИНГ</div>
-<h1>Диагностика и ремонт<br><em>сложной техники.</em></h1>
-<p class="lead">Диагностика, ремонт и обслуживание робототехники, электроники и профессионального оборудования. Сначала находим причину — затем устраняем её и проверяем результат.</p>
+<div class="eyebrow"><i></i> РОБОТЫ · СЕРВИС · ИНЖИНИРИНГ</div>
+<h1 id="home-title" data-letter-reveal>Ремонт роботов<br>и сложной техники</h1>
+<p class="lead">Находим причину сбоя, восстанавливаем оборудование и проверяем его под нагрузкой.</p>
 <div class="actions">
-<a class="btn btn-primary magnetic" href="#request">Оставить заявку ↗</a>
-<a class="btn btn-ghost" href="#directions">Наши направления</a>
-</div>
-<div class="trust">
-<span>Диагностика</span>
-<span>Ремонт</span>
-<span>Обслуживание</span>
-<span>Инженерия</span>
-</div>
+<a class="btn btn-primary" href="#request">Оставить заявку</a>
 <button class="motion-replay" type="button" hidden>↻ Повторить анимацию</button>
 </div>
-<div class="hero-art">
-<div class="hero-glow">
-</div>
-<div class="media-wrap" >
-<img class="hero-image parallax-image" src="assets/robotics-1280.webp" srcset="assets/robotics-640.webp 640w, assets/robotics-1280.webp 1280w" sizes="(max-width: 800px) 100vw, 50vw" width="1280" height="853" decoding="async" alt="Робототехника в сервисной мастерской" fetchpriority="high">
-</div>
-<div class="hero-card">
-<b>ROSEEN / SERVICE</b>Сложная техника должна работать стабильно.</div>
+<p class="home-area">Москва и Московская область · Другие регионы по согласованию</p>
 </div>
 </div>
 </section>
+<nav class="home-shortcuts" aria-label="Выберите своё оборудование">
+<div class="container home-shortcut-list">
+<a href="robotics.html">Робототехника</a>
+<a href="electronics.html">Электроника</a>
+<a href="professional.html">Профессиональная техника</a>
+</div>
+</nav>
 <section id="services" class="section dark">
 <div class="container">
 <div class="section-head reveal">
 <div class="eyebrow">
 <i>
 </i> ЧТО ДЕЛАЕМ</div>
-<h2>Не меняем детали<br>
-<em>вслепую.</em>
-</h2>
-<p>Разбираемся в симптоме, проверяем узлы и предлагаем решение на основании диагностики.</p>
+<h2 data-letter-reveal>От диагностики до ремонта</h2>
+<p>Проверяем питание, электронику и механику. По результатам согласуем с вами объём работ.</p>
 </div>
 <div class="service-grid">
 <article class="service-card reveal">
-<span class="num">01</span>
 <h3>Диагностика</h3>
 <p>Питание, датчики, приводы, механика, электроника и программные ошибки.</p>
 <a href="diagnostika.html">Подробнее ↗</a>
 </article>
 <article class="service-card reveal delay">
-<span class="num">02</span>
 <h3>Ремонт</h3>
 <p>Восстановление узлов, компонентов и соединений с последующим тестированием.</p>
 <a href="remont.html">Подробнее ↗</a>
 </article>
 <article class="service-card reveal">
-<span class="num">03</span>
 <h3>Обслуживание</h3>
 <p>Очистка, профилактика, настройка, контроль состояния и подготовка к работе.</p>
 <a href="servis.html">Подробнее ↗</a>
 </article>
 <article class="service-card reveal delay">
-<span class="num">04</span>
 <h3>Инженерная помощь</h3>
 <p>Сложные, повторяющиеся и нестандартные неисправности.</p>
 <a href="engineering.html">Подробнее ↗</a>
@@ -138,14 +123,11 @@
 <div class="eyebrow">
 <i>
 </i> НАПРАВЛЕНИЯ</div>
-<h2>Выберите<br>
-<em>технику.</em>
-</h2>
-<p>Сервисные роботы, электроника и профессиональное оборудование.</p>
+<h2 data-letter-reveal>С какой техникой вы работаете?</h2>
 </div>
 <div class="direction-grid">
 <a class="direction-card reveal" href="robotics.html">
-<img src="assets/robotics-1280.webp" srcset="assets/robotics-640.webp 640w, assets/robotics-1280.webp 1280w" sizes="(max-width: 800px) 100vw, 50vw" width="1280" height="853" decoding="async" loading="lazy" alt="Робототехника">
+<img src="assets/robot-bay-1280.webp" srcset="assets/robot-bay-640.webp 640w, assets/robot-bay-1280.webp 1280w" sizes="(max-width: 800px) 100vw, 50vw" width="1280" height="853" decoding="async" loading="lazy" alt="Открытый сервисный отсек уборочного робота с приводным колесом и щёточным узлом">
 <div class="direction-card-content">
 <span>01 / ROBOTICS</span>
 <h3>Робототехника</h3>
@@ -154,7 +136,7 @@
 </div>
 </a>
 <a class="direction-card reveal delay" href="electronics.html">
-<img src="assets/electronics-1280.webp" srcset="assets/electronics-640.webp 640w, assets/electronics-1280.webp 1280w" sizes="(max-width: 800px) 100vw, 50vw" width="1280" height="853" decoding="async" loading="lazy" alt="Электроника и платы">
+<img src="assets/board-test-1280.webp" srcset="assets/board-test-640.webp 640w, assets/board-test-1280.webp 1280w" sizes="(max-width: 800px) 100vw, 50vw" width="1280" height="853" decoding="async" loading="lazy" alt="Измерительные щупы на контрольных точках промышленной платы">
 <div class="direction-card-content">
 <span>02 / ELECTRONICS</span>
 <h3>Электроника</h3>
@@ -162,7 +144,7 @@
 <b>Открыть направление ↗</b>
 </div>
 </a>
-<a class="direction-card reveal" href="professional.html"><img src="assets/professional-1280.webp" srcset="assets/professional-640.webp 640w, assets/professional-1280.webp 1280w" sizes="(max-width: 800px) 100vw, 50vw" width="1280" height="853" decoding="async" loading="lazy" alt="Профессиональная кухонная техника"><div class="direction-card-content"><span>03 / PROFESSIONAL</span><h3>Профессиональная техника</h3><p>Оборудование с интенсивной нагрузкой: питание, нагрев, механика и системы управления.</p><b>Открыть направление ↗</b></div></a></div>
+<a class="direction-card reveal" href="professional.html"><img src="assets/pump-service-1280.webp" srcset="assets/pump-service-640.webp 640w, assets/pump-service-1280.webp 1280w" sizes="(max-width: 800px) 100vw, 50vw" width="1280" height="853" decoding="async" loading="lazy" alt="Разобранный насос профессиональной посудомоечной машины и рабочее колесо"><div class="direction-card-content"><span>03 / PROFESSIONAL</span><h3>Профессиональная техника</h3><p>Оборудование с интенсивной нагрузкой: питание, нагрев, механика и системы управления.</p><b>Открыть направление ↗</b></div></a></div>
 </div>
 </section>
 <section id="approach" class="section dark">
@@ -174,7 +156,7 @@
 <div class="eyebrow">
 <i>
 </i> НАШ ПОДХОД</div>
-<h2>Инженерный<br>
+<h2 data-letter-reveal>Инженерный<br>
 <em>подход к ремонту.</em>
 </h2>
 <p class="muted">Мы не просто меняем деталь. Мы ищем первопричину, проверяем её и только затем возвращаем технику в работу.</p>
@@ -210,7 +192,7 @@
 <div class="eyebrow">
 <i>
 </i> КАК ЭТО РАБОТАЕТ</div>
-<h2>Простой путь к<br>
+<h2 data-letter-reveal>Простой путь к<br>
 <em>исправной технике.</em>
 </h2>
 </div>
@@ -316,7 +298,7 @@
 <div class="eyebrow">
 <i>
 </i> FAQ</div>
-<h2>Частые<br>
+<h2 data-letter-reveal>Частые<br>
 <em>вопросы.</em>
 </h2>
 </div>
@@ -351,7 +333,13 @@
 </div>
 </div>
 </section>
-<section class="section"><div class="container"><div class="section-head"><div class="eyebrow">РОБОТЫ · СЕРВИС · РИТЕЙЛ</div><h2>Новости</h2><p>Еженедельный обзор внедрений, сервисных решений и автоматизации магазинов. Факты, практические выводы и ссылки на источники.</p><a class="btn btn-ghost" href="news.html">Все новости ↗</a></div><article class="news-feature"><div><span class="eyebrow">ВЫПУСК ОТ 28 СЕНТЯБРЯ 2026</span><h3><a href="briefing-2026-09-28.html">От уборочного маршрута до точного учёта ↗</a></h3><p>Кейс уборочного робота, организация сервиса, RFID в ритейле и планы складской автоматизации. С источниками и выводами для эксплуатации.</p></div><a class="btn btn-ghost" href="briefing-2026-09-28.html">Читать выпуск ↗</a></article></div></section>
+<section class="section" aria-labelledby="home-notes">
+<div class="container">
+<div class="section-head"><h2 id="home-notes">Инженерные заметки</h2>
+<p>Практика эксплуатации роботов, ремонт и автоматизация магазинов.</p>
+<a class="btn btn-ghost" href="news.html">Все заметки</a></div>
+<!-- latest published briefing -->
+</div></section>
 </main>
 <footer>
 <div class="container footer-inner">

@@ -177,7 +177,8 @@ async function checkPremiumMotion(engine) {
   assert.deepEqual(cards.map(a=>a.options.delay).sort((a,b)=>a-b),[0,70,140,210],'desktop cards share a short row sequence');
   await page.locator('#directions h2').scrollIntoViewIfNeeded();
   await page.waitForFunction(()=>document.querySelector('#directions .section-head').dataset.motionVisible==='true');
-  assert.ok((await page.evaluate(()=>window.motionQA)).some(a=>a.tag==='H2'),'section headings receive their own reading-order entrance');
+  await page.waitForFunction(()=>document.querySelector('#directions h2 .reveal-letter'));
+  assert.ok(await page.getByRole('heading',{name:'С какой техникой вы работаете?'}).isVisible(),'the animated heading retains its complete accessible name');
   await page.emulateMedia({reducedMotion:'reduce'});
   await page.waitForFunction(()=>document.getAnimations().length===0);
   await page.emulateMedia({reducedMotion:'no-preference'});
@@ -210,9 +211,14 @@ try {
   };
  });
  await p.goto(base+'/index.html');assert.equal(await p.locator('html').getAttribute('data-motion-entry'),'first');
- await p.waitForFunction(()=>window.motionQA.some(a=>a.tag==='H1'));
+ await p.waitForFunction(()=>window.motionQA.some(a=>a.classes==='reveal-letter'));
  const entry=await p.evaluate(()=>window.motionQA);
- assert.ok(entry.some(a=>a.tag==='H1'),'headline should enter with the composition');
+ const letters=entry.filter(a=>a.classes==='reveal-letter');
+ assert.equal(letters.length,await p.locator('h1 .reveal-letter').count());
+ assert.ok(letters.length>10 && new Set(letters.map(a=>a.options.delay)).size>5,'letters appear in staggered groups');
+ assert.ok(letters.every(a=>a.frames.every(f=>!f.transform) && a.options.delay + a.options.duration<=780),'letters stay in place and finish within 780 ms');
+ assert.ok(await p.getByRole('heading',{level:1,name:'Ремонт роботов и сложной техники'}).isVisible());
+ assert.equal(Math.max(...letters.map(a=>a.options.delay+a.options.duration)),780,'full heading reveal uses the approved slower tempo');
  const tokens=entry.filter(a=>a.classes==='brand-token');
  assert.equal(tokens.length,3);assert.deepEqual(tokens.map(a=>a.options.delay),[0,180,360]);
  assert.ok(entry.every(a=>a.options.duration+(a.options.delay||0)<=900),'entry exceeds the short motion budget');
@@ -226,14 +232,17 @@ try {
  await p.reload();assert.equal(await p.locator('html').getAttribute('data-motion-entry'),'static');
  await p.waitForFunction(()=>!document.querySelector('.motion-replay').disabled);
  await p.locator('.motion-replay').click();
- assert.ok((await p.evaluate(()=>window.motionQA)).some(a=>a.tag==='H1'),'mobile replay must animate even after the first visit');
+ assert.ok((await p.evaluate(()=>window.motionQA)).some(a=>a.classes==='reveal-letter'),'mobile replay reveals individual letters after the first visit');
  await p.goto(base+'/shop.html');assert.equal(await p.locator('html').getAttribute('data-motion-entry'),'static');
- await p.locator('#q').fill('TEST-OEM');await p.locator('.query-row button').click();assert.equal(new URL(p.url()).searchParams.get('q'),'TEST-OEM');await p.goBack();assert.equal(await p.locator('#q').inputValue(),'');report.interactions.push('URL query and browser Back; motion first entry and later navigation');
+ assert.ok(await p.locator('#catalog-search').isHidden(),'empty catalogue starts with selection, including without JavaScript');
+ await p.locator('[data-parts-request]').click();await p.waitForURL('**/contacts.html?requestMode=selection#request');
+ assert.match(await p.locator('#problem').inputValue(),/подбор/);
  // Isolated synthetic data is intercepted only in this test context, not a deployed file.
  await p.route('**/store-data.json',r=>r.fulfill({contentType:'application/json',body:JSON.stringify(testData)}));
  const syntheticHtml=brandPage(renderStoreFiles(testData).get('product-TEST-0.html'),'product-TEST-0.html',{storefront:true});
  await p.route('**/product-TEST-0.html',r=>r.fulfill({contentType:'text/html',body:syntheticHtml}));
  await p.goto(base+'/shop.html');await p.waitForFunction(()=>document.querySelectorAll('.product-card').length===12);
+ await p.locator('#q').fill('TEST-OEM');await p.locator('.query-row button').click();assert.equal(new URL(p.url()).searchParams.get('q'),'TEST-OEM');await p.goBack();assert.equal(await p.locator('#q').inputValue(),'');report.interactions.push('URL query and browser Back; motion first entry and later navigation');
  await p.locator('#q').fill('TEST-OEM-0');await p.locator('.query-row button').click();assert.equal(await p.locator('.product-card').count(),1);
  await p.locator('.product-card h3').click();await p.locator('[data-add-cart]').click();await p.waitForFunction(()=>document.querySelector('#product-status').textContent.includes('добавлен'));
  assert.deepEqual(await p.evaluate(()=>JSON.parse(localStorage.getItem('roseen.cart.v1'))),[{id:'TEST-0',quantity:1}]);

@@ -18,9 +18,13 @@ test('repository catalogue contains no invented product offers',()=>{
  assert.deepEqual(publicCatalog().products,[]);
  const html=renderStoreFiles().get('shop.html');assert.match(html,/Каталог PUDU CC1/);assert.doesNotMatch(html,/TEST-SKU|0 ₽|data-add-cart/);
 });
-test('storefront exposes a safe PUDU CC1 quick filter without inventing products',()=>{
+test('empty catalogue prioritises selection and a populated one exposes model search',()=>{
  const html=renderStoreFiles().get('shop.html');
- assert.match(html,/PUDU CC1/);assert.match(html,/equipmentBrand=PUDU&amp;model=CC1/);
+ assert.match(html, /data-parts-request href="contacts.html\?requestMode=selection#request"/);
+ assert.match(html, /id="catalog"[^>]+ hidden/);
+ const full=renderStoreFiles(published([product()])).get('shop.html');
+ assert.doesNotMatch(full, /id="catalog"[^>]+ hidden/);
+ assert.match(full,/equipmentBrand=PUDU&amp;model=CC1/);
 });
 test('public data is an explicit projection, not internal source records',()=>{
  const data=published([product()]);assert.doesNotMatch(JSON.stringify(data),/private-test-reference|sourceRef|verifiedAt/);validatePublicData(data);

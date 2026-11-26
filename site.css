@@ -3,6 +3,7 @@
 @import './motion.css';
 @import './briefings.css';
 @import './store.css';
+@import './home.css';
 .honeypot { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
 .footer-nav { display:flex; flex-wrap:wrap; gap:8px 24px; padding-block:20px; }
 .footer-nav a,.breadcrumbs a,.faq-more a { color:var(--accent-light); text-decoration:underline; text-underline-offset:4px; }
@@ -33,3 +34,5 @@ button:focus-visible { outline:3px solid var(--accent-light); outline-offset:4px
 .analytics-choice p { color:var(--muted); font-size:14px; }
 .analytics-choice .actions { margin:12px 0 0; }
 .analytics-settings { border:0; background:none; color:var(--accent-light); text-decoration:underline; min-height:44px; padding:8px 0; }
+
+.service-terms { max-width: 52ch; margin: 12px 0 0; color: var(--muted); font-size: 14px; line-height: 1.55; }

@@ -55,10 +55,14 @@
   const context = new URLSearchParams(location.search);
   if (['selection','installation'].includes(context.get('requestMode'))) {
     const form = document.querySelector('#request-form');
+    const direction = form?.querySelector('[name=equipment_type]');
+    if (direction && !direction.value && context.get('requestMode') === 'selection') {
+      direction.value = 'Подбор запчастей';
+    }
     const sku = (context.get('serviceSku') || '').slice(0,128), equipment = (context.get('equipment') || '').slice(0,180);
     const model = form?.querySelector('[name=model]'), problem = form?.querySelector('[name=problem]');
     if(model && !model.value.trim()) model.value=equipment;
-    if(problem && !problem.value.trim()) problem.value=[context.get('requestMode')==='installation'?'Нужна установка запчасти.':'Нужен подбор и проверка совместимости.',sku && `Артикул / запрос: ${sku}`,equipment && `Оборудование: ${equipment}`].filter(Boolean).join('\n');
+    if(problem && !problem.value.trim()) problem.value=[context.get('requestMode')==='installation'?'Нужна установка запчасти.':'Нужен подбор и проверка совместимости.',context.get('partType') && `Категория: ${context.get('partType').slice(0,100)}`,sku && `Артикул / запрос: ${sku}`,equipment && `Оборудование: ${equipment}`].filter(Boolean).join('\n');
   }
   all('#request-form, #repairForm').forEach(form => {
     form.addEventListener('focusin', warmService, {once:true});

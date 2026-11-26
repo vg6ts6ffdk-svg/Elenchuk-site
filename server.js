@@ -13,6 +13,7 @@ import { publicFiles } from './public-files.mjs';
 import { cleanFiles, fields, fileFilter, validateFiles, rateLimit } from './security.mjs';
 import { settings } from './scripts/site-pages.mjs';
 import { analyticsPolicy } from './scripts/analytics-policy.mjs';
+import { createServiceProxy } from './service-proxy.mjs';
 
 import { createStoreRouter } from './storefront/api.mjs';
 import { createStoreAdminRouter } from './storefront/admin-api.mjs';
@@ -187,6 +188,11 @@ app.use(cors({
   methods: ["GET", "POST", "PATCH", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
+const useServiceProxy = Boolean(process.env.VERCEL)
+  && process.env.VERCEL_ENV === 'production'
+  && configurationErrors.length > 0;
+if (useServiceProxy) app.use(createServiceProxy());
+
 app.use(express.json({ limit: "32kb" }));
 app.use(express.urlencoded({ extended: false, limit: '32kb' }));
 // Read-only preview commerce must not initialize or mutate the service database.

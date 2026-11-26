@@ -349,3 +349,25 @@ Scope is decorative presentation and recovery navigation. Service APIs, forms, c
 ## Weekly news — 5 October 2026
 
 Added the 28 September–5 October issue, archive card, public allowlist and sitemap entry. The article separates partner content, an internal pilot, a manufacturer deployment claim and a research preprint. No regional-applicability or practical-check blocks are published. Release status must be verified through the PR checks and Pages deployment.
+
+## Service workspace and Vercel API follow-up — 25 November 2026
+
+Baseline: `7513c35a354219a98bfffa705cded7f6a5461e04`. The staff workspace uses the approved graphite palette, Inter and the original logo assets. The request list supports search across ID, equipment, model, contact and description, plus a status filter. The current API can load more pages while keeping the filter active. The deployed bearer API returns the full list. Saving a status updates the active list, including its filter, without losing the open request.
+
+The Vercel production runtime can forward the service form, staff routes and health check to the existing Render API when local service configuration is incomplete. Only those routes are forwarded. Vercel Preview uses its own environment, and the Pages build continues to use the configured API origin. No data migration is required.
+
+The pull request records automated and browser checks. Verify the deployed SHA and both production endpoints after release. Use isolated data for Preview and browser test submissions.
+
+
+## ROSEEN 2.0 public homepage preview — 26 November 2026
+
+The homepage now opens on a full-width workshop image with direct equipment links.
+The first visit and replay reveal individual headline letters in interleaved order
+over 780 ms after the owner’s timing review. Workshop illustrations on service
+pages share a cool graphite/silver grade. Section titles use the same treatment once on entering the viewport.
+The complete headings remain readable with reduced motion and without JavaScript.
+The draft pull request records preview and browser verification.
+
+## Service and parts enquiry journey — 26 November 2026
+
+The three equipment pages now open their local editable, preselected form. Direction and service pages explain price approval and equipment handover beside the first call to action. Dedicated images distinguish the three equipment groups. Empty catalogues and categories lead to a parts enquiry. Published products restore browsing and filters. The home page takes its latest engineering note from the published archive. Configured analytics count direction-to-form clicks and confirmed submissions with consent. The review build uses the existing draft pull request and guest preview.

@@ -14,12 +14,59 @@
   const pending = new Set();
   let changes;
   const stop = () => { animations.forEach(a => a.cancel()); animations.clear(); observer?.disconnect(); changes?.disconnect(); pending.clear(); };
+  const headingLetters = new WeakMap();
+  function revealLetters(heading) {
+    let letters = headingLetters.get(heading);
+    if (!letters) {
+      const label = heading.innerText.replace(/\s+/g, ' ').trim();
+      const visual = document.createElement('span');
+      visual.setAttribute('aria-hidden', 'true');
+      visual.append(...heading.childNodes);
+      const walker = document.createTreeWalker(visual, NodeFilter.SHOW_TEXT);
+      const nodes = [];
+      while (walker.nextNode()) nodes.push(walker.currentNode);
+      letters = [];
+      for (const node of nodes) {
+        const fragment = document.createDocumentFragment();
+        for (const piece of node.data.split(/(\s+)/u)) {
+          if (!piece || !piece.trim()) {
+            fragment.append(piece);
+            continue;
+          }
+          const word = document.createElement('span');
+          word.className = 'reveal-word';
+          for (const char of piece) {
+            const letter = document.createElement('span');
+            letter.className = 'reveal-letter';
+            letter.textContent = char;
+            word.append(letter);
+            letters.push(letter);
+          }
+          fragment.append(word);
+        }
+        node.replaceWith(fragment);
+      }
+      heading.setAttribute('aria-label', label);
+      heading.append(visual);
+      headingLetters.set(heading, letters);
+    }
+    // Interleave the letters across the whole heading. Their positions and
+    // the line breaks stay fixed from the first letter to the last.
+    letters.forEach((letter, index) => {
+      const delay = ((index * 7) % 13) * 32;
+      play(letter, fade, { duration: 396, delay });
+    });
+  }
   function play(el, keyframes, options) {
     if (!el || reduced.matches || el.contains(document.activeElement)) return;
+    if (el.hasAttribute('data-letter-reveal')) {
+      revealLetters(el);
+      return;
+    }
     try {
       // Phones keep their layout still. Brand tokens may use their short
       // sequence; scrolling content starts immediately inside the viewport.
-      const a = el.animate(mobile ? fade : keyframes, { ...options, ...(mobile ? { delay: el.matches('.brand-token') ? (options.delay || 0) : 0 } : {}), easing: 'cubic-bezier(.25,.1,.25,1)', fill: 'backwards' });
+      const a = el.animate(mobile ? fade : keyframes, { ...options, ...(mobile ? { delay: el.matches('.brand-token, .reveal-letter') ? (options.delay || 0) : 0 } : {}), easing: 'cubic-bezier(.25,.1,.25,1)', fill: 'backwards' });
       animations.add(a);
       a.addEventListener('finish', () => animations.delete(a), { once: true });
       a.addEventListener('cancel', () => animations.delete(a), { once: true });
@@ -29,7 +76,7 @@
   const hero = document.querySelector('.hero-copy .brand-sequence');
   const replay = document.querySelector('.motion-replay');
   try {
-    const key = 'roseen.motion.v7.seen';
+    const key = 'roseen.motion.home.v8.seen';
     first = !!hero && sessionStorage.getItem(key) !== '1';
     if (first) sessionStorage.setItem(key, '1');
   } catch { /* Restricted storage: use a static brand instead of looping. */ }
@@ -71,7 +118,7 @@
   // One shared vocabulary for service, editorial and store pages. Avoid nested
   // reveals: an image/form/card moves as one unit, never each child separately.
   const selector = [
-    'main .reveal', 'main h1', 'main .section-head', 'main .feature-item',
+    'main .reveal', 'main h1', 'main [data-letter-reveal]', 'main .section-head', 'main .feature-item',
     'main .media-wrap', 'main .inner-image', 'main .feature-copy',
     'main .news-feature', 'main .number',
     'main .direction-card', 'main .service-card', 'main .fault-card', 'main .step',
@@ -93,15 +140,26 @@
     if (seen.has(el)) return;
     seen.add(el); pending.delete(el); observer?.unobserve(el);
     el.dataset.motionVisible = 'true';
-    if (mobile) {
+    if (el.hasAttribute('data-letter-reveal')) {
       play(el, fade, { duration });
+      return;
+    }
+    if (mobile) {
+      const title = el.querySelector(':scope > [data-letter-reveal]');
+      if (title) {
+        for (const child of el.children) {
+          if (child !== title) play(child, fade, { duration });
+        }
+      } else {
+        play(el, fade, { duration });
+      }
       return;
     }
     // Editorial blocks have a reading order, rather than moving every paragraph
     // in a large panel at once. The panel itself and all its content stay visible
     // by default; each effect is additive and can be cancelled immediately.
     if (el.matches('.section-head, .feature-copy, .final-panel')) {
-      [...el.children].filter(child => !child.matches('.feature-list')).forEach((child, i) => {
+      [...el.children].filter(child => !child.matches('.feature-list, [data-letter-reveal]')).forEach((child, i) => {
         play(child, child.matches('.eyebrow') ? fade : rise, { duration, delay: delay + Math.min(i, 3) * 70 });
       });
       el.querySelectorAll('.feature-item').forEach((child, i) => {
@@ -132,15 +190,18 @@
     const roots = new Set(candidates);
     let visible = 0;
     candidates.forEach(el => {
-      for (let parent = el.parentElement; parent; parent = parent.parentElement) {
-        if (roots.has(parent)) return;
+      // A title triggers at its own viewport position, even inside a tall panel.
+      if (!el.hasAttribute('data-letter-reveal')) {
+        for (let parent = el.parentElement; parent; parent = parent.parentElement) {
+          if (roots.has(parent)) return;
+        }
       }
       if (seen.has(el) || pending.has(el)) return;
       const rect = el.getBoundingClientRect();
       if (!rect.width || !rect.height) return;
       if (rect.bottom > 0 && rect.top < innerHeight) {
         // Preserve the agreed first-session home composition and its replay.
-        if (opening && first && el.closest('.hero-copy, .hero-art')) seen.add(el);
+        if (opening && ((first && el.closest('.hero-copy, .hero-art')) || el.matches('.hero-copy [data-letter-reveal]'))) seen.add(el);
         else reveal(el, opening ? Math.max(rowDelay(el), (visible++ % 3) * 70) : rowDelay(el));
       } else if (rect.top >= innerHeight && observer) {
         pending.add(el); observer.observe(el);

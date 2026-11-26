@@ -226,3 +226,11 @@ main:not(.error-main)::before {
   main:not(.error-main)::before,.error-art { display:none; }
   .error-code { color:#454A53; }
 }
+
+
+/* Editorial workshop photography shares a cool silver/graphite grade across
+   service pages. Product photography, diagrams and brand masters keep their colours. */
+main :is(.hero-image, .inner-image, .feature-image, .direction-card img),
+main .direction-card:hover img {
+  filter: grayscale(1) sepia(.28) hue-rotate(172deg) saturate(1.45) contrast(1.04);
+}
